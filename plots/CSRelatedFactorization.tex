@@ -1,0 +1,70 @@
+{%\tiny
+$
+\begin{tikzpicture}[decoration=brace,baseline=-0.5ex]
+   \matrix [matrix of math nodes,left delimiter=(,right delimiter=), every node/.append style={text width=0.3cm,align=center,minimum width=4ex, minimum height=3.5ex},
+  nodes in empty cells,] (n) {
+&&&&\\
+&&&&\\
+&&&&\\
+&&&&\\
+&&&&\\
+&&&&\\
+};
+%--- matrix names---
+\node[font=\normalsize] 
+  at ([xshift=-1pt, yshift=-3pt]n-3-1) {$Y_{S}$};
+\node[font=\normalsize] 
+  at ([xshift=-5pt, yshift=-2pt]n-2-3) {$Y^{(1)}_{D}$};
+  \node[font=\normalsize] 
+  at ([xshift=-5pt, yshift=-2pt]n-5-5) {$Y^{(2)}_{D}$};
+%== brackets ==
+%-- m_1,m_2 ------
+\draw[decorate,transform canvas={xshift=-1.5em}] (n-3-1.south west) -- node[left=2pt] {$m_1$} (n-1-1.north west);
+\draw[decorate,transform canvas={xshift=-1.5em}] (n-6-1.south west) -- node[left=2pt] {$m_2$} (n-4-1.north west);
+%-- ranks ---
+\draw[decorate,transform canvas={yshift=-1em}] (n-6-1.south east) -- node[below=2pt] {$r_0$} (n-6-1.south west);
+\draw[decorate,transform canvas={yshift=-1em}] (n-6-3.south east) -- node[below=2pt] {$r_1$} (n-6-2.south west);
+\draw[decorate,transform canvas={yshift=-1em}] (n-6-5.south east) -- node[below=2pt] {$r_2$} (n-6-4.south west);
+%=== colors ===
+%--- blue ---
+\draw[color=col1,fill=col1,opacity=0.3] (n-1-2.north west) -- (n-1-3.north east) -- (n-3-3.south east) -- (n-3-2.south west) -- (n-1-2.north west);
+%--- green ---
+\draw[color=col2,fill=col2,opacity=0.3] (n-4-4.north west) -- (n-4-5.north east) -- (n-6-5.south east) -- (n-6-4.south west) -- (n-4-4.north west);
+%-- pink ---
+\draw[color=col3,fill=col3,opacity=0.3] (n-1-1.north west) -- (n-1-1.north east) -- (n-6-1.south east) -- (n-6-1.south west) --(n-1-1.north west);
+\end{tikzpicture}
+%------------- X-------------------
+\qquad\odot
+\begin{tikzpicture}[decoration=brace,baseline=-0.5ex]
+   \matrix [matrix of math nodes,left delimiter=(,right delimiter=), every node/.append style={text width=0.2cm,align=center,minimum height=3ex},
+  nodes in empty cells,] (n) {
+&&&&&&\\
+&&&&&&\\
+&&&&&&\\
+&&&&&&\\
+&&&&&&\\
+};
+%--- matrix names---
+\node[font=\normalsize] 
+  at (n-1-4) {$X_{S}^T$};
+\node[font=\normalsize] 
+  at ([yshift=-6pt]n-2-4) {$X_1^T$};
+  \node[font=\normalsize] 
+  at ([yshift=-6pt]n-4-4) {$X_2^T$};
+%== brackets ==
+%-- m_1,m_2 ------
+\draw[decorate,transform canvas={xshift=-1.5em}] (n-1-1.south west) -- node[left=2pt] {$r_0$} (n-1-1.north west);
+\draw[decorate,transform canvas={xshift=-1.5em}] (n-3-1.south west) -- node[left=2pt] {$r_1$} (n-2-1.north west);
+\draw[decorate,transform canvas={xshift=-1.5em}] (n-5-1.south west) -- node[left=2pt] {$r_2$} (n-4-1.north west);
+%-- ranks ---
+\draw[decorate,transform canvas={yshift=-1em}] (n-5-7.south east) -- node[below=2pt] {$n$} (n-5-1.south west);
+%=== colors ===
+%--- blue ---
+\draw[color=col1,fill=col1,opacity=0.3] (n-2-1.north west) -- (n-2-7.north east) -- (n-3-7.south east) -- (n-3-1.south west) -- (n-2-1.north west);
+%--- green ---
+\draw[color=col2,fill=col2,opacity=0.3] (n-4-1.north west) -- (n-4-7.north east) -- (n-5-7.south east) -- (n-5-1.south west) -- (n-4-1.north west);
+%-- pink ---
+\draw[color=col3,fill=col3,opacity=0.3] (n-1-1.north west) -- (n-1-7.north east) -- (n-1-7.south east) -- (n-1-1.south west) --(n-1-1.north west);
+\end{tikzpicture}
+$
+}

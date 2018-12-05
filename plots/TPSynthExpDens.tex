@@ -1,0 +1,94 @@
+\begin{filecontents}{BMFDR_DENSF.dat}
+x y std
+0.1 0.9951249999999999 0.01
+0.15 0.994375 0.01
+0.2 0.9921249999999999 0.01
+0.25 0.9863750000000001 0.01
+0.3 0.906125 0.08
+\end{filecontents}
+\begin{filecontents}{BMFDR_DENSR.dat}
+x y std
+0.1 24.625 1.92
+0.15 23.375 1.6
+0.2 24.0 1.51
+0.25 25.25 2.71
+0.3 32.5 10.66
+\end{filecontents}
+\begin{filecontents}{BMFDR_COHF.dat}
+x y std
+0.1 0.984 0.01
+0.15 0.9919999999999999 0.0
+0.2 0.993375 0.01
+0.25 0.9871249999999999 0.02
+0.3 0.932125 0.05
+\end{filecontents}
+\begin{filecontents}{BMFDR_COHR.dat}
+x y std
+0.1 22.875 1.96
+0.15 22.75 1.28
+0.2 23.75 1.49
+0.25 24.375 1.6
+0.3 29.0 5.01
+\end{filecontents}
+\begin{filecontents}{PrimpF.dat}
+x y std
+0.1 0.9977500000000001 0.0
+0.15 0.995875 0.0
+0.2 0.9536250000000002 0.06
+0.25 0.8011250000000001 0.04
+0.3 0.702375 0.11
+\end{filecontents}
+\begin{filecontents}{PrimpR.dat}
+x y std
+0.1 26.25 2.19
+0.15 26.625 3.25
+0.2 29.875 6.38
+0.25 48.375 5.48
+0.3 73.375 25.12
+\end{filecontents}
+\begin{filecontents}{PanPalF.dat}
+x y std
+0.1 0.81725 0.08
+0.15 0.9237499999999998 0.06
+0.2 0.961 0.02
+0.25 0.9727500000000001 0.02
+0.3 0.9198749999999999 0.11
+\end{filecontents}
+\begin{filecontents}{PanPalR.dat}
+x y std
+0.1 12.25 3.58
+0.15 16.125 4.05
+0.2 18.625 3.2
+0.25 20.625 3.54
+0.3 20.375 3.7
+\end{filecontents}
+
+\begin{tikzpicture}
+    \begin{groupplot}[group style={group size= 2 by 1, vertical sep=0.6cm},
+    	height=.33\columnwidth,
+    	width=.5\columnwidth,
+        legend columns =2,
+        axis lines = left]
+        %
+        \nextgroupplot[ylabel={$F$}, xlabel={$d$},
+        	xmax=0.35, ymin=0.4, ymax=1.1,
+        	legend to name=legendTPSynthExpDens]
+        	\addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENSF.dat};
+            \addlegendentry{\textsc{TrustPal} dens};
+        	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COHF.dat};
+            \addlegendentry{\textsc{TrustPal} coh};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {PrimpF.dat};
+            \addlegendentry{\textsc{Primp}};
+            \addplot+[panStyle]  table[x=x,y=y,y error=std] {PanPalF.dat};
+            \addlegendentry{\textsc{PanPal}};
+            %
+        \nextgroupplot[xlabel={$d$}, ylabel={$r$},
+			xmax=0.35, ymin=0, ymax=40.2]
+                \addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENSR.dat};
+        	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COHR.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {PrimpR.dat};
+            \addplot+[panStyle]  table[x=x,y=y,y error=std] {PanPalR.dat};
+    \end{groupplot} 
+\end{tikzpicture}\\
+
+\pgfplotslegendfromname{legendTPSynthExpDens}

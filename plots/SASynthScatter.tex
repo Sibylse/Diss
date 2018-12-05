@@ -1,0 +1,45 @@
+\documentclass[preview=true]{standalone}
+\input{header}
+%
+\begin{document}
+%
+\input{filecontents/SASynthPoints} 
+\begin{tikzpicture}
+\pgfplotsset{ticks=none}
+\begin{groupplot}[group style={group size= 5 by 3, horizontal sep=0.1cm, vertical sep=0.1cm},
+    	height=.25\textwidth,
+    	width=.25\textwidth,
+        title style={yshift=-1.5ex}]
+ 	\nextgroupplot[title={\textsc{SpectACl}}]
+	\addplot[clusterScatterStyle] table[meta=z]{nmSpectACl_eps.dat};
+    \nextgroupplot[title={(N)}]
+	\addplot[clusterScatterStyle] table[meta=z]{nmSpectACl_knn_n.dat};
+    \nextgroupplot[title={\textsc{RSC}}]
+	\addplot[clusterScatterStyle] table[meta=z]{nmRSC.dat};
+    \nextgroupplot[title={\textsc{SC}}] 
+    \addplot[clusterScatterStyle] table[meta=z]{nmSC_knn_n.dat};
+    \nextgroupplot[title={\textsc{DBSCAN}}] 
+    \addplot[clusterScatterStyle] table[meta=z]{nmDBSCAN.dat};
+    \nextgroupplot[]
+	\addplot[clusterScatterStyle] table[meta=z]{ncSpectACl_eps.dat};
+    \nextgroupplot[]
+	\addplot[clusterScatterStyle] table[meta=z]{ncSpectACl_knn_n.dat};
+    \nextgroupplot[]
+	\addplot[clusterScatterStyle] table[meta=z]{ncRSC.dat};
+    \nextgroupplot[] 
+    \addplot[clusterScatterStyle] table[meta=z]{ncSC_knn_n.dat};
+    \nextgroupplot[] 
+    \addplot[clusterScatterStyle] table[meta=z]{ncDBSCAN.dat};
+    \nextgroupplot[]
+	\addplot[clusterScatterStyle] table[meta=z]{nbSpectACl_eps.dat};
+    \nextgroupplot[]
+	\addplot[clusterScatterStyle] table[meta=z]{nbSpectACl_knn_n.dat};
+    \nextgroupplot[]
+	\addplot[clusterScatterStyle] table[meta=z]{nbRSC.dat};
+    \nextgroupplot[] 
+    \addplot[clusterScatterStyle] table[meta=z]{nbSC_knn_n.dat};
+    \nextgroupplot[] 
+    \addplot[clusterScatterStyle] table[meta=z]{nbDBSCAN.dat};
+\end{groupplot}
+\end{tikzpicture}
+\end{document}

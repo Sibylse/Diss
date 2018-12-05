@@ -1,0 +1,45 @@
+\begin{tikzpicture}
+    \input{filecontents/SASynthPlotPoints} 
+    \begin{groupplot}[group style={group size= 3 by 1, vertical sep=0.6cm},
+    	height=.3\textwidth,
+    	width=.33\textwidth,
+        legend columns =-1, title style={yshift=-1.5ex},
+        axis lines = left]
+        %
+        \nextgroupplot[ylabel={$F$}, xlabel={noise},
+        	title={two moons},
+        	xmin=0,xmax=0.25, ymin=0.0, ymax=1.2,
+        	legend to name=zelda]
+        	\addplot+[specStyle]  table[x=x,y=y,y error=std] {nmSpectACl_eps.dat};
+            \addlegendentry{\textsc{SpectACl}};
+        	\addplot+[specLStyle]  table[x=x,y=y,y error=std] {nmSpectACl_knn_n.dat};
+            \addlegendentry{\textsc{SpectACl} (normalized)};
+            \addplot+[RSCStyle]  table[x=x,y=y,y error=std] {nmRSC.dat};
+            \addlegendentry{\textsc{RSC}};
+            \addplot+[SCStyle]  table[x=x,y=y,y error=std] {nmSC_knn_n.dat};
+            \addlegendentry{\textsc{SC}};
+            \addplot+[DBSCANStyle]  table[x=x,y=y,y error=std] {nmDBSCAN.dat};
+            \addlegendentry{\textsc{DBSCAN}};
+            %
+        \nextgroupplot[
+        	title={two circles}, xlabel={noise},
+        	xmin=0,xmax=0.25, ymin=0.0, ymax=1.2]
+        	\addplot+[specStyle]  table[x=x,y=y,y error=std] {ncSpectACl_eps.dat};
+        	\addplot+[specLStyle]  table[x=x,y=y,y error=std] {ncSpectACl_knn_n.dat};
+            \addplot+[RSCStyle]  table[x=x,y=y,y error=std] {ncRSC.dat};
+            \addplot+[SCStyle]  table[x=x,y=y,y error=std] {ncSC_knn_n.dat};
+            \addplot+[DBSCANStyle]  table[x=x,y=y,y error=std] {ncDBSCAN.dat};
+            %
+        \nextgroupplot[
+        	title={three blobs}, xlabel={noise},
+        	xmin=0,xmax=0.25, ymin=0.0, ymax=1.2]
+        	\addplot+[specStyle]  table[x=x,y=y,y error=std] {nbSpectACl_eps.dat};
+        	\addplot+[specLStyle]  table[x=x,y=y,y error=std] {ncSpectACl_knn_n.dat};
+            \addplot+[RSCStyle]  table[x=x,y=y,y error=std] {nbRSC.dat};
+            \addplot+[SCStyle]  table[x=x,y=y,y error=std] {nbSC_knn_n.dat};
+            \addplot+[DBSCANStyle]  table[x=x,y=y,y error=std] {nbDBSCAN.dat};
+            %
+    \end{groupplot} 
+\end{tikzpicture}\\
+
+\pgfplotslegendfromname{zelda}

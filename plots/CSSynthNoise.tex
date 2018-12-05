@@ -1,0 +1,157 @@
+\input{filecontents/CSSynthNoise}
+%---------------------------
+% F VARY NOISE
+%---------------------------
+\begin{tikzpicture}[baseline]
+		\begin{axis}[
+        	axis lines = left,
+			%title={$D\in\{0,1\}^{800\times1000}$},
+            height=.25\linewidth,
+            width=.33\linewidth,
+			ylabel={$F$},
+			xmin=0,xmax=25.5, ymin=0, ymax=1.1
+			]
+            \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_pF.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pF.dat};
+            \addplot+[dbssl1Style]  table[x=x,y=y,y error=std] {DBSSL1_pF.dat};
+            \addplot+[dbssl2Style]  table[x=x,y=y,y error=std] {DBSSL2_pF.dat};
+		\end{axis}
+\end{tikzpicture}
+%---------------------------
+% F VARY MA
+%---------------------------
+\begin{tikzpicture}[baseline]
+		\begin{axis}[
+        	axis lines = left,
+            height=.25\linewidth,
+            width=.33\linewidth,
+			xmin=0,xmax=0.52, ymin=0, ymax=1.1
+			]
+            \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_maF.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_maF.dat};
+            \addplot+[dbssl1Style]  table[x=x,y=y,y error=std] {DBSSL1_maF.dat};
+            \addplot+[dbssl2Style]  table[x=x,y=y,y error=std] {DBSSL2_maF.dat};
+		\end{axis}
+\end{tikzpicture}
+%---------------------------
+% F VARY RANK
+%---------------------------
+\begin{tikzpicture}[baseline]
+		\begin{axis}[
+        	axis lines = left,
+            height=.25\linewidth,
+            width=.33\linewidth,
+			xmin=0,xmax=45, ymin=0, ymax=1.1
+			]
+            \addplot+[punkStyle] table[x=x,y=y,y error=std]{Punk_rF.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_rF.dat};
+            \addplot+[mdlDbsslStyle]  table[x=x,y=y,y error=std] {DBSSL_rF.dat};
+		\end{axis}
+\end{tikzpicture}
+%---------------------------
+% REC V VARY NOISE
+%---------------------------
+\begin{tikzpicture}[baseline]
+		\begin{axis}[
+        	%title={$D^T\in\{0,1\}^{1000\times800}$},
+        	axis lines = left,
+            ylabel={$\rec_V$},
+            height=.25\linewidth,
+            width=.33\linewidth,
+			xmin=0,xmax=25.5, ymin=0, ymax=1.1
+			]
+            \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_pRecV.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pRecV.dat};
+            \addplot+[dbssl1Style]  table[x=x,y=y,y error=std] {DBSSL1_pRecV.dat};
+            \addplot+[dbssl2Style]  table[x=x,y=y,y error=std] {DBSSL2_pRecV.dat};
+		\end{axis}
+\end{tikzpicture}
+%---------------------------
+% REC V VARY MA
+%---------------------------
+\begin{tikzpicture}[baseline]
+		\begin{axis}[
+        	axis lines = left,
+            height=.25\linewidth,
+            width=.33\linewidth,
+			xmin=0,xmax=0.52, ymin=0, ymax=1.1
+			]
+            \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_maRecV.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_maRecV.dat};
+            \addplot+[dbssl1Style]  table[x=x,y=y,y error=std] {DBSSL1_maRecV.dat};
+            \addplot+[dbssl2Style]  table[x=x,y=y,y error=std] {DBSSL2_maRecV.dat};
+		\end{axis}
+\end{tikzpicture}
+%---------------------------
+% REC V VARY RANK
+%---------------------------
+\begin{tikzpicture}[baseline]
+		\begin{axis}[
+        	axis lines = left,
+            height=.25\linewidth,
+            width=.33\linewidth,
+			xmin=0, xmax=45, ymin=0, ymax=1.1
+			]
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_rRecV.dat};
+            \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_rRecV.dat};
+            \addplot+[mdlDbsslStyle]  table[x=x,y=y,y error=std] {DBSSL_rRecV.dat};
+		\end{axis}
+\end{tikzpicture}
+%---------------------------
+% RANK(X,Y) VARY NOISE
+%---------------------------
+\begin{tikzpicture}[baseline]
+		\begin{axis}[
+        	axis lines = left,
+            height=.25\linewidth,
+            width=.33\linewidth,
+			xlabel={$p\ [\%]$},
+			ylabel={$r$},
+			xmax=25.5, xmin=0, ymin=0, ymax=26.2
+			]
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pR.dat};
+            \addplot+[punkStyle] table[x=x,y=y,y error=std] {Punk_pR.dat};
+            \addplot+[dbssl1Style]  table[x=x,y=y,y error=std] {DBSSL1_pR.dat};
+            \addplot+[dbssl2Style]  table[x=x,y=y,y error=std] {DBSSL2_pR.dat};
+		\end{axis}
+\end{tikzpicture}
+%---------------------------
+% RANK(X,Y) VARY MA
+%---------------------------
+\begin{tikzpicture}[baseline]
+		\begin{axis}[
+        	axis lines = left,
+            height=.25\linewidth,
+            width=.33\linewidth,
+			xlabel={$\nicefrac{m_1}{m}$},
+			xmax=0.52, xmin=0, ymin=0, ymax=26.2
+			]
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_maR.dat};
+            \addplot+[punkStyle] table[x=x,y=y,y error=std] {Punk_maR.dat};
+            \addplot+[dbssl1Style]  table[x=x,y=y,y error=std] {DBSSL1_maR.dat};
+            \addplot+[dbssl2Style]  table[x=x,y=y,y error=std] {DBSSL2_maR.dat};
+		\end{axis}
+\end{tikzpicture}
+%---------------------------
+% RANK(X,Y) VARY RANK
+%---------------------------
+\begin{tikzpicture}[baseline]
+		\begin{axis}[
+        	axis lines = left,
+            height=.25\linewidth,
+            width=.33\linewidth,
+			xlabel={$r^\star$},
+			xmax=45, xmin=0, ymin=0,
+            legend columns =-1,
+            legend entries={\textsc{C-Salt},\textsc{Primp},\textsc{Dbssl[$r_c,2r_c,2r_c$]},\textsc{Dbssl[$0,r^\star,r^\star$]},\textsc{MdlDbssl}},
+            legend to name=named
+			]
+            \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_rR.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_rR.dat};
+            \addplot[dbssl1Style] coordinates {(-1,-1)};
+            \addplot[dbssl2Style] coordinates {(-1,-1)};
+            \addplot+[mdlDbsslStyle]  table[x=x,y=y,y error=std] {DBSSL_rR.dat};
+		\end{axis}
+\end{tikzpicture}\\
+
+\pgfplotslegendfromname{named}

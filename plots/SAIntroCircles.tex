@@ -1,0 +1,24 @@
+\documentclass[preview=true]{standalone}
+\input{header}
+%
+\begin{document}
+%
+\input{filecontents/SASynthPoints} 
+\begin{tikzpicture}
+\pgfplotsset{ticks=none}
+\begin{groupplot}[group style={group size= 4 by 1, horizontal sep=0.1cm, vertical sep=0.2cm},
+    	height=.3\textwidth,
+    	width=.3\textwidth,
+        title style={yshift=-1.5ex}]
+    \nextgroupplot[title={\textsc{SC}}] 
+    \addplot[clusterScatterStyle] table[meta=z]{ncSC_knn_n.dat};
+    \nextgroupplot[title={\textsc{DBSCAN}}] 
+    \addplot[clusterScatterStyle] table[meta=z]{ncDBSCAN.dat};
+    \nextgroupplot[title={\textsc{DBSCAN}}] 
+    \addplot[clusterScatterStyle] table[meta=z]{ncDBSCANmp_11.dat};
+ 	\nextgroupplot[title={\textsc{SpectACl}}]
+	\addplot[clusterScatterStyle] table[meta=z]{ncSpectACl_eps.dat};
+\end{groupplot}
+\end{tikzpicture}
+%
+\end{document}

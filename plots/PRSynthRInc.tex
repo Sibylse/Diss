@@ -1,0 +1,57 @@
+\input{filecontents/PRSynthRInc}
+%---------------------------
+% F MEASURE  
+%---------------------------
+\begin{tikzpicture}[baseline]  
+ \begin{groupplot}[
+    group style={group size= 2 by 1},
+    height=.33\linewidth,
+    width=.5\linewidth,
+    legend columns =-1,
+    axis lines = left]
+    %
+    \nextgroupplot[xlabel={$p_+=p_-\ [\%]$},
+		ylabel={$F$},
+		xmax=27, ymin=0, ymax=1.1,legend to name=legendPRSynthDensD]
+		\addlegendimage{no marks,dash pattern=on 4pt off 2pt on 4pt off 2pt,  color=black!60}
+	    \addlegendimage{no marks,dash pattern=on 8pt off 1pt on 8pt off 1pt, color=black!80}
+        \addlegendimage{no marks,thick, color=black}
+        \addlegendimage{no marks,ultra thick, color=black}        	\addplot+[cPrimp!60,dash pattern=on 4pt off 2pt on 4pt off 2pt,mark=*,mark options ={cPrimp!60},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpInc2F.dat};%2 
+        \addlegendentry{$\Delta_r=2$};
+        \addplot+[cPrimp!80,dash pattern=on 8pt off 1pt on 8pt off 1pt,mark=*,mark options ={cPrimp!80},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpInc5F.dat};%5
+        \addlegendentry{$\Delta_r=5$};
+        \addplot+[cPrimp,mark=*,mark options ={cPrimp},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpLam4F.dat}; %10
+        \addlegendentry{$\Delta_r=10$};
+        \addplot+[cPrimp!70!black,mark options ={cPrimp!70!black},mark=*,mark repeat={3},ultra thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpInc20F.dat}; %20
+        \addlegendentry{$\Delta_r=20$};
+        \addplot+[cPan!60,dash pattern=on 4pt off 2pt on 4pt off 2pt,mark=square*,mark options ={cPan!60},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {nmfL1Inc2F.dat};%2 
+        \addplot+[cPan!80,dash pattern=on 8pt off 1pt on 8pt off 1pt,mark=square*,mark options ={cPan!80},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {nmfL1Inc5F.dat};%5
+        \addplot+[panStyle]  table[x=x,y=y,y error=std] {nmfL1Lam2F.dat};%10 
+        \addplot+[cPan!70!black,solid,mark=square*,mark options ={cPan!70!black},mark repeat={3}, ultra thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {nmfL1Inc20F.dat}; %20
+    \nextgroupplot[
+		xlabel={$p_+=p_-\ [\%]$},     
+		ylabel={$r(X,Y)$},
+		xmax=27, xmin=0, ymin=0, ymax=35,
+        legend columns =-1,
+        legend style={yshift=-3.5cm},  % adjustable
+		legend cell align=center,
+        legend to name = legendPRSynthDensA
+		]
+        \addlegendimage{only marks, mark=*, color=cPrimp}
+		\addlegendimage{only marks, mark=square*, color=cPan}
+        \addplot+[cPrimp!60,mark=*,dash pattern=on 4pt off 2pt on 4pt off 2pt,mark options ={cPrimp!60},mark repeat={2}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpInc2R.dat};%2
+        \addlegendentry{\textsc{Primp}};
+        \addplot+[cPrimp!80,mark=*,dash pattern=on 8pt off 1pt on 8pt off 1pt,mark options ={cPrimp!80},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpInc5R.dat};%5
+        \addplot+[cPrimp,mark=*,mark options ={cPrimp},mark repeat={2}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpLam4R.dat};%10
+        \addplot+[cPrimp!70!black,mark=*, mark options ={cPrimp!70!black},mark repeat={2}, ultra thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpInc20R.dat}; %20
+        \addplot+[cPan!60,dash pattern=on 4pt off 2pt on 4pt off 2pt,mark=square*,mark options ={cPan!60},mark repeat={2}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {nmfL1Inc2R.dat};%2
+        \addlegendentry{\textsc{Panpal}};
+        \addplot+[cPan!80,dash pattern=on 8pt off 1pt on 8pt off 1pt,mark=square*,mark options ={cPan!80},mark repeat={2}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {nmfL1Inc5R.dat};%5
+        \addplot+[cPan,solid,mark=square*, mark options ={cPan},mark repeat={2}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {nmfL1Lam2R.dat};%10
+        \addplot+[cPan!70!black,solid,mark=square*, mark options ={cPan!70!black},mark repeat={2}, ultra thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {nmfL1Inc20R.dat};
+\end{groupplot}
+\end{tikzpicture}
+\\
+
+\pgfplotslegendfromname{legendPRSynthDensD}
+\pgfplotslegendfromname{legendPRSynthDensA}

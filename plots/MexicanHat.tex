@@ -1,0 +1,5 @@
+\begin{tikzpicture}%[scale =0.8]
+	\begin{axis}[width=250pt,height = 100pt, axis x line=left, domain=-0.2:1.55, axis y line=center, tick align=outside,legend pos=outer north east,legend entries={$(x^2-x)^2$}, tick label style={/pgf/number format/fixed}]
+        \addplot+[domain=-0.1:1.1,mark=none,smooth,col1,ultra thick,samples=100] (\x,{((\x)^2-\x)^2});
+	\end{axis}
+\end{tikzpicture}

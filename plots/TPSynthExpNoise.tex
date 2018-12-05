@@ -1,0 +1,154 @@
+\begin{filecontents}{BMFDR_DENS_n1000m800F.dat}
+x y std
+0 0.9851000000000001 0.01
+5 0.9943000000000002 0.0
+10 0.9947000000000001 0.01
+15 0.9972 0.0
+20 0.9844500000000002 0.01
+25 0.8490500000000001 0.08
+\end{filecontents}
+\begin{filecontents}{BMFDR_DENS_n1000m800R.dat}
+x y std
+0 23.1 1.25
+5 23.8 1.2
+10 25.3 1.34
+15 24.5 0.83
+20 23.1 1.59
+25 15.65 3.67
+\end{filecontents}
+\begin{filecontents}{BMFDR_COH_n1000m800F.dat}
+x y std
+0 0.9811499999999999 0.01
+5 0.9847999999999999 0.01
+10 0.978 0.01
+15 0.9778499999999999 0.01
+20 0.9603999999999999 0.02
+25 0.8709 0.07
+\end{filecontents}
+\begin{filecontents}{BMFDR_COH_n1000m800R.dat}
+x y std
+0 21.6 1.93
+5 22.1 1.77
+10 22.25 2.45
+15 22.15 1.79
+20 21.9 1.89
+25 18.0 3.26
+\end{filecontents}
+\begin{filecontents}{Primp_n1000m800F.dat}
+x y std
+0 0.9995 0.0
+5 0.9974000000000002 0.0
+10 0.998 0.0
+15 0.9927999999999999 0.01
+20 0.9792 0.01
+25 0.9243 0.02
+\end{filecontents}
+\begin{filecontents}{Primp_n1000m800R.dat}
+x y std
+0 25.3 0.47
+5 25.75 0.72
+10 27.3 3.1
+15 29.1 4.49
+20 29.15 5.69
+25 29.2 9.33
+\end{filecontents}
+\begin{filecontents}{BMFDR_DENS_n1600m500F.dat}
+x y std
+0 0.99415 0.01
+5 0.9957500000000001 0.0
+10 0.9925499999999998 0.01
+15 0.9868 0.01
+20 0.9017000000000002 0.13
+25 0.49700000000000005 0.16
+\end{filecontents}
+\begin{filecontents}{BMFDR_DENS_n1600m500R.dat}
+x y std
+0 23.95 0.89
+5 24.15 0.99
+10 25.0 1.12
+15 23.85 1.04
+20 19.3 4.93
+25 7.15 2.3
+\end{filecontents}
+\begin{filecontents}{BMFDR_COH_n1600m500F.dat}
+x y std
+0 0.9799999999999998 0.01
+5 0.9853 0.01
+10 0.9775499999999999 0.01
+15 0.97545 0.01
+20 0.8505 0.16
+25 0.54115 0.16
+\end{filecontents}
+\begin{filecontents}{BMFDR_COH_n1600m500R.dat}
+x y std
+0 21.9 1.55
+5 22.4 1.27
+10 22.1 1.33
+15 21.7 1.22
+20 16.1 5.3
+25 7.85 2.35
+\end{filecontents}
+\begin{filecontents}{Primp_n1600m500F.dat}
+x y std
+0 0.9990500000000001 0.0
+5 0.9996 0.0
+10 0.9985999999999999 0.0
+15 0.9935999999999998 0.0
+20 0.9740000000000002 0.01
+25 0.89265 0.06
+\end{filecontents}
+\begin{filecontents}{Primp_n1600m500R.dat}
+x y std
+0 25.25 0.72
+5 25.5 0.69
+10 25.1 0.31
+15 24.35 0.75
+20 22.2 2.33
+25 18.15 3.9
+\end{filecontents}
+
+%\pgfplotsset{
+%cohStyle/.style={ctrust,mark options ={ctrust},mark repeat={4}, ultra thick, error bars/.cd,y dir = both, y explicit},
+%trustStyle/.style={cdens,dashed,mark options ={cdens},mark repeat={4}, ultra thick, error bars/.cd,y dir = both, y explicit},
+%primpStyle/.style={cPrimp,dashed,mark=triangle*,mark options ={cPrimp},mark repeat={3}, ultra thick, error bars/.cd,y dir = both, y explicit},
+%}
+
+\begin{tikzpicture}
+    \begin{groupplot}[group style={group size= 2 by 2, vertical sep=0.6cm},
+    	height=.33\columnwidth,
+    	width=.5\columnwidth,
+        legend columns =-1,
+        axis lines = left]
+        %
+        \nextgroupplot[ylabel={$F$},
+        	title={$(n,m)=(1000,800)$},
+        	xmin=0,xmax=25.5, ymin=0.4, ymax=1.1,
+        	legend to name=legendTPSynthExpNoise]
+        	\addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENS_n1000m800F.dat};
+            \addlegendentry{\textsc{TrustPal} dens};
+        	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COH_n1000m800F.dat};
+            \addlegendentry{\textsc{TrustPal} coh};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_n1000m800F.dat};
+            \addlegendentry{\textsc{Primp}};
+            %
+        \nextgroupplot[title={$(n,m)=(1600,500)$},
+        	xmin=0,xmax=25.5, ymin=0.4, ymax=1.1]
+                \addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENS_n1600m500F.dat};
+        	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COH_n1600m500F.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_n1600m500F.dat};
+            %
+        \nextgroupplot[xlabel={$p_{\pm}\ [\%]$},
+			ylabel={$r$},
+			xmax=25.5, xmin=0, ymin=0, ymax=34.2]
+                \addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENS_n1000m800R.dat};
+        	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COH_n1000m800R.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_n1000m800R.dat};
+                %
+       \nextgroupplot[xlabel={$p_\pm\ [\%]$},xmin=0,xmax=25.5, ymin=0, ymax=34.2]
+                \addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENS_n1600m500R.dat};
+        	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COH_n1600m500R.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_n1600m500R.dat};
+    \end{groupplot} 
+\end{tikzpicture}\\
+
+\pgfplotslegendfromname{legendTPSynthExpNoise}

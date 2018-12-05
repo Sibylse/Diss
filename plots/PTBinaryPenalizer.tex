@@ -1,0 +1,12 @@
+\begin{tikzpicture}%[scale =0.8]
+	\begin{axis}[width=200pt,height = 90pt, axis x line=left,ymax=1.1, domain=-0.5:1.5, axis y line=center, tick align=outside,legend pos=outer north east,legend entries={$\Lambda(x)$}]
+		%\addplot+[mark=none,ultra thick,BlueViolet,smooth] (\x,{10*(0.5*((\x)^2-\x)^2)});
+    	\addplot+[domain=0:1,mark=none,smooth,col1,ultra thick,samples=100] (\x,{abs(abs(2*\x-1)-1)});
+        \draw[dashed,col1,ultra thick] ({axis cs:1,0}|-{rel axis cs:0,0}) -- ({axis cs:1,0}|-{rel axis cs:0,1});
+        \draw[dashed,col1,ultra thick] ({axis cs:0,0}|-{rel axis cs:0,0}) -- ({axis cs:0,0}|-{rel axis cs:0,1});
+        \draw [draw=col1, fill=col1, ultra thick] 
+            (axis cs: 0, 0) circle (2.0pt);
+    	\draw [draw=col1, fill=col1, ultra thick] 
+            (axis cs: 1, 0) circle (2.0pt);	
+	\end{axis}
+\end{tikzpicture}

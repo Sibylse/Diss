@@ -1,0 +1,75 @@
+{%\tiny
+$
+\begin{tikzpicture}[decoration=brace,baseline=-0.5ex]
+   \matrix [matrix of math nodes,left delimiter=(,right delimiter=)] (n) {
+1&1&1&\textcolor{red}{1}&1&1&0&0&0\\
+0&0&1&0&1&1&0&0&0\\
+1&1&0&\textcolor{red}{1}&0&1&0&0&0\\
+1&1&1&\textcolor{red}{1}&1&1&0&0&0\\
+0&0&0&0&0&0&1&1&0\\
+1&1&0&0&0&1&1&1&\textcolor{red}{1}\\
+1&1&0&0&0&1&0&0&\textcolor{red}{1}\\
+0&0&0&0&0&0&1&1&0\\
+};
+%-- brackets ----
+\draw[decorate,transform canvas={xshift=-1.5em}] (n-4-1.south west) -- node[left=2pt] {$A$} (n-1-1.north west);
+\draw[decorate,transform canvas={xshift=-1.5em}] (n-8-1.south west) -- node[left=2pt] {$B$} (n-5-1.north west);
+%--- blue ---
+\draw[color=col1,fill=col1,opacity=0.3] (n-1-5.north west) -- (n-1-6.north east) -- (n-2-6.south east) -- (n-2-5.south west) -- (n-1-5.north west);
+\draw[color=col1,fill=col1,opacity=0.3] (n-4-5.north west) -- (n-4-6.north east) -- (n-4-6.south east) -- (n-4-5.south west) -- (n-4-5.north west);
+\draw[color=col1,fill=col1,opacity=0.3] (n-1-3.north west) -- (n-1-3.north east) -- (n-2-3.south east) -- (n-2-3.south west) -- (n-1-3.north west);
+\draw[color=col1,fill=col1,opacity=0.3] (n-4-3.north west) -- (n-4-3.north east) -- (n-4-3.south east) -- (n-4-3.south west) -- (n-4-3.north west);
+%--- green ---
+\draw[color=col2,fill=col2,opacity=0.3] (n-5-7.north west) -- (n-5-8.north east) -- (n-6-8.south east) -- (n-6-7.south west) -- (n-5-7.north west);
+\draw[color=col2,fill=col2,opacity=0.3] (n-8-7.north west) -- (n-8-8.north east) -- (n-8-8.south east) -- (n-8-7.south west) -- (n-8-7.north west);
+\draw[color=col1,fill=col1,opacity=0.3] (n-1-3.north west) -- (n-1-3.north east) -- (n-2-3.south east) -- (n-2-3.south west) -- (n-1-3.north west);
+\draw[color=col1,fill=col1,opacity=0.3] (n-4-3.north west) -- (n-4-3.north east) -- (n-4-3.south east) -- (n-4-3.south west) -- (n-4-3.north west);
+%-- pink ---
+\draw[color=col3,fill=col3,opacity=0.3] (n-1-1.north west) -- (n-1-2.north east) -- (n-1-2.south east) -- (n-1-1.south west) --(n-1-1.north west);
+\draw[color=col3,fill=col3,opacity=0.3] (n-1-6.north west) -- (n-1-6.north east) -- (n-1-6.south east) -- (n-1-6.south west) --(n-1-6.north west);
+\draw[color=col3,fill=col3,opacity=0.3] (n-3-1.north west) -- (n-3-2.north east) -- (n-4-2.south east) -- (n-4-1.south west) --(n-3-1.north west);
+\draw[color=col3,fill=col3,opacity=0.3] (n-3-6.north west) -- (n-3-6.north east) -- (n-4-6.south east) -- (n-4-6.south west) --(n-3-6.north west);
+\draw[color=col3,fill=col3,opacity=0.3] (n-6-1.north west) -- (n-6-2.north east) -- (n-7-2.south east) -- (n-7-1.south west) --(n-6-1.north west);
+\draw[color=col3,fill=col3,opacity=0.3] (n-6-6.north west) -- (n-6-6.north east) -- (n-7-6.south east) -- (n-7-6.south west) --(n-6-6.north west);
+\end{tikzpicture}
+\approx
+\begin{tikzpicture}[baseline=-0.5ex]
+    \matrix [matrix of math nodes,left delimiter=(,right delimiter=)] (n) {
+1&1&0 \\
+0&1&0 \\
+1&0&0 \\
+1&1&0 \\
+0&0&1 \\
+1&0&1 \\
+1&0&0\\
+0&0&1 \\
+};
+%---- blue ---
+\draw[color=col1,fill=col1,opacity=0.3] (n-1-2.north west) -- (n-1-2.north east) -- (n-2-2.south east) -- (n-2-2.south west) -- (n-1-2.north west);
+\draw[color=col1,fill=col1,opacity=0.3] (n-4-2.north west) -- (n-4-2.north east) -- (n-4-2.south east) -- (n-4-2.south west) -- (n-4-2.north west);
+%---- green ---
+\draw[color=col2,fill=col2,opacity=0.3] (n-5-3.north west) -- (n-5-3.north east) -- (n-6-3.south east) -- (n-6-3.south west) -- (n-5-3.north west);
+\draw[color=col2,fill=col2,opacity=0.3] (n-8-3.north west) -- (n-8-3.north east) -- (n-8-3.south east) -- (n-8-3.south west) -- (n-8-3.north west);
+%--- pink ---
+\draw[color=col3,fill=col3,opacity=0.3] (n-1-1.north west) -- (n-1-1.north east) -- (n-1-1.south east) -- (n-1-1.south west) --(n-1-1.north west);
+\draw[color=col3,fill=col3,opacity=0.3] (n-3-1.north west) -- (n-3-1.north east) -- (n-4-1.south east) -- (n-4-1.south west) --(n-3-1.north west);
+\draw[color=col3,fill=col3,opacity=0.3] (n-6-1.north west) -- (n-6-1.north east) -- (n-7-1.south east) -- (n-7-1.south west) --(n-6-1.north west);
+\end{tikzpicture}
+\cdot
+\begin{tikzpicture}[baseline=-0.5ex]
+    \matrix [matrix of math nodes,left delimiter=(,right delimiter=)] (n) {
+1&1&0&0&0&1&0&0&0 \\
+0&0&1&0&1&1&0&0&0 \\
+0&0&0&0&0&0&1&1&0 \\
+};
+%--- blue ---
+\draw[color=col1,fill=col1,opacity=0.3] (n-2-3.north west) -- (n-2-3.north east) -- (n-2-3.south east) -- (n-2-3.south west) -- (n-2-3.north west);
+\draw[color=col1,fill=col1,opacity=0.3] (n-2-5.north west) -- (n-2-6.north east) -- (n-2-6.south east) -- (n-2-5.south west) -- (n-2-5.north west);
+%--- green ---
+\draw[color=col2,fill=col2,opacity=0.3] (n-3-7.north west) -- (n-3-8.north east) -- (n-3-8.south east) -- (n-3-7.south west) -- (n-3-7.north west);
+%---- pink ---
+\draw[color=col3,fill=col3,opacity=0.3] (n-1-1.north west) -- (n-1-2.north east) -- (n-1-2.south east) -- (n-1-1.south west) --(n-1-1.north west);
+\draw[color=col3,fill=col3,opacity=0.3] (n-1-6.north west) -- (n-1-6.north east) -- (n-1-6.south east) -- (n-1-6.south west) --(n-1-6.north west);
+\end{tikzpicture}
+$
+}

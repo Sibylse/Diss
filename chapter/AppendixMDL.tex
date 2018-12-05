@@ -1,0 +1,116 @@
+% appendix.tex
+\chapter{Proofs of Chapter 6}\label{chap:AppendixMDL}
+We state here the more lengthy proofs of results presented in Chapter~6.
+\lctbmf*
+\begin{proof}
+Let $D$ be a data matrix, $CT=\{(\mathit{X_\sigma,C_\sigma})|1\leq\sigma\leq\tau\}$ a $\tau$-element code table and $cover$ the cover function. Let $r$ be the number of non-singleton patterns in $CT$ and assume w.l.o.g. that $CT$ is indexed such that these non-singleton patterns have an index $1\leq\sigma\leq r$. We construct the pattern matrix $X\in \{0,1\}^{n\times r}$ and usage matrix $Y\in \{0,1\}^{m\times r}$ such that for $1\leq\sigma\leq r$ it holds that
+\begin{align*}
+X_{i\sigma}=1&\Leftrightarrow i\in \mathit{X_\sigma}\\
+Y_{j\sigma}=1&\Leftrightarrow \mathit{X_\sigma}\in cover(CT,D_{j\cdot}).
+\end{align*}
+The Boolean product $\theta(YX^T)$ indicates the entries of $D$ which are covered by non-singleton patterns of $CT$. That implies that ones in the noise matrix $N=D-\theta(YX^T)$ are covered by singletons, it holds that 
+\[N_{ji}\neq 0\Leftrightarrow {i}\in cover(CT,D_{j\cdot}).\]
+The usage of a non-singleton pattern $X_\sigma$ is then computed as
+\begin{align*}
+usage(X_\sigma)&=|\{X_\sigma\in cover(CT,D_{j\cdot})|j\in\mathcal{T}\}|\\
+&=|\{Y_{j\sigma}=1|j\in\mathcal{T}\}|\\
+&=|Y_{\cdot\sigma}|,
+\end{align*}
+and correspondingly it follows that $usage(\{i\})=|N_{\cdot i}|$. The calculation of the probabilities $p_\sigma$ for $1\leq \sigma \leq r+n$ is directly obtained by inserting this usage calculation in the definition of code-usage-probabilities of Eq.~(\ref{eq:krimpCodeProb}). Likewise follow the functions $f_{\mathsf{CT}}^M$ and $f_{\mathsf{CT}}^D$ from the definition of the description sizes $L_{\mathsf{CT}}^M$ and $L_{\mathsf{CT}}^D$.
+\qed
+\end{proof}
+%=========================
+%Bounding the Description Length of Code Tables
+%=========================
+\begin{lemma}\label{thm:monoticity}
+Let $(a_s)$ be a finite sequence of $r$ non-negative scalars such that $S_r=\sum_{s=1}^ra_s>0$. The function $g:[0,\infty)\rightarrow[0,\infty)$ defined by
+\[g(x;a_1,\ldots,a_r,S_r)=-\sum_{s=1}^r(a_s+x)\log\left(\frac{a_s+x}{S_r+rx}\right)\]
+is monotonically increasing in $x$.
+\end{lemma}
+\begin{proof}
+W.l.o.g., let $a_1,\ldots,a_{r_0}>0$ and $a_{r_0+1},\ldots,a_r=0$ for some $r_0\in \N$. We rewrite the function $g$ as
+\[g(x;a_1,\ldots,a_r,S_r)=g(x;a_1,\ldots,a_{r_0},S_r)+g(x;a_{r_0+1},\ldots,a_r,S_r)\]
+and show that each of  the subfunctions is monotonically increasing.
+The first subfunction is differentiable and its derivative is non-negative
+\begin{align*}
+\frac{d}{dx}g(x;a_1,\ldots,a_{r_0},S_r) &= -\sum_{s=1}^r\left(\log\left(\frac{a_s+x}{S_r+rx}\right)+(a_s+x)\frac{S_r+rx}{a_s+x}\frac{S_r+rx-r(a_s+x)}{(S_r+rx)^2}\right)\\
+&= -\sum_{s=1}^r\log\left(\frac{a_s+x}{S_r+rx}\right)+\sum_{s=1}^r\frac{S_r-ra_s}{S_r+rx}\\
+&= -\sum_{s=1}^r\log\left(\frac{a_s+x}{S_r+rx}\right)\geq 0.
+\end{align*}
+The second subfunction is monotonically increasing, since for $a_s=0$ and all $x\geq 0$ it holds that
+\begin{align*}
+	a_s\log\left(\frac{a_s}{S_r}\right)=0\leq -(a_s+x)\log\left(\frac{a_s+x}{S_r+rx}\right).
+\end{align*}
+\qed
+\end{proof}
+\BoundLCT*
+\begin{proof}
+We recall that the description size of the data is computed by
+\[f_{\mathsf{CT}}^D(X,Y,D)=\underbrace{-\sum_{s=1}^r |Y_{\cdot s}| \cdot \log\left(\frac{|Y_{\cdot s}|}{|Y|+|N|}\right)}_{=f_1(X,Y,D)}
+       \underbrace{-\sum_{i=1}^n |N_{\cdot i}| \cdot \log\left(\frac{|N_{\cdot i}|}{|N|+|Y|}\right)}_{=f_2(X,Y,D)}.
+\]
+Applying the logarithmic properties, we rewrite the first sum 
+\begin{align*}
+ f_1(X,Y,D)&= -\sum_{s=1}^r|Y_{\cdot s}|\log\left(\frac{|Y_{\cdot s}|}{|Y|}\frac{|Y|}{|Y|+|N|}\right)\\
+ &= -\sum_{s=1}^r|Y_{\cdot s}|\log\left(\frac{|Y_{\cdot s}|}{|Y|}\right)+\sum_{s=1}^r|Y_{\cdot s}|\log\left(\frac{|Y|+|N|}{|Y|}\right)\\
+ &= g(0;|Y_{\cdot 1}|,\ldots,|Y_{\cdot r}|,|Y|) +|Y|\log\left(1+\frac{|N|}{|Y|}\right). %\label{ineq:proofCS+++1} 
+\end{align*}
+It follows from the monotonicity of $g$ (Lemma~\ref{thm:monoticity}) and the logarithm inequality ($\log(1+x)\leq x, \forall x\geq 0$) that $f_1$ is upper bounded by
+\[f_1(X,Y,D)\leq-\sum_{s=1}^r(|Y_{\cdot s}|+1)\log\left(\frac{|Y_{\cdot s}|+1}{|Y|+r}\right)+|N|.\]
+The second term $f_2$ can be transformed into
+\begin{align*}
+    f_2(X,Y,D)&=-\sum_{i=1}^n |N_{\cdot i}| \cdot \log\left(|N_{\cdot i}|\right)+\sum_{i=1}^n |N_{\cdot i}| \cdot \log\left(|N|+|Y|\right)\\
+    &= \sum_{i=1}^n|N_i|\log\frac{1}{|N_i|} +|N|\log(|N|+|Y|).
+\end{align*}
+Subsequently, we show $f_2(X,Y,D)\leq |N|\log(n) +|Y|$. This inequality trivially holds if $|N|=0$. Otherwise, we apply Jensen's inequality to the concave logarithm function
+	\[|N|\sum_{i=1}^n\frac{|N_i|}{|N|}\log\frac{1}{|N_i|}\leq |N|\log\left(\frac{n}{|N|}\right).\]
+and obtain 
+\begin{align*}
+    f_2(X,Y,D)&\leq|N|\log\left(\frac{n}{|N|}\right) +|N|\log(|N|+|Y|)\\ &= |N|\log(n) +|N|\log\left(1+\frac{|Y|}{|N|}\right) \\
+    &\leq |N|\log(n) +|Y|,
+\end{align*}
+where the last equality again follows from the logarithm inequality. We derive the final inequality by
+\begin{align*}
+f_{\mathsf{CT}}^D(X,Y,D) &= f_1(X,Y,D)+f_2(X,Y,D)\\
+&\leq (1+\log(n))|N|-\sum_{s=1}^r(|Y_{\cdot s}|+1)\log\left(\frac{|Y_{\cdot s}|+1}{|Y|+r}\right)+|Y|
+\end{align*}
+\qed
+\end{proof}
+%==================================
+% Calculating the Lipschitz Moduli
+%==================================
+We study the partial gradients of the regularization term used in \textsc{Primp} (Sec.~\ref{sec:primp})
+\begin{align*}
+\nabla_X G(X,Y)&=c(0.5)_s^T\\
+\nabla_Y G(X,Y)&=-\frac{1}{2}\left(\log\left(\frac{|Y_{\cdot s}|+1}{|Y|+r}\right)\right)_{js}+(0.5)_{js}.
+\end{align*}
+The partial gradient with respect to $X$ is constant and has a Lipschitz constant of zero. The partial gradient with respect to $Y$ can be written as the sum
+\begin{align*}
+\nabla_YG(X,Y)=-\frac{1}{2}(\underbrace{(\log(|Y_{\cdot s}|+1))_{js}}_{=A(Y)}-\underbrace{(\log(|Y|+r))_{js}}_{=B(Y)})+(0.5)_{js}.
+\end{align*}
+From the triangle inequality follows that the gradient with respect to $Y$ is Lipschitz continuous with modulus $M_{\nabla_YG}(X)=\frac{1}{2}(M_A+M_B)$, if the functions $A$ and $B$ are Lipschitz continuous with moduli $M_A$ and $M_B$:
+\begin{align*}
+\|\nabla_YG(X,Y)-\nabla_VG(X,V)\|&=\frac{1}{2}\|A(Y)-A(V)+B(Y)-B(V)\|\\
+&\leq \frac{1}{2}\|A(Y)-A(V)\|+\|B(Y)-B(V)\|\\
+&\leq \frac{M_A+M_B}{2}\|Y-V\|.
+\end{align*}
+The one-dimensional function $x\mapsto\log(x+\delta)$, $x\in \R_+$ is for any $\delta>0$ Lipschitz continuous with modulus $\delta^{-1}$. This can be easily derived by the mean value theorem and the bound 
+\[\frac{d}{dx}\log(x+\delta)=\frac{1}{x+\delta}\leq \frac{1}{\delta}\]
+for all $x\geq 0$. We show with the following equations, that $M_A=M_B=m$. For improved readability, we use the squared Lipschitz inequality, i.e.,
+\begin{align}
+\|A(Y)-A(V)\|^2 &=\sum_{s,j}(\log(|Y_{\cdot s}|+1)-\log(|V_{\cdot s}|+1))^2\nonumber\\
+&=m\sum_{s=1}^r(\log(|Y_{\cdot s}|+1)-\log(|V_{\cdot s}|+1))^2\nonumber \\
+&\leq m\sum_{s=1}^r(|Y_{\cdot s}|-|V_{\cdot s}|)^2\label{eq:lipLog1}\\
+&= m\sum_{s=1}^r\left(\sum_{j=1}^m(Y_{j s}-V_{j s})\right)^2\nonumber\\
+&\leq m^2\sum_{s,j}(Y_{j s}-V_{j s})^2= m^2\|Y-V\|^2,\label{eq:cauchySchw1}
+\end{align}
+where Eq.~(\ref{eq:lipLog1}) follows from the Lipschitz continuity of the logarithmic function as discussed above for $\delta=1$ and Eq.~(\ref{eq:cauchySchw1}) follows from the Cauchy-Schwarz inequality. Similar steps yield the Lipschitz modulus of $B$,
+\begin{align}
+\|B(Y)-B(V)\|^2 &=\sum_{s,j}(\log(|Y|+r)-\log(|V|+r))^2\nonumber\\
+&=mr(\log(|Y|+r)-\log(|V|+r))^2\nonumber\\
+&\leq \frac{mr}{r^2}(|Y|-|V|)^2\nonumber\\
+&= \frac{m}{r}\left(\sum_{s,j}(Y_{j s}-V_{j s})\right)^2\nonumber\\
+&\leq m^2\sum_{s,j}(Y_{j s}-V_{j s})^2.\nonumber
+\end{align}
+We conclude that the Lipschitz moduli of the gradients are given as
+\[M_{\nabla_X G}(Y)=0 \quad M_{\nabla_YG}(X)=m.\]

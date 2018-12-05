@@ -1,0 +1,248 @@
+\usepackage{etex}
+\usepackage{xcolor}
+\usepackage[a4paper,left=3.5cm,right=2.5cm,bottom=3.5cm,top=3cm]{geometry}
+\usepackage[english]{babel}
+\usepackage[round]{natbib}
+\usepackage{graphicx,tikz}
+%\pgfrealjobname{main}
+%\usetikzlibrary{external}
+%\tikzexternalize[prefix=tikz/]
+%\let\tikzexternalenable\relax
+%\let\tikzexternaldisable\relax
+\usetikzlibrary{matrix,decorations.pathreplacing, calc, positioning}
+\usepackage{amsmath,amssymb,nicefrac,bbm}
+\usepackage{relsize} % mathlarger
+\usepackage{hyperref,url}
+\usepackage{silence}
+\WarningFilter{latex}{Overwriting file}
+
+\usepackage[colorinlistoftodos]{todonotes}
+\reversemarginpar
+\setlength{\marginparwidth}{3.1cm}
+% Theorem-Umgebungen
+\usepackage[amsmath,thmmarks]{ntheorem}
+\usepackage{thmtools, thm-restate}
+\usepackage{algorithm,algpseudocode}
+
+\usepackage{enumerate}
+\usepackage{booktabs,multirow,adjustbox}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{subfigure}
+\usepackage{pgfplots,filecontents,pgfplotstable}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.14}
+\pgfplotsset{
+cohStyle/.style={ctrust,mark options ={ctrust},mark repeat={4}, ultra thick, error bars/.cd,y dir = both, y explicit},
+densStyle/.style={cdens,dashed,mark options ={cdens},mark repeat={4}, ultra thick, error bars/.cd,y dir = both, y explicit},
+primpStyle/.style={cPrimp,dashed,mark=triangle*,mark options ={cPrimp},mark repeat={3}, ultra thick, error bars/.cd,y dir = both, y explicit},
+panStyle/.style={cPan,dashed,mark options ={cPan},mark repeat={3}, ultra thick, error bars/.cd,y dir = both, y explicit},
+specStyle/.style={cSpec,mark options ={cSpec},mark repeat={4}, thick, error bars/.cd,y dir = both, y explicit},
+specLStyle/.style={cSpecL,mark options ={cSpecL},mark repeat={4}, thick, error bars/.cd,y dir = both, y explicit},
+RSCStyle/.style={cRSC,dashed,mark=triangle*,mark options ={cRSC},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit},
+SCStyle/.style={cSC,dashed,mark options ={cSC},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit},
+DBSCANStyle/.style={cDBSCAN,dashed,mark options ={cDBSCAN},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit},
+clusterScatterStyle/.style={scatter/classes={1={cSpecL}, 2={cRSC}, 0={cDBSCAN}, -1={white}},
+    scatter, only marks, mark size =0.3, scatter src=explicit symbolic},
+nonnegScatterStyle/.style={scatter, only marks, fill=cSpec, scatter src=explicit,
+     	visualization depends on ={\thisrow{z} \as \perpointmarksize},
+     scatter/@pre marker code/.append style={/tikz/mark size=1.5*\perpointmarksize}},
+pandaStyle/.style={cPanda,dashed,mark options ={cPanda},mark repeat={3}, ultra thick, error bars/.cd,y dir = both, y explicit},
+punkStyle/.style={cPunk,mark options ={cPunk},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit},
+dbssl1Style/.style={cDBSSL1,dashed,mark options ={cDBSSL1},mark=triangle,mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit},
+dbssl2Style/.style={cDBSSL2,dashed,mark options ={cDBSSL2},mark=diamond,mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit},
+mdlDbsslStyle/.style={cMDLDBSSL,dashed,mark=star,mark options ={cMDLDBSSL},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit},
+% color change for embedding visualization (fuzzy clusters) 
+colormap={test}{[2pt]
+    rgb255=(166,206,227);
+    rgb255=(166,206,227);
+},
+}
+
+%List of Symbols
+\usepackage{nomencl}
+\makenomenclature
+
+
+%\usepackage{color}
+\definecolor{col1}{RGB}{166,206,227}
+\definecolor{col2}{RGB}{31,120,180}
+\definecolor{col3}{RGB}{178,223,138}
+\definecolor{col4}{RGB}{51,160,44}
+\definecolor{col5}{RGB}{251,154,153}
+\definecolor{col6}{RGB}{227,26,28}
+
+\definecolor{cdens}{named}{col1}
+\definecolor{ctrust}{named}{col2}
+\definecolor{cPrimp}{named}{col3}
+\definecolor{cPan}{named}{col4}
+\definecolor{cPanda}{named}{col5}
+\definecolor{cNassau}{named}{col6}
+\definecolor{cMdl4bmf}{named}{col1}
+
+
+%
+\definecolor{cSpec}{named}{col1}
+\definecolor{cSpecL}{named}{col2}
+\definecolor{cRSC}{named}{col3}
+\definecolor{cSC}{named}{col4}
+\definecolor{cDBSCAN}{named}{col5}
+
+%
+\definecolor{cPunk}{named}{col1}
+\definecolor{cDBSSL1}{named}{col2}
+\definecolor{cDBSSL2}{named}{col4}
+\definecolor{cMDLDBSSL}{named}{col5}
+% Theorem-Optionen %
+\theoremseparator{.}
+\theoremstyle{plain}
+%\theoremheaderfont{\moon}
+\newcommand{\BlackBox}{\rule{1.5ex}{1.5ex}}  % end of proof
+\newenvironment{proof}{\par\noindent{\bf Proof\ }}{\hfill\qed\\[2mm]}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{lemma}[theorem]{Lemma}
+\theorembodyfont{\upshape}
+\newtheorem*{remark}[theorem]{Remark}
+\newtheorem*{example}[theorem]{Example}
+\newtheorem*{problem}{Problem}
+%\theoremstyle{nonumberplain}
+%\renewtheorem{definition*}{Definition}
+%\renewtheorem{remark*}{Remark}
+%\renewtheorem{example*}{Example}
+%\renewtheorem{problem*}{Problem}
+
+%Operators/Commands
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\freq}{freq}
+\DeclareMathOperator*{\cov}{cov}
+\DeclareMathOperator*{\anc}{anc}
+\DeclareMathOperator*{\supp}{supp}
+\DeclareMathOperator*{\minsup}{minsup}
+\DeclareMathOperator*{\tr}{tr}
+\DeclareMathOperator*{\bigO}{\mathcal{O}}
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\prox}{prox}
+\DeclareMathOperator*{\pre}{pre}
+\DeclareMathOperator*{\rec}{rec}
+\newcommand{\Ya}{Y^{(a)}}
+\newcommand{\Va}{V^{(a)}}
+\newcommand{\Da}{D^{(a)}}
+\newcommand{\KL}{Kurdyka-{\L}ojasiewicz }
+\newcommand{\LXU}{\mathcal{L}}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\estU}{\widetilde{U}_{\widehat{CT}}}
+\newcommand{\estu}{\tilde{u}_{\widehat{CT}}}
+\newcommand{\estCT}{\widehat{CT}}
+\newcommand{\node}{\mathfrak{n}}
+\newcommand{\leaf}{\mathfrak{t}}
+\newcommand{\krimp}{\textsc{Krimp} }
+\newcommand{\shrimp}{\textsc{SHrimp} }
+\newcommand{\slim}{\textsc{Slim} }
+
+\makeatletter
+
+\pgfplotstableset{
+    zero color/.initial=white,
+    zero color/.get=\zerocol,
+    zero color/.store in=\zerocol,
+    one color/.initial=red,
+    one color/.get=\onecol,
+    one color/.store in=\onecol,
+    color cells/.style={
+        every head row/.style={output empty row},
+        string type,
+        postproc cell content/.code={%
+           \pgfkeysalso{@cell content=\rule{0cm}{2.4ex}\cellcolor{\zerocol}
+           \pgfmathtruncatemacro\number{int(##1)}
+           \ifnum\number>100\cellcolor{\onecol!50!black}
+           \else \ifnum\number>0\cellcolor{\onecol!##1}\fi\fi}%
+        },
+        columns/x/.style={
+            column name={},
+            postproc cell content/.code={}
+        }
+    }
+}
+\makeatother
+
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
+
+\makeatletter
+%\renewcommand{\@chapapp}{}% Not necessary...
+\newenvironment{chapquote}[2][2em]
+  {\setlength{\@tempdima}{#1}%
+   \def\chapquote@author{#2}%
+   \parshape 1 \@tempdima \dimexpr\textwidth-2\@tempdima\relax%
+   \itshape}
+  {\par\normalfont\hfill--\ \chapquote@author\hspace*{\@tempdima}\par\bigskip}
+\makeatother
+
+%Thicker bar
+\makeatletter
+\newcommand{\thickbar}{\mathpalette\@thickbar}
+\newcommand{\@thickbar}[2]{{#1\mkern1.5mu\vbox{
+  \sbox\z@{$#1\mkern-1.5mu#2\mkern-1.5mu$}%
+  \sbox\tw@{$#1\overline{#2}$}%
+  \dimen@=\dimexpr\ht\tw@-\ht\z@-.8\p@\relax
+  \hrule\@height.8\p@ % adjust for the desired rule thickness
+  \vskip\dimen@
+  \box\z@}\mkern1.5mu}
+}
+\makeatother
+
+%----------box---------------
+\usepackage[many]{tcolorbox}
+\tcbset{
+  myhlight/.style={
+    colback=cyan!10,
+    arc=0pt,
+    outer arc=0pt,
+    boxrule=0pt,
+    top=2pt,
+    bottom=2pt,
+    left=2pt,
+    right=2pt,
+  },
+  highlight math style={myhlight},
+  mybx/.style={
+    colback=white,
+    arc=0pt,
+    outer arc=0pt,
+    boxrule=1pt,
+    top=2pt,
+    bottom=2pt,
+    left=2pt,
+    right=2pt,
+  }
+}
+
+\newtcolorbox{mybox}{
+	boxsep=1pt,
+  	breakable,
+  	mybx
+}
+
+
+% Zeilenabstand einstellen %
+\renewcommand{\baselinestretch}{1}
+% Floating-Umgebungen anpassen %
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+
+% Leere Seite ohne Seitennummer, naechste Seite rechts
+\newcommand{\blankpage}{
+ \clearpage{\pagestyle{empty}\cleardoublepage}
+}
+
+% Keine einzelnen Zeilen beim Anfang eines Abschnitts (Schusterjungen)
+\clubpenalty = 10000
+% Keine einzelnen Zeilen am Ende eines Abschnitts (Hurenkinder)
+\widowpenalty = 10000 \displaywidowpenalty = 10000
+% EOF

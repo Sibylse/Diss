@@ -1,0 +1,45 @@
+\chapter{Proofs of Chapter 2}\label{chap:AppendixZS}
+We state here the more lengthy proofs of results presented in Chapter 2.
+\kmeansobj*
+\begin{proof}
+(\eqref{eq:KM}=\eqref{eq:kmeansYX}) The constraint $Y\in\mathbbm{1}^{m\times r}$ implies that the columns of $Y$ are orthogonal. Thus, the matrix $Y^\top Y=\diag(|Y_{\cdot 1}|,\ldots,|Y_{\cdot r}|)$ is a diagonal matrix. Since for every $j\in\{1,\ldots, m\}$ there is only one $s$ such that $0\neq Y_{js}=1$, we can write 
+\begin{align*}
+\sum_{s=1}^rY_{js}\left\|D_{j\cdot}-\frac{1}{|Y_{\cdot s}|}Y_{\cdot s}^\top D\right\|^2 
+=& \left\|D_{j\cdot}-\sum_{s=1}^r\frac{Y_{js}}{|Y_{\cdot s}|}Y_{\cdot s}^\top D\right\|^2
+%=&\sum_{j=1}^m\|D_{j\cdot}-Y_{j\cdot}\diag(Y\mathbf{1}_r)^{-1}Y^\top D\|^2\\
+%=&\|D-Y\diag(Y\mathbf{1}_r)^{-1}Y^\top D\|^2\\
+%=&\|D-Y(Y^\top Y)^{-1}Y^\top D\|^2
+\end{align*}
+(\eqref{eq:KM}=\eqref{eq:kmeansYX})
+Setting the cluster center matrix $X=D^\top Y(Y^\top Y)^{-1}$, we obtain a candidate solution to the matrix factorization task with binary constraints.
+\[\sum_j\sum_{s=1}^rY_{js}\|D_{j\cdot}-\frac{1}{|Y_{\cdot s}|}Y_{\cdot s}^\top D\|^2=\|D-YX^\top\|^2\]
+A simple proof by contradiction shows that the solution of $r$-means is also the solution to the problem above.  Given $Y\in\mathcal{Y}$, we get the matrix $X$ as defined for $k$-means.
+\begin{align}
+\min_X \|D-YX^\top\|^2 &= \min_X -2\tr(X^\top D^\top Y) + \tr(XY^\top Y X^\top)\nonumber\\
+&= \min_X\sum_s -2X_{\cdot s}^\top D^\top Y_{\cdot s} +\|X_{\cdot s}\|^2|Y_{\cdot s}|\nonumber\\
+	&= \min_X\sum_s |Y_{\cdot s}|\left\|D^\top \frac{Y_{\cdot s}}{|Y_{\cdot s}|}-X_{\cdot s}\right\|^2. \label{eq:proofKMeansX}
+\end{align}
+(\eqref{eq:kmeansYX}=\eqref{eq:kmeansTr}) \eqref{eq:kmeansYX} is equal to 
+\begin{align*}
+\min_{Y\in\mathcal{Y}} \|D\|^2 -2\tr(D^\top YI_Y^{-1}Y^\top D) +\|Y I_Y^{-1}Y^\top D\|^2,
+\end{align*}
+which is equal to \ref{eq:kmeansTr} because
+\begin{align*}
+\|Y I_Y^{-1}Y^\top D\|^2&= \tr(D^\top YI_Y^{-1}Y^\top Y I_Y^{-1}Y^\top D)\\
+&=\tr(D^\top YI_Y^{-1}Y^\top D).
+\end{align*}
+(\ref{item:kmeansTr}=\ref{item:kmeansDD}) follows from completing the square and the fact that
+\begin{align*}
+\|YI_Y^{-1}Y^\top\|^2 = \tr(YI_Y^{-1}Y^\top YI_Y^{-1}Y^\top) = \tr(I_r)=r 
+\end{align*}
+\end{proof}
+
+\BMFpartition*
+\begin{proof}
+Let $(X,Y)$ be the solution to the problem of Eq.~\eqref{eq:BinMF_YPartition}. From the convexity of the objective function when fixing $Y$, we derive from Eq.~\eqref{eq:proofKMeansX} that $X$ is given as the binary matrix minimizing
+\[\argmin_{X\in \{0,1\}^{n\times r}}\sum_{s,i}|Y_{\cdot s}|\left(D_{\cdot i}^\top \frac{Y_{\cdot s}}{|Y_{\cdot s}|}-X_{is}\right)^2 = \left\{X\mid X_{is} 
+\begin{cases}
+= \theta(D_{i\cdot}^\top Y_{\cdot s}|Y_{\cdot s}|^{-1}) &\text{ if } D_{i\cdot}^\top Y_{\cdot s}|Y_{\cdot s}|^{-1}\neq \nicefrac{1}{2},\\ 
+\in\{0,1\} &\text{ otherwise} 
+\end{cases}\right\}.\]
+\end{proof}

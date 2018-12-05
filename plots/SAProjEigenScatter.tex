@@ -1,0 +1,31 @@
+\documentclass[preview=true]{standalone}
+\input{header}
+%
+\begin{document}
+%
+\input{filecontents/SAProjEigenvectors} 
+\begin{tikzpicture}
+\pgfplotsset{ticks=none}
+\begin{groupplot}[group style={group size= 4 by 2, horizontal sep=0.1cm, vertical sep=0.6cm},
+    	height=.3\textwidth,
+    	width=.3\textwidth,
+        title style={yshift=-1.5ex}]
+ 	\nextgroupplot[title={$\lambda_1=52.8$},]
+	\addplot[nonnegScatterStyle] table[meta=z]{circlesV1.dat};
+    \nextgroupplot[title={$\lambda_{6}=40.8$}]
+	\addplot[nonnegScatterStyle] table[meta=z]{circlesV6.dat};
+    \nextgroupplot[title={$\lambda_{11}=31.7$}]
+	\addplot[nonnegScatterStyle] table[meta=z]{circlesV11.dat};
+    \nextgroupplot[title={$\lambda_{16}=23.7$}] 
+    \addplot[nonnegScatterStyle] table[meta=z]{circlesV16.dat};
+    \nextgroupplot[title={$\lambda_{21}=22.1$}] 
+    \addplot[nonnegScatterStyle] table[meta=z]{circlesV21.dat};
+    \nextgroupplot[title={$\lambda_{26}=21.12$}] 
+    \addplot[nonnegScatterStyle] table[meta=z]{circlesV26.dat};
+    \nextgroupplot[title={$\lambda_{31}=18.8$}] 
+    \addplot[nonnegScatterStyle] table[meta=z]{circlesV31.dat};
+    \nextgroupplot[title={$\lambda_{36}=17.52$}] 
+    \addplot[nonnegScatterStyle] table[meta=z]{circlesV36.dat};
+\end{groupplot}
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,57 @@
+% main.tex
+\documentclass[a4paper,11pt,twoside,dvipsnames,table]{book}
+\input{header}
+\input{fonspecifications}
+\begin{document}
+\selectlanguage{english}
+%\include{chapter/titelseite}
+\blankpage
+\include{chapter/abstract}
+\pagenumbering{roman}
+\tableofcontents
+\cleardoublepage
+\pagenumbering{arabic}
+
+\nomenclature{$\mathbbm{1}^{m\times n}$}{Set of all binary $m\times n$ partition matrices; every row vector is a unit vector}
+\nomenclature{$A,B,C,\ldots$}{Matrices}
+\nomenclature{$\mathbb{R}, \mathbb{R}_+$}{The set of all real values, respectively the set of all nonnegative values}
+\nomenclature{$\mathcal{A},\mathcal{B},\mathcal{C},\ldots$}{Sets}
+\nomenclature{$D$}{Data matrix}
+\nomenclature{$I$}{Identity matrix}
+\nomenclature{$\mathbf{1}$}{Constant one matrix: $\mathbf{1}_{ji}=1$}
+\nomenclature{$\theta$}{Heaviside step function}
+\nomenclature{$\|v\|$}{Entrywise 2-norm (Frobenius norm)}
+\nomenclature{$|\cdot|$}{Entrywise 1-norm}
+\nomenclature{$\mathcal{N}_\epsilon(j)$}{The set of all points lying in the $\epsilon$-ball around point $j$}
+\nomenclature{$\langle \cdot, \cdot \rangle$}{The Frobenius inner product}
+ 
+\printnomenclature
+% chapter
+\include{chapter/introduction}
+\include{chapter/ZeroShades}\label{chap:ZeroShades}
+\include{chapter/algorithms}\label{chap:Algorithms}
+\include{chapter/Spectacl}\label{chap:Spectacl}
+\include{chapter/paltiling}\label{chap:PALMB}
+\include{chapter/RankSelectionMDL}\label{chap:RankMDL}
+\include{chapter/RankSelectionFDR}\label{chap:RankFDR}
+\include{chapter/csalt}\label{chap:CSalt}
+\include{chapter/conclusion}\label{chap:Conclusions}
+
+% Anhang
+\appendix
+\include{chapter/AppendixSurvey}
+\include{chapter/AppendixMDL}
+% Abbildungsverzeichnis
+\listoffigures
+\addcontentsline{toc}{chapter}{List of Figures}
+\cleardoublepage
+% Algorithmenverzeichnis
+\listofalgorithms
+\addcontentsline{toc}{chapter}{List of Algorithms}
+\cleardoublepage
+% Literaturverzeichnis
+\addcontentsline{toc}{chapter}{\bibname}
+\bibliographystyle{abbrvnat}
+\bibliography{bibliography}
+\cleardoublepage
+\end{document}

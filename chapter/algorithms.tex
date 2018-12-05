@@ -1,0 +1,158 @@
+\chapter{Algorithms}
+So far we have only roughly discussed which optimization schemes are used for the considered optimization problems. The attentive reader might have noticed that some approaches recur over various optimization tasks. In this section, we discuss the most important optimization paradigms, each approach being presented using a popular application. This one example often illustrates how and why the optimization scheme is suitable for the task in hand. The transfer to related problems is then trivial in most cases. Note that a mixture of the discussed approaches is often applied.
+%---------------------------------
+% The Greedy Approach
+%---------------------------------
+\section{The Greedy Approach}\label{sec:ZS:GreedyApproach}
+We call the greedy approach a successive calculation of the clusters. The word \emph{greedy} refers to the optimization of the current cluster regardless of the possibility to improve the optimization by subsequent clusters. This approach is theoretically founded for the computation of truncated singular value decompositions. 
+We recall that the SVD of a matrix $D=V\Sigma U^\top$ also provides the optimal approximation of rank $r$:
+\begin{align*}
+     (V^{(r)}\Sigma^{(r)},U^{(r)})&\in\argmin_{X,Y}\|D-YX^\top\|^2 &\text{s.t. } X\in\mathbb{R}^{n\times r}, Y\in\mathbb{R}^{m\times r}.
+\end{align*}
+Due to the one-to-one relationship between the singular value decomposition of a matrix and its low-rank approximation, the calculation of the optimal rank $r$-factorization is reducible to calculating the optimal rank one-factorization if the optimal rank $r-1$-factorization is known. This is justified by the following relationship:  
+\begin{align*}
+\|D-V^{(r)}\Sigma^{(r)}{U^{(r)}}^\top\|^2
+     &= \min_{X_{\cdot r},Y_{\cdot r}} \|(D-V^{(r-1)}\Sigma^{(r-1)}{U^{(r-1)}}^\top)-Y_{\cdot r}X_{\cdot r}^\top\|^2
+\end{align*}
+From the equation above follows that a greedy approach computing the factor matrices outer product by outer product leads to the optimal solution. This property does not hold for general matrix factorization tasks. The greedy optimization scheme is yet flexibly applicable because optimal rank-one factorizations are often more efficiently computed than those of a higher rank. Hence, regardless of the lack  of quality guarantees, the greedy optimization scheme is applied to various optimization tasks.
+\begin{algorithm}[t]
+\caption{Computing partially orthogonal binary matrix factorizations via the greedy approach.} 
+\begin{algorithmic}[1]
+  \Function{Proximus}{$D,r$}
+    \For {$s\in\{1,\ldots,r\}$}
+    	\State $\displaystyle(X_s,Y_s)\gets \argmin_{x,y} \|D-yx^\top\|^2 $ \hfill s.t. $x\in\{0,1\}^n,y\in\{0,1\}^m$
+    	\label{alg:greedy:opt}
+    	\State $D\gets \diag\left(\thickbar{Y_{\cdot s}}\right)D$ \label{alg:greedy:reduce}
+    \EndFor
+    \State \Return Y
+  \EndFunction
+\end{algorithmic}
+\label{alg:greedy}
+\end{algorithm}
+
+We exemplify the application of the greedy approach by means of the algorithm~\textsc{Proximus} depicted in Algorithm~\ref{alg:greedy} for partially orthogonal binary matrix factorizations~\citep{koyuturk2003proximus}. Every bicluster $(X_{\cdot s},Y_{\cdot s})$ is determined as a solution to the rank-one~\ref{eq:BinMF} problem in step~\ref{alg:greedy:opt} and the data matrix is reduced in step~\ref{alg:greedy:reduce}; the rows which are assigned to the current cluster are set to zero. Here, the optimization of the rank-one factorization is achieved by alternating optimization based on the results in Theorem~\ref{thm:BMFpartition}. \ref{eq:BinMF} factorizations of rank one trivially have orthogonal columns. Hence the optimal binary vector $x$ minimizing the optimization problem in step~\ref{alg:greedy:opt} is given as $x\in\Theta(D^\top y/|y|)$ when $y$ is fixed and similarly is the optimal $y$ determined while fixing $x$. In a similar fashion are other two-sided algorithms designed, computing plaid~\citep{cheng2000biclustering, lazzeroni2002plaid,turner2005improved} and Boolean matrix factorizations~\citep{miettinen2008discrete, geerts2004tiling}. The optimization scheme is however less suited for  one-sided clustering. Imagine that the cluster center $x$ in step~\ref{alg:greedy:opt} is allowed to have nonnegative values. Then the optimal rank-one factorization where $y$ is restricted to binary values always assigns the whole dataset to one cluster and $x$ reflects the centroid of the dataset. The knowledge that there are multiple clusters which are at least near-orthogonal is crucial for the optimization of one-sided clusterings.
+%------------------------------------
+% Alternating Minimization
+%------------------------------------
+\section{Alternating Minimization}\label{sec:ZS:Lloyds}
+Probably the best known clustering procedure is \emph{the} k-means algorithm, also called Lloyd's algorithm~\citep{lloyd1982least}. This method is often visually portrayed as the repetitive assignment of points to the nearest cluster followed by an update of the cluster centers, but it also performs a theoretically well-founded alternating minimization of the within point scatter~\eqref{eq:KM}.
+%---------- Algorithm ALS ----------------
+\begin{algorithm}[t]
+\caption{Lloyd's Alternating Minimization for $k$-means} 
+\begin{algorithmic}[1]
+  \Function{kmeans}{$D,r$}
+  \For {$iter\in\{1,\ldots\}$}
+    \State $\displaystyle X \gets D^\top Y(Y^\top Y)^{-1} \in  \argmin_{X}\|D-YX^\top\|^2$ s.t. $Y\in\mathbbm{1}^{m\times r},X\in\mathbbm{R}_+^{n\times r}$
+    \State $Y\gets \mathbf{0}$
+    \For {$j\in\{1,\ldots,m\}$}
+        \State $s\gets \argmin_t\|D_{j\cdot}-X_{\cdot t}^\top\|^2$ \label{alg:lloyd:y}
+        \State $Y_{js}\gets 1$
+    \EndFor
+\EndFor
+  \State \Return $Y$
+  \EndFunction
+\end{algorithmic}
+\label{alg:lloyd}
+\end{algorithm}
+The theoretical aspects such as convergence are studied in the wider scope of alternating minimization. 
+
+We outline Lloyds' minimization in Algorithm~\ref{alg:lloyd}. In every iteration, every factor matrix is updated with the optimal solution of the objective when the other factor matrix is fixed. The optimum with respect to $X$ is given by the equivalence of Eqs.~\eqref{eq:kmeansYX} and~\eqref{eq:kmeansYXmean}. Likewise, the optimal partition matrix minimizing the approximation error of problem~\eqref{eq:KM} is easily computed: we set in every row exactly that entry to one, which corresponds to the closest cluster center as stated in step~\ref{alg:lloyd:y}.
+
+The ability to denote the solution of problem~\eqref{eq:KM} with respect to a single matrix in closed form makes alternating optimization very appealing. The generally hard combinatorial problem to find the best cluster partition is disassembled into the iterative solution of easier problems. This optimization scheme is also easily adapted for tri-factorizations (cf. \@Section~\ref{sec:ZS:TwoSided}). Cruicial is here that the binary cluster indicator matrix reflects a partition. Finding an optimal binary matrix minimizing the optimization error when the other matrix is fixed is itself a hard combinatorial problem for which no closed-form solution is known.
+There are some attempts to transfer the elegant alternating minimization to non-partitioning clusters~\citep{chawla2013kmeans,whang2018non}. However, these methods require the specification of additional parameters which are difficult to set in advance, such as the amount of overlap or the number outliers in the data.
+
+As mentioned in Section~\ref{sec:ZS:AlternatingMinimization}, the drawback of alternating minimization is the tendency to get stuck in local, less optimal minima. Therefore, a suitable initialization of the matrices is particularly important. We refer the reader to \cite{celebi2013comparative} for an overview of initialization techniques. 
+%-----------------------------
+% Orthogonal Relaxation
+%-----------------------------
+\section{The Orthogonal Nonnegative  Relaxation}\label{sec:ZS:OrthogonalRelaxation} 
+We have discussed in Section~\ref{sec:ZS:NMFClus} that the relation of nonnegative matrix factorization to clustering stems from the near-orthogonality of factor matrices solving problem~\eqref{eq:NMF}. If we further constrain the feasible set to nonnegative and orthogonal  matrices, then we obtain a new learning task called orthogonal NMF.
+Various authors emphasize the relationship of orthogonal NMF and $k$-means, some even erroneously claim equivalence~\citep{ding2005equivalence, ding2006orthogonal, li2006relationships}. Let us have a closer look at this relationship and revisit the $k$-means objectives from Theorem~\ref{thm:kmeansobj}. The orthogonal relaxation is to disregard the special structure of the matrix $Y$ as a binary partition matrix, and to require only that $Y$ is an orthogonal nonnegative matrix. Using this relaxation, solutions to the $k$-means objective from Eq.~\eqref{eq:kmeansYX} are approximated by solution of the orthogonal nonnegative matrix factorization given as
+\begin{align}\label{eq:ONMF}
+    \min_{Y,X} &\ \|D-YX^\top\|^2 &\text{s.t. } Y^\dagger Y=I,\  Y\in\mathbb{R}_+^{m\times n},\  X\in\mathbb{R}_+^{n\times r}.
+\end{align}
+Orthogonal nonnegative matrix factorization is an NP-hard problem, yet approximable in polynomial time~\cite{asteris2015orthogonal}.
+Requiring that the columns of $Y$ are orthogonal and nonnegative implicates that every row of $Y$ has at most one nonzero entry. Thus, the relaxed matrix $Y$ also indicates a nonoverlapping clustering by its support; by its nonzero entries. The indicated clustering does however not necessarily yield a partition of the data points since some rows of $Y$ could be entirely zero. Hence, not all points are necessarily assigned to a cluster via orthogonal nonnegative matrix factorization.
+
+\cite{pompili2014ONMF} research the properties of such clusterings. They discuss solutions to the following optimization problem which is equivalent to the one in Eq.~\eqref{eq:ONMF}
+\begin{align*}
+     \min_{Y,X} &\ \|D-YX^\top\|^2 &\text{s.t. } Y^\dagger Y=I,\ 
+     \|X_{\cdot s}\|=1,\ 
+     Z\in\mathbb{R}_+^{m\times n},\ X\in\mathbb{R}_+^{n\times r}.
+\end{align*}
+Here, columns of $X$ are scaled to have norm one. The optimum of $Y$ when fixing $X$ is then derivable similar to the update rule from the alternating minimization scheme for $k$-means. The resulting difference to $k$-means is that the distance of a point $j$ to its cluster is calculated as the Euclidean distance to the scaled assigned cluster center $(D_{j\cdot}X_{\cdot s})X_{\cdot s}$. The scaling factor $D_{j\cdot}X_{\cdot s}$ is the product of cosine similarity and length of point $j$. Therefore, points with a large radius have a larger influence on the clustering than points lying closer to the origin. In addition, clusters are not separated by Voronoi tesselations but by convex cones, similarly to the spherical $k$-means where data points are normalized and cluster centroids have norm one. 
+\begin{algorithm}[t]
+\caption{Clustering via orthogonal nonnegative matrix factorization} 
+\begin{algorithmic}[1]
+  \Function{ONMF}{$D,r,\epsilon$} \Comment{$\epsilon\gtrsim 0$}
+  \State $\displaystyle (Y,X)\gets \argmin_{Y,X}\|D-YX^\top\|^2$ s.t. $Y^\dagger Y=I,\ Y\in\mathbbm{R}_+^{m\times r},\ X\in\mathbbm{R}_+^{n\times r}$\label{alg:ONMFOpt}
+  \State $Y\gets \theta_\epsilon(Y)$
+  \State \Return $Y$
+  \EndFunction
+\end{algorithmic}
+\label{alg:onmf}
+\end{algorithm}
+We summarize the method associated with the orthogonal relaxation of the $k$-means problem in Algorithm~\ref{alg:onmf}. The calculation of the orthonormal factorization in step~\ref{alg:ONMFOpt} is left open and requires a survey on its own. We refer the reader here to the penalty methods using multiplicative updates~\citep{ding2006orthogonal, li2006relationships}, the optimization on the Stiefel manifold, i.e., the set of all orthonormal matrices~\citep{yoo2010orthogonal} and the alternating minimization and augmented Lagrangian approaches~\citep{pompili2014ONMF}.
+%-------------------------------
+% Spectral Relaxation
+%-------------------------------
+\section{The Spectral Relaxation}\label{sec:ZS:SpectralRelaxation}
+Symmetric data matrices have an eigendecomposition into orthogonal factor matrices which are efficiently computed just like the SVD. A relaxation to the orthogonal eigendecomposition is in this respect more favorable than a relaxation to the NP-hard problem of orthogonal nonnegative matrix decomposition. 
+As a matter of fact, the relaxation of regarded one-sided cluster objectives to eigendecompositions is also theoretically justified by the Ky Fan theorem~\citep{fan1949theorem}. Let us have a look at the trace maximization objectives summarized for one-sided clustering objectives in Table~\ref{tbl:oneSided}. All these objectives have a relaxation of the form 
+\begin{align}
+\max_Z&\ \tr(Z^\top W Z) & \text{s.t. } Z^\top Z = I,\  Z\in\mathbb{R}_+^{m\times r} \label{eq:kyFan} \tag{KyFan}
+\end{align}
+where $W\in \mathbb{R}^{m\times m}$ is a symmetric matrix. The Ky Fan theorem says that the solution to the trace maximization problem above returns the eigenvectors of the $r$ largest eigenvalues of $W$. The maximum of the objective function value is attained at the sum of the $r$ largest eigenvalues. 
+
+\begin{algorithm}[t]
+\caption{Spectral Clustering} 
+\begin{algorithmic}[1]
+  \Function{SC}{$L,r$} \Comment{$L$: graph Laplacian}
+  \State $\displaystyle V\gets \argmin_{V}\tr(V^\top LV)$ s.t. $V^\top V=I, V\in\mathbbm{R}^{m\times r}$ \Comment{eigenvectors}\label{alg:spectralClustering:eig}
+  \State $\displaystyle (X,Y)\gets \argmin_{X,Y}\|V-YX^\top\|^2$ s.t. $Y\in\mathbbm{1}^{m\times r}, X\in\mathbbm{R}^{n\times r}$ \Comment{$k$-means}
+  \State \Return $Y$
+  \EndFunction
+\end{algorithmic}
+\label{alg:spectralClustering}
+\end{algorithm}
+The application of this relaxation is mainly known from the pipeline of methods called spectral clustering, associated with the minimal cut objective~\citep{Luxburg2007tutorial}. We say associated in order to emphasize that the normalized and the ratio cut problem is NP-hard and NP-hard to approximate within a constant factor. As a result, there are some examples of graphs where the minimum rational cut and the solution obtained by spectral clustering diverge~\citep{guattery1998quality}.  We summarize the steps of Spectral Clustering (SC) in Algorithm~\ref{alg:spectralClustering}. The algorithm is specified with respect to the input graph Laplacian $L$ (cf.\@ Table~\ref{tbl:laplacians}) and the number of clusters $r$. We assume here that $L$ is a symmetric matrix (unlike the random walk Laplacian) which implies that the eigenvectors of $L$ are the solutions to problem~\eqref{eq:kyFan}. Usually $L$ is defined as the symmetric normalized Laplacian. In this setting, the eigenvectors to the smallest eigenvalues of the Laplacian are equal to the eigenvectors to the largest eigenvalues of the normalized adjacency matrix, say $\tilde{W}=I_W^{-1/2}WI_W^{-1/2}$. The indicated graph reflects local similarities of points and is to be computed in a preprocessing step. There are multiple options to do so. Usually, $W$ is defined via the $k$-nearest neighbour graph. Denoting with $A$ the adjacency matrix to the asymmetric $k$-nearest neighbor graph, the matrix $W$ is then defined as $W=\nicefrac{1}{2}(A+A^\top)$. Another possibility is to define adjacency via the $\epsilon$-radius neighborhood graph. In this variant, we have $W_{jl}=1$ if point $l\in\mathcal{N}_\epsilon(j)$ is in the $\epsilon$-neighborhood of point $j$ and $W_{jl}=0$ otherwise. This is a symmetric relationship. Per definition, we set the diagonal elements of $W$ to zero; the indicated graph is supposed to have no self-loops. 
+
+Given the graph Laplacian and the number of expected clusters $r$, the eigenvectors to the $r$ smallest eigenvalues are computed in step~\ref{alg:spectralClustering:eig}. The eigenvectors are then discretized to a binary cluster indicator matrix. Although there are more simple ways to do this, a $k$-means clustering is here performed as the prevailing standard. 
+Now to understand why $k$-means clustering is appropriate here, we revisit the ratio cut objectives from Corollary~\ref{thm:cut}. The minimum cut objective in Eq.~\eqref{eq:minCutU} is equivalent to the $k$-means objective~\eqref{eq:kmeansDD} given a symmetric factorization of the matrix $K=\lambda_mI-L=UU^\top$. The translation is necessary to transform the negative Laplacian into a positive semi-definite matrix $K$. Only positive semi-definite matrices have the mentioned symmetric decomposition and it can be obtained via eigendecomposition. Let $L=V\Lambda V^\top$ be the eigendecomposition of the Laplacian where $\Lambda=\diag(\lambda_1,\ldots ,\lambda_m)$ reflects the eigenvalues sorted increasingly $0=\lambda_1\leq \ldots\leq \lambda_m$. Then it holds that $K=UU^\top$ for $U=V(\lambda_mI-\Lambda)^{1/2}$.
+
+These relations indicate that the ratio cut is actually minimized by the optimal solution of $k$-means clustering on the matrix $U$ as defined above; reflecting scaled eigenvectors of the Laplacian. In practice, however, this approach does not work. Clusterings computed this way typically achieve a low objective function value, close to the optimal solution, but they do not reflect any meaningful structure. Instead, using only the first few eigenvectors with the largest eigenvalues of $K$ has proven its worth for practical applications. \cite{dhillon2001co} initially propose to employ the $\log_2(r)$ first eigenvectors to determine $r$ clusters according to the spectral relaxation of bipartite graph cut. With regard to spectral clustering, usually the number of employed eigenvectors is chosen to be equal to the number of derived clusters.  
+%That is, we obtain a low-rank approximation of the translated Laplacian by means of the first eigenvectors $V_{\cdot 1},\ldots, V_{\cdot r}$ of the graph Laplacian. Denoting with $U^{(r)}$ the matrix which concatenates the first $r$ columns of the matrix $U$ from Eq.~\eqref{eq:factTransLap}, we obtain
+%\begin{align*}
+%U^{(r)}\in&\argmin_{X}\left\{\|(\lambda_mI-L_d) - XX^\top\|^2 \mid %X\in\mathbb{R}^{m\times r}\right\}.
+%\end{align*}
+%Therewith, we obtain an approximation of ratio cut solutions by computing a $k$-means clustering of the matrix $U^{(r)}$. Note that this approximation employs eigenvectors of the Laplacian, which are scaled by the eigenvalues, while spectral clustering neglects this scaling. Depending on the gap of eigenvalues $\lambda_r-\lambda_1$ for the used eigenvectors, this influences the approximation quality to the ratio cut objective. 
+
+
+%------------------------------------
+% Binary Relaxation
+%------------------------------------
+\section{Nonnegative Relaxation with Nonbinary Penalization}\label{sec:ZS:Penalty}
+We have seen, among other things from the orthogonal relaxation, that the relaxation of binary to nonnegative values with a following discretization step may result in clusterings having differing properties than solutions of the original objective. A flexible approach to address optimization problems with binary constraints is adding a penalty term to the relaxed objective, pointing the optimal solutions to have approximately binary values.
+\cite{lazzeroni2002plaid} actually propose a heuristic to shift every entry of a nonnegative matrix which is supposed to yield a binary solution into the direction of binary numbers. In detail, a constant which is increasing with the number of iterations is added to entries larger than $0.5$ and subtracted from smaller entries. However, the result is sensitive to the size of the constant. If the size is rapidly increasing then the solution might get stuck in a less desirable local optimum. Otherwise, if the size is slowly increasing then the convergence to approximately binary values is not given in a specified time limit~\citep{turner2005improved}.
+%-------- Penalty Algo-------
+\begin{algorithm}[t]
+\caption{Binary Penalty Algorithm} 
+\begin{algorithmic}[1]
+  \Function{BP}{$D,r,\phi$} \Comment{$\phi$ has its minimum at binary matrices}
+  \State $(X,Y)\gets \argmin_{(X,Y)}\|D-YX^\top\|^2 + \phi(X) + \phi(Y)$ s.t. $Y\in\mathbbm{R}_+^{m\times r}, X\in\mathbb{R}_+^{n\times r}$ \label{alg:binaryPenalty:opt}
+  \State $(X,Y)\gets (\theta(X),\theta(Y))$
+  \State \Return $(X,Y)$
+  \EndFunction
+\end{algorithmic}
+\label{alg:binaryPenalty}
+\end{algorithm}
+
+We state Algorithm~\ref{alg:binaryPenalty} to schematize the optimization of a binary matrix factorization by means of nonbinary penalizers. The function $\phi$ is here the penalizing function, obtaining its minima at binary matrices. \citep{zhang2010binary,zhang2013overlapping} propose the function known as \emph{Mexican hat}, given as
+\[\phi(X) = \|X\circ X-X\|^2 = \sum_{i,s} (X_{is}^2-X_{is})^2.\]
+\begin{figure}
+    \centering
+    \input{plots/MexicanHat}
+    \caption{Plot of the Mexican hat function used as a penalizing function for nonbinary values.}
+    \label{fig:mexicanHat}
+\end{figure}
+The plot of this function is depicted in~\ref{fig:mexicanHat}. The Mexican hat function is smooth and thus the optimization in step~\ref{alg:binaryPenalty:opt} of Algorithm~\ref{alg:binaryPenalty} is feasible for gradient descent. \citep{zhang2010binary,zhang2013overlapping} propose multiplying updates for this purpose.

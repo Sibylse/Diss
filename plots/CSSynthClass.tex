@@ -1,0 +1,35 @@
+\input{filecontents/CSSynthClass}
+\begin{tikzpicture}
+    \begin{groupplot}[group style={group size= 2 by 3, vertical sep=0.6cm},
+    	height=.25\linewidth,
+    	width=.4\textwidth,
+        axis lines = left]
+        \nextgroupplot[ylabel={$F$},xmin=0,xmax=25.5, ymin=0, ymax=1.1,
+        legend to name=zelda]
+        	\addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_pC3RecV.dat};\addlegendentry{\textsc{C-Salt}};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pC3RecV.dat};\addlegendentry{\textsc{Primp}};
+                \coordinate (top) at (rel axis cs:0,1);% coordinate at top of the first plot
+        \nextgroupplot[xmin=0,xmax=25.5, ymin=0, ymax=1.1]
+                \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_pC4F.dat};
+            	\addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pC4F.dat};
+        \nextgroupplot[ylabel={$\rec_V$},
+			xmin=0,xmax=25.5, ymin=0, ymax=1.1]
+                \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_pC3RecV.dat};
+            	\addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pC3RecV.dat};
+        \nextgroupplot[xmin=0,xmax=25.5, ymin=0, ymax=1.1]
+                \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_pC4RecV.dat};
+            	\addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pC4RecV.dat};
+        \nextgroupplot[xlabel={$p\ [\%]$},
+			ylabel={$r$},
+			xmax=25.5, xmin=0, ymin=0, ymax=26.2]
+                \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pC3R.dat};
+            	\addplot+[punkStyle] table[x=x,y=y,y error=std] {Punk_pC3R.dat};
+        \nextgroupplot[xlabel={$p\ [\%]$},
+			xmax=25.5, xmin=0, ymin=0,]
+                \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_pC4R.dat};
+            \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pC4R.dat};
+                \coordinate (bot) at (rel axis cs:1,0);% coordinate at bottom of the last plot
+    \end{groupplot}
+    \path (top)--(bot) coordinate[midway] (group center);
+    \node[right=1em,inner sep=0pt] at(group center -| current bounding box.east) {\pgfplotslegendfromname{zelda}};
+\end{tikzpicture}

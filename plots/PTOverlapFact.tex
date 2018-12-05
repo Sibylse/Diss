@@ -1,0 +1,114 @@
+\begin{align*}
+D=
+\begin{tikzpicture}[baseline=-0.5ex]
+   \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&1\&1\&0 \\
+1\&1\&1\&1 \\
+0\&1\&1\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-3.north east) -- (n-2-3.south east) -- (n-2-1.south west) -- (n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-4.north east) -- (n-3-4.south east) -- (n-3-2.south west) --(n-2-2.north west);
+\end{tikzpicture}
+&\approx
+%----------------------------
+%\\
+%----------------------------
+\begin{tikzpicture}[baseline=-0.5ex]
+   \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&.9\&.9\&.1 \\
+.7\&1.2\&1.2\&.7 \\
+.1\&.9\&.9\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-3.north east) -- (n-2-3.south east) -- (n-2-1.south west) -- (n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-4.north east) -- (n-3-4.south east) -- (n-3-2.south west) --(n-2-2.north west);
+\end{tikzpicture}
+%---------------------
+\\
+%---------------------
+&\approx
+\begin{tikzpicture}[baseline=-0.5ex]
+    \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&0 \\
+.6\&.6 \\
+0\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-1.north east) -- (n-2-1.south east) -- (n-2-1.south west) -- (n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-2.north east) -- (n-3-2.south east) -- (n-3-2.south west) --(n-2-2.north west);
+\end{tikzpicture}
+\cdot
+\begin{tikzpicture}[baseline=-0.5ex]
+    \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&.9\&.9\&.1 \\
+.1\&.9\&.9\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-3.north east) -- (n-1-3.south east) -- (n-1-1.south west) --(n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-4.north east) -- (n-2-4.south east) -- (n-2-2.south west) -- (n-2-2.north west);
+\end{tikzpicture}
+%-------------------------------------
+\\
+%-----------------------------
+D_A=
+\begin{tikzpicture}[baseline=-0.5ex]
+   \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&1\&1\&0 \\
+1\&2\&2\&1 \\
+0\&1\&1\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-3.north east) -- (n-2-3.south east) -- (n-2-1.south west) -- (n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-4.north east) -- (n-3-4.south east) -- (n-3-2.south west) --(n-2-2.north west);
+\end{tikzpicture}
+&=
+\mathlarger{\theta}
+\begin{tikzpicture}[baseline=-0.5ex]
+    \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&0 \\
+.6\&.6 \\
+0\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-1.north east) -- (n-2-1.south east) -- (n-2-1.south west) -- (n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-2.north east) -- (n-3-2.south east) -- (n-3-2.south west) --(n-2-2.north west);
+\end{tikzpicture}
+\cdot \mathlarger{\theta}
+\begin{tikzpicture}[baseline=-0.5ex]
+    \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&.9\&.9\&.1 \\
+.1\&.9\&.9\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-3.north east) -- (n-1-3.south east) -- (n-1-1.south west) --(n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-4.north east) -- (n-2-4.south east) -- (n-2-2.south west) -- (n-2-2.north west);
+\end{tikzpicture}
+%------------------------------
+\\
+%------------------------------
+D_B=
+\begin{tikzpicture}[baseline=-0.5ex]
+   \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&1\&1\&0 \\
+1\&1\&1\&1 \\
+0\&1\&1\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-3.north east) -- (n-2-3.south east) -- (n-2-1.south west) -- (n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-4.north east) -- (n-3-4.south east) -- (n-3-2.south west) --(n-2-2.north west);
+\end{tikzpicture}
+&=
+\mathlarger{\theta}\left(\mathlarger{\theta}
+\begin{tikzpicture}[baseline=-0.5ex]
+    \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&0 \\
+.6\&.6 \\
+0\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-1.north east) -- (n-2-1.south east) -- (n-2-1.south west) -- (n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-2.north east) -- (n-3-2.south east) -- (n-3-2.south west) --(n-2-2.north west);
+\end{tikzpicture}
+\cdot \mathlarger{\theta}
+\begin{tikzpicture}[baseline=-0.5ex]
+    \matrix [matrix of math nodes,left delimiter=(,right delimiter=),ampersand replacement=\&] (n) {
+1\&.9\&.9\&.1 \\
+.1\&.9\&.9\&1 \\
+};
+\draw[color=col1,fill=col1,opacity=0.2] (n-1-1.north west) -- (n-1-3.north east) -- (n-1-3.south east) -- (n-1-1.south west) --(n-1-1.north west);
+\draw[color=col2,fill=col2,opacity=0.2] (n-2-2.north west) -- (n-2-4.north east) -- (n-2-4.south east) -- (n-2-2.south west) -- (n-2-2.north west);
+\end{tikzpicture}
+\right)
+\end{align*}

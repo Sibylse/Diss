@@ -1,0 +1,46 @@
+\input{filecontents/PRSynthRank}
+%---------------------------
+% F MEASURE p+=p-=10% 
+%---------------------------
+\begin{tikzpicture}[baseline]  
+		\begin{axis}[
+        	axis lines = left,
+			%title={$p_+=p_-=10\%$},
+            height=.33\linewidth,
+            width=.5\linewidth, 
+            xlabel={$r^\star$},   
+			ylabel={$F$},
+			xmax=45.5, ymin=0, ymax=1.1
+			]
+            \addplot+[cPrimp,mark options ={cPrimp},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpLam4F.dat}; 
+            \addplot+[panStyle]  table[x=x,y=y,y error=std] {nmfL1Lam2F.dat};
+            \addplot+[cPanda,dashed,mark options ={cPanda},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {PandaF.dat}; 
+            \addplot+[cNassau,dashed,mark options ={cNassau},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {NassauF.dat}; 
+           \addplot+[cMdl4bmf,dashed,mark options ={cMdl4bmf},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {Mdl4bmfF.dat};
+		\end{axis} 
+\end{tikzpicture}
+%---------------------------
+% RANK ESTIMATION p+=p-=10% 
+%---------------------------
+\begin{tikzpicture}[baseline]  
+		\begin{axis}[
+        	axis lines = left,
+            height=.33\linewidth,
+            width=.5\linewidth,
+			xlabel={$r^\star$},     
+			ylabel={$r(X,Y)$},
+			xmax=45.5, xmin=0, ymin=0,
+            legend columns =-1,
+            legend entries={Primp,Panpal,Panda+,Nassau,Mdl4bmf},
+             legend to name=named
+			]
+            \addplot+[cPrimp,mark options ={cPrimp},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpLam4R.dat}; 
+            \addplot+[panStyle]  table[x=x,y=y,y error=std] {nmfL1Lam2R.dat};
+            \addplot+[cPanda,dashed,mark options ={cPanda},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {PandaR.dat};
+            \addplot+[cNassau,dashed,mark options ={cNassau},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {NassauR.dat}; 
+           \addplot+[cMdl4bmf,dashed,mark options ={cMdl4bmf},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {Mdl4bmfR.dat};
+		\end{axis} 
+\end{tikzpicture}
+\\
+
+\pgfplotslegendfromname{named}
