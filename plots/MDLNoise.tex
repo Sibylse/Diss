@@ -277,7 +277,7 @@ x y std
 			title={Uniform Noise},
             height=.33\linewidth,
             width=.34\linewidth, 
-			ylabel={$F$},
+			ylabel={$\mathsf{F}$},
 			xmax=25.2, ymin=0, ymax=1.1
 			]
             \addplot+[cPrimp,mark options ={cPrimp},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpLam4UniF.dat}; 
@@ -332,7 +332,7 @@ x y std
             height=.33\linewidth,
             width=.35\linewidth,
 			xlabel={$p_+=p_-\ [\%]$},     
-			ylabel={$r(X,Y)$},
+			ylabel={$r$},
 			xmax=25.2, xmin=0, ymin=0, ymax=40.2
 			]
             \addplot+[cPrimp,mark options ={cPrimp},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpLam4UniR.dat}; 

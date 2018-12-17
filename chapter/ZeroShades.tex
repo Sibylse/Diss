@@ -1,5 +1,5 @@
 \chapter{Matrix Factorization with Binary Constraints}
-%\tikzexternaldisable
+\label{chap:ZeroShades}
 Cholesky decomposition, principal component analysis and eigendecomposition -- those are famous examples involving matrix factorization, which most machine learners and data miners have probably used at least once in their life. For practical applications, it is sufficient to know that these factorizations compute a certain kind of embedding into a subspace where the information relevant to the task at hand is maintained. There are built-in functions computing the required decomposition in an efficient manner for all main programming languages. A little bit less known are the general optimization problems whose solutions return the desired decompositions. Even less known is the fact that these optimization problems are transformed into the most widely used clustering objectives by a restriction to binary values of one or more factor matrices. 
 %=======================
 % Notation
@@ -26,7 +26,7 @@ A formal task definition of NMF is given as follows: let $D\in\mathbb{R}_+^{m\ti
 \begin{equation}
 	\min_{X,Y} F(X,Y) = \frac{1}{2}\left\|D-YX^T\right\|^2 \quad \text{s.t. }X\in \mathbb{R}_+^{n\times r}, Y\in \mathbb{R}_+^{m\times r},\label{eq:NMF} \tag{NMF}
 \end{equation}
-or the Kullback-Leibler divergence. While the former approach is inherently related to clustering using the Euclidean distance of points, the latter is related to topic models such as probabilitistic latent semantic indexing~\cite{gaussier2005relation,ding2006nonnegative}. We will later discuss the particular relationships of approximations with respect to the Frobenius norm and related clustering objectives. 
+or the Kullback-Leibler divergence. While the former approach is inherently related to clustering using the Euclidean distance of points, the latter is related to topic models such as probabilitistic latent semantic indexing~\citep{gaussier2005relation,ding2006nonnegative}. We will later discuss the particular relationships of approximations with respect to the Frobenius norm and related clustering objectives. 
 %----------------------------
 % NMF and Clustering
 %----------------------------

@@ -4,11 +4,6 @@
 \usepackage[english]{babel}
 \usepackage[round]{natbib}
 \usepackage{graphicx,tikz}
-%\pgfrealjobname{main}
-%\usetikzlibrary{external}
-%\tikzexternalize[prefix=tikz/]
-%\let\tikzexternalenable\relax
-%\let\tikzexternaldisable\relax
 \usetikzlibrary{matrix,decorations.pathreplacing, calc, positioning}
 \usepackage{amsmath,amssymb,nicefrac,bbm}
 \usepackage{relsize} % mathlarger
@@ -20,9 +15,12 @@
 \reversemarginpar
 \setlength{\marginparwidth}{3.1cm}
 % Theorem-Umgebungen
-\usepackage[amsmath,thmmarks]{ntheorem}
+%\usepackage[amsmath,thmmarks]{ntheorem}
+\usepackage{amsthm}
 \usepackage{thmtools, thm-restate}
 \usepackage{algorithm,algpseudocode}
+\algnewcommand{\IIf}[1]{\State\algorithmicif\ #1\ \algorithmicthen}
+\algnewcommand{\EndIIf}{\unskip\ \algorithmicend\ \algorithmicif}
 
 \usepackage{enumerate}
 \usepackage{booktabs,multirow,adjustbox}
@@ -93,25 +91,23 @@ colormap={test}{[2pt]
 \definecolor{cDBSSL2}{named}{col4}
 \definecolor{cMDLDBSSL}{named}{col5}
 % Theorem-Optionen %
-\theoremseparator{.}
+%\theoremseparator{.}
+%\newenvironment{proof}{\par\noindent{\textit{ Proof}\ }}{\hfill\qed\\[2mm]}
 \theoremstyle{plain}
 %\theoremheaderfont{\moon}
-\newcommand{\BlackBox}{\rule{1.5ex}{1.5ex}}  % end of proof
-\newenvironment{proof}{\par\noindent{\bf Proof\ }}{\hfill\qed\\[2mm]}
-\newtheorem{theorem}{Theorem}[section]
-\newtheorem{definition}[theorem]{Definition}
+%\newcommand{\BlackBox}{\rule{1.5ex}{1.5ex}}  % end of proof
+%
+\newtheorem{theorem}{Theorem}[chapter]
 \newtheorem{corollary}[theorem]{Corollary}
 \newtheorem{observation}[theorem]{Observation}
 \newtheorem{lemma}[theorem]{Lemma}
-\theorembodyfont{\upshape}
-\newtheorem*{remark}[theorem]{Remark}
-\newtheorem*{example}[theorem]{Example}
+%\theorembodyfont{\upshape}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{algSpec}{Algorithm Specification}
+\newtheorem*{remark}{Remark}
+\newtheorem*{example}{Example}
 \newtheorem*{problem}{Problem}
-%\theoremstyle{nonumberplain}
-%\renewtheorem{definition*}{Definition}
-%\renewtheorem{remark*}{Remark}
-%\renewtheorem{example*}{Example}
-%\renewtheorem{problem*}{Problem}
 
 %Operators/Commands
 \DeclareMathOperator*{\argmin}{arg\,min}
@@ -125,8 +121,8 @@ colormap={test}{[2pt]
 \DeclareMathOperator*{\bigO}{\mathcal{O}}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\prox}{prox}
-\DeclareMathOperator*{\pre}{pre}
-\DeclareMathOperator*{\rec}{rec}
+\DeclareMathOperator{\pre}{pre}
+\DeclareMathOperator{\rec}{rec}
 \newcommand{\Ya}{Y^{(a)}}
 \newcommand{\Va}{V^{(a)}}
 \newcommand{\Da}{D^{(a)}}
@@ -233,8 +229,10 @@ colormap={test}{[2pt]
 % Zeilenabstand einstellen %
 \renewcommand{\baselinestretch}{1}
 % Floating-Umgebungen anpassen %
-\renewcommand{\topfraction}{0.9}
-\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\topfraction}{1.0}
+\renewcommand{\bottomfraction}{1.0}
+\renewcommand{\floatpagefraction}{1.0}
+\renewcommand{\dblfloatpagefraction}{1.0}
 
 % Leere Seite ohne Seitennummer, naechste Seite rechts
 \newcommand{\blankpage}{

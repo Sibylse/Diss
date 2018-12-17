@@ -8,8 +8,8 @@
 			%title={$p_+=p_-=10\%$},
             height=.33\linewidth,
             width=.5\linewidth, 
-            xlabel={$r^\star$},   
-			ylabel={$F$},
+            xlabel={$r^*$},   
+			ylabel={$\mathsf{F}$},
 			xmax=45.5, ymin=0, ymax=1.1
 			]
             \addplot+[cPrimp,mark options ={cPrimp},mark repeat={3}, thick, error bars/.cd,y dir = both, y explicit]  table[x=x,y=y,y error=std] {superPimpLam4F.dat}; 
@@ -27,8 +27,8 @@
         	axis lines = left,
             height=.33\linewidth,
             width=.5\linewidth,
-			xlabel={$r^\star$},     
-			ylabel={$r(X,Y)$},
+			xlabel={$r^*$},     
+			ylabel={$r$},
 			xmax=45.5, xmin=0, ymin=0,
             legend columns =-1,
             legend entries={Primp,Panpal,Panda+,Nassau,Mdl4bmf},

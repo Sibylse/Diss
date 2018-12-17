@@ -1,7 +1,7 @@
-\chapter{Mining Class-Specific Alterations in Binary Data}
+\chapter{Mining Class-Specific Alterations in Binary Data}\label{chap:CSalt}
 When given labeled data, a natural instinct for a data miner is to build a discriminative model that predicts the correct class.
-Yet in this chapter we focus on the characterization of the data with respect to the label, i.e., finding similarities and differences between chunks of data belonging to miscellaneous classes.
-Consider a binary matrix where each row is assigned to one class. Such data emerge from fields such as gene expression analysis, e.g., a row reflects the genetic information of a cell, assigned to one tissue type (primary/relapse/no tumor), market basket analysis, e.g., a row indicates purchased items at the assigned store, or from text analyses, e.g., a row corresponds to a document/article and the class denotes the publishing platform. For various applications a characterization of the data with respect to classes is of particular interest. In genetics, filtering the genes which are responsible for the reoccurrence of a tumor may introduce new possibilities for personalized medicine~\cite{schramm2015mutational}. In market basket analysis it might be of interest which items sell better in some shops  than others and in text analysis one might ask about variations in the vocabulary used when reporting from diverse viewpoints.
+Yet in this chapter we focus on the characterization of the data with respect to the label in order to find similarities and differences between chunks of data belonging to miscellaneous classes.
+Consider a binary matrix where each row is assigned to one class. Such data emerge from fields such as gene expression analysis, e.g., a row reflects the genetic information of a cell, assigned to one tissue type (primary/relapse/no tumor), market basket analysis, e.g., a row indicates purchased items at the assigned store, or from text analyses, e.g., a row corresponds to a document/article and the class denotes the publishing platform. For various applications a characterization of the data with respect to classes is of particular interest. In genetics, filtering the genes which are responsible for the reoccurrence of a tumor may introduce new possibilities for personalized medicine~\citep{schramm2015mutational}. In market basket analysis it might be of interest which items sell better in some shops  than others and in text analysis one might ask about variations in the vocabulary used when reporting from diverse viewpoints.
 %--------- FIGURE FACTORIZE EACH CLASS SEPARATELY ------------
  \begin{figure}
  \centering
@@ -11,155 +11,193 @@ Consider a binary matrix where each row is assigned to one class. Such data emer
  \end{figure}
 %-------------------------------------
 
-These questions are approached as pattern mining~\cite{vreeken2007characterising} and Boolean matrix factorization problems~\cite{miettienen2012finding}. Both approaches search for factors or patterns which occur in both or only one of the classes. This is illustrated in Fig.~\ref{fig:classFact}; a data matrix is indicated on the left, whose rows are assigned to one class, $A$ or $B$. While the pink outer product spreads over both classes, the blue and green products concentrate in only one of the classes. We refer to the factorizations of the first kind as common and to those of the second kind as class-specific.
+These questions are approached as pattern mining~\citep{vreeken2007characterising} and Boolean matrix factorization problems~\citep{miettienen2012finding}. Both approaches search for factors or patterns which occur in both or only one of the classes. This is illustrated in Figure~\ref{fig:classFact}; a data matrix is indicated on the left, whose rows are assigned to one class, $A$ or $B$. While the green outer product\todo{be aware of colors} spreads over both classes, the blue products concentrate in only one of the classes. We refer to the factorizations of the first kind as common and to those of the second kind as class-specific.
 
-The identification of class specific and common factorizations is key to a characterization of similarities and differences among the classes. Yet, what if meaningful deviations between the classes are slightly hidden underneath an overarching structure? The factorization in Fig.~\ref{fig:classFact} is not exact, we can see that the red colored ones in the data matrix are not taken into account by the model. This is partially desired as the data is expected to contain noise which is supposedly filtered by the model. On the other hand, we can observe concurrence of the red ones and the pink factors -- in each class.
+The identification of class specific and common factorizations is key to a characterization of similarities and differences among the classes. Yet, what if meaningful deviations between the classes are slightly hidden underneath an overarching structure? The factorization in Figure~\ref{fig:classFact} is not exact, we can see that the red colored ones in the data matrix are not taken into account by the model (the factorization on the right). This is partially desired as the data is expected to contain noise which is supposedly filtered out. On the other hand, we can observe concurrence of the red ones and the pattern of the green tile -- in each class.
 %------------------------
 % Main Contributions
 %------------------------
 %\subsection{Main Contributions}
-In this paper we propose a novel Boolean Matrix Factorization (BMF) method which is suitable to compare horizontally concatenated binary data matrices originating from diverse sources or belonging to various classes. To the best of the authors knowledge, this is the first method in the field of matrix factorizations of any kind, combining the properties listed below in one framework:
-\begin{enumerate}
-\item \label{contrib:classes}the method can be applied to compare any number of classes or sources,
-\item \label{contrib:rank}the factorization rank is automatically determined; this includes the number of outer products, which are common among multiple classes, but also the number of discriminative outer products occurring in only one class,
-\item \label{contrib:V}in addition to discriminative rank-one factorizations, more subtle characteristics of classes can be derived, pointing out how common outer products deviate among the classes.
-\end{enumerate}
-While works exist which approach one of the points~\ref{contrib:classes} or~\ref{contrib:rank} (see Sec.~\ref{sec:CS:IntegrateLabels}), the focus on subtle deviations among the classes as addressed in point~\ref{contrib:V} is entirely new. This expands the applicability of the new method to datasets where deviations among the classes have a more complex structure.
+In this paper we propose a novel Boolean matrix factorization method which is suitable to compare horizontally concatenated binary data matrices originating from diverse sources or belonging to various classes. To the best of the authors knowledge, this is the first method in the field of matrix factorizations of any kind, combining the properties listed below in one framework:
+\begin{itemize}
+\item the method can be applied to compare any number of classes or sources,
+\item the factorization rank is automatically determined; this includes the automatic identification of tiles being common among multiple classes as well as the identification of discriminative tiles occurring in only one class,
+\item in addition to discriminative tiles, more subtle characteristics of classes can be derived, pointing out the features where common tiles deviate among the classes.
+\end{itemize}
+While works exist which approach one of the first two  points mentioned above (cf.\@ Section~\ref{sec:CS:IntegrateLabels}), the focus on subtle deviations among the classes as addressed in the third point is entirely new. This expands the applicability of the new method to datasets where deviations among the classes have a more complex structure.
 %========================
 % integrating class labels into BMF
 %========================
 \section{Integrating Class Labels and BMF}\label{sec:CS:IntegrateLabels}
-We assume that the data matrix is composed of various sources, identified by an assignment from transactions to classes. Denoting by $[A^{(a)}]_a$ the matrix vertically concatenating the matrices $A^{(a)}$ for $a\in\{1,\ldots,c\}$, we write
-\begin{align}\label{eq:DaYaVa}
+We assume that the data matrix is composed of various sources, represented by an assignment of transactions to $c$ classes. Denoting by $[A^{(a)}]_a$ the matrix vertically concatenating the matrices $A^{(a)}$ for $a\in\{1,\ldots,c\}$, that is the matrices are stacked on top of each other, we write
+\begin{align}\label{eq:CS:DaYaVa}
 D=\begin{bmatrix}
 D^{(a)}
 \end{bmatrix}_a,\
 Y=\begin{bmatrix}
 Y^{(a)}
 \end{bmatrix}_a \text{ and }
-V^T=\begin{bmatrix}
+V^\top =\begin{bmatrix}
 V^{(a)T}
 \end{bmatrix}_a.
 \end{align}
-The ($m_a\times n$)-matrix $D^{(a)}$ comprises the $m_a<m$ transactions belonging to class $a$. Likewise, we explicitly notate the class-related $(m_a\times r)$- and $(n\times r)$-dimensional parts of the $m\times r$ and $n\times rc$ factor matrices $Y$ and $V$ as $Y^{(a)}$ and $\Va$. These factor matrices are properly introduced in Sec.~\ref{sec:CSalt}.
+The ($m_a\times n$)-matrix $D^{(a)}$ comprises the $m_a$ transactions belonging to class $a$. The total number of transactions is therefore given by $m=m_1+\ldots+m_c$. Likewise, we explicitly notate the class-related $(m_a\times r)$- and $(n\times r)$-dimensional parts of the $m\times r$ and $n\times rc$ factor matrices $Y$ and $V$ as $Y^{(a)}$ and $\Va$. These factor matrices are properly introduced in Section~\ref{sec:CS:CSalt}.
 %--------- FIGURE USAGE ------------
 \begin{figure}[!t]
 \centering
 \input{plots/CSRelatedFactorization}
-\caption{A Boolean product identifying common (pink) and class-specific outer products (blue and green). Best viewed in color.}
-\label{fig:usageJSMF}
+\caption{A Boolean product identifying common (green) and class-specific outer products (blue). Best viewed in color.}
+\label{fig:CS:usageJSMF}
 \end{figure}
 %-------------------------------------
-If the given data matrix is class-wise concatenated (cf.\@ Eq.~(\ref{eq:DaYaVa})), a first approach for finding class-defining characteristics is to separately derive factorizations for each class. However, simple approximation measurements as discussed in Sec.~\ref{sec:bmf} are already nonconvex and have multiple local optima.
-Due to this vagueness of computed models, class-wise factorizations are not easy to interpret; they lack a view on the global structure. Puzzling together the (parts of) patterns defining (dis-)similarities of classes afterwards, is non-trivial.
+If the given data matrix is class-wise concatenated (cf.\@ Eq.~(\ref{eq:CS:DaYaVa})), a first approach for finding class-defining characteristics is to separately derive factorizations for each class. However, simple approximation measurements such as the residual sum of squares of a Boolean factorization are already nonconvex and have multiple local optima.
+Due to this local view of computed models, class-wise factorizations are not easy to interpret; they lack a view on the global structure. Puzzling together the (parts of) patterns defining (dis-)similarities of classes afterwards, is not trivial.
 
-In the case of nonnegative, labeled data matrices, measures such as Fisher's linear discriminant criterion are minimized to derive weighted feature vectors, i.e., patterns in the binary case, which discriminate most between classes. This variant of NMF is successfully implemented for classification problems such as face recognition~\citep{nikitidis2014projected} and identification of cancer-associated genes~\citep{odibat2014efficient}.
+In the case of nonnegative, labeled data matrices, measures such as Fisher's linear discriminant criterion are minimized to derive weighted feature vectors, that are patterns in the binary case, which discriminate most between classes. This variant of NMF is successfully implemented for classification problems such as face recognition~\citep{nikitidis2014projected} and identification of cancer-associated genes~\citep{odibat2014efficient}.
 
-For social media retrieval, \cite{gupta2010nonnegative} introduce Joint Subspace Matrix Factorization (JSMF). Focusing on the two-class setting, they assume that data points (rows of the data matrix) emerge not only from discriminative but also from common subspaces. JSMF infers for a given nonnegative data matrix and ranks $r_0,r_1$ and $r_2$ a factorization as displayed in Fig.~\ref{fig:usageJSMF}. Multiplicative updates minimize the weighted sum of class-wise computed RSS.
+For social media retrieval, \cite{gupta2010nonnegative} introduce Joint Subspace Matrix Factorization (JSMF). Focusing on the two-class setting, they assume that data points emerge not only from discriminative but also from common subspaces. JSMF infers for a given nonnegative data matrix and ranks $r_0,r_1$ and $r_2$ a factorization as displayed in Figure~\ref{fig:CS:usageJSMF}. Note that there are exactly $r_0$ columns in the factor matrix $Y$ spanning over points from both classes and $r_1$ respectively $r_2$ columns whose nonzero entries are restricted to class one or two. Multiplicative updates are used to minimize a weighted sum of class-wise computed residual sums of squares.
 %\[\min_{X,Y}\sum_{a\in\{1,2\}}\frac{\mu_a}{2}\left\|\Da-\begin{bmatrix}
 %\Ya_S & \Ya_D
 %\end{bmatrix} \begin{bmatrix}
-%	X_S^T\\
-%    X_a^T
-%\end{bmatrix}^T\right\|^2,\]
+%	X_S^\top \\
+%    X_a^\top 
+%\end{bmatrix}^\top \right\|^2,\]
 %where $\mu_1^{-1} =\|D^{(1)}\|^2$ and $\mu_2^{-1} =\|D^{(2)}\|^2$ are normalizing constants.
-In Regularized JSNMF (RJSNMF), a regularization term is used to prevent that shared feature vectors swap into discriminative subspaces and vice versa~\citep{gupta2013regularized}. The arising optimization problem is solved by the method of Lagrange multipliers. Furthermore, a provisional method to determine the rank automatically is evaluated. However, this involves multiple runs of the algorithm with increasing rank of shared and discriminative subspaces, until the approximation error barely decreases.
+In Regularized JSNMF (RJSNMF), a regularization term is used to prevent that shared feature vectors (in $X_S^\top $) swap into discriminative subspaces and vice versa~\citep{gupta2013regularized}. This happens if a column in $Y_S$ is divided into two columns, one in $Y_D^{(1)}$ and the other in $Y_D^{(2)}$. Correspondingly, a discriminative feature vector in $X_{1/2}$ could be represented as one of the shared vectors. The arising optimization problem is solved by the method of Lagrange multipliers. Furthermore, a provisional method to determine the rank automatically is evaluated. However, this involves multiple runs of the algorithm with increasing numbers of shared and discriminative subspaces, until the approximation error barely decreases.
 A pioneering extension to the multi-class case  is provided by~\cite{gupta2014matrix}.
 
 \cite{miettienen2012finding} transfers the objective of JSMF into Boolean algebra, solving
 \[\min_{X,Y}\sum_{a\in\{1,2\}}\frac{\mu_a}{2}\left|\Da-\theta\left(\begin{bmatrix}
 \Ya_{S} & \Ya_D
 \end{bmatrix} \begin{bmatrix}
-	X_S^T\\
-    X_a^T
+	X_S^\top \\
+    X_a^\top 
 \end{bmatrix}\right)\right|\]
-for binary matrices $D, X$ and $Y$, and normalizing constants $\mu_{1/2}^{-1} =|D^{(2/1)}|$.  A variant of the BMF algorithm \textsc{Asso} governs the minimization. A provisional determination of ranks based on the Minimum Description Length (MDL) principle is proposed, computing which of the candidate rank constellations yields the lowest description length.
+for binary matrices $D, X$ and $Y$, and normalizing constants $\mu_{1/2}^{-1} =|D^{(2)/(1)}|$.  A variant of the BMF algorithm \textsc{Asso} governs the minimization. A provisional determination of ranks based on the MDL principle is proposed, computing which of the candidate rank constellations yields the lowest description length.
 
-\cite{vreeken2007characterising} pursue the idea of MDL to derive a set of pattern sets, which characterizes similarities and differences of groups of classes. Identifying the usage of each pattern with its support in the data, the number of derived patterns equates the rank in BMF. In this respect, their proposed algorithm \textsc{DiffNorm} automatically determines the ranks in the multi-class case. However, the posed constraint on the usage often results in vast amount of returned patterns.    
+\cite{vreeken2007characterising} pursue the idea of MDL in the context of deriving a set of pattern sets, which characterizes similarities and differences of groups of classes. Identifying the usage of each pattern with its support in the data, the number of derived patterns equates the rank in BMF. In this respect, their proposed algorithm \textsc{DiffNorm} automatically determines the ranks in the multi-class case. However, as known from pattern mining, restricting the usage to the supporting transactions often results in a vast amount of returned patterns.    
 
-In the two-class nonnegative input matrices case, \cite{kim2015simultaneous} improve over RJSNMF by allowing small deviations from shared patterns in each class. They found that shared patterns are often marginally altered according to the class. In this paper, we aim at finding these overlooked variations of shared patterns together with strident differences among multiple classes, combining the strengths of MDL for rank detection and the latest results in NMF.
+In the case where two-classes are given for a nonnegative data matrix, \cite{kim2015simultaneous} improve over RJSNMF by allowing small deviations from shared patterns in each class. They found that shared patterns are often marginally altered according to the class. In this work, we aim at finding these overlooked variations of shared patterns together with strident differences among multiple classes, combining the strengths of MDL for rank detection and the latest results in NMF.
 %===================================
 %Mining class-specific alterations
 %====================================
 \section{Mining Class-Specific Alterations}
-Given a binary data matrix composed from multiple classes, we assume that the data has an underlying model similar to the one in Fig.~\ref{fig:classFact}. There are common or shared patterns (pink) and class-specific patterns (blue and green). Furthermore, there are class-specific patterns, which align within a subset of the classes where a pattern is used (the red ones). We call such aligning patterns class-specific alterations and introduce the matrix $V$ to reflect these.
+Given a binary data matrix composed from multiple classes, we assume that the data has an underlying model similar to the one in Figure~\ref{fig:classFact}. There are common or shared patterns (green) and class-specific patterns (blue). Furthermore, there are class-specific patterns, which align within a subset of the classes where a pattern is used (the red ones). We call such aligning patterns class-specific alterations and introduce the matrix $V$ to reflect them.
 %-----------------------
-\begin{definition}\label{def:cs:classSpecAlt}
-Let $X\in\{0,1\}^{n\times r}$ and $V\in \{0,1\}^{n\times cr}$.
+\begin{definition}[class-specific alterations]\label{def:CS:classSpecAlt}
+Let $X\in\{0,1\}^{n\times r}$ and $V\in \{0,1\}^{n\times cr}$ be binary matrices.
 We say the matrix $V$ models \emph{class-specific alterations of $X$} if $\|X\circ \Va\|=0$ for all $1\leq a\leq c$, and $\|V^{(1)}\circ\ldots\circ V^{(c)}\|=0$.
 \end{definition}
-Similar to the data decomposition denoted in Eq.~(\ref{eq:BMF}), we assume that data emerges from a Boolean matrix product; yet, we now consider multiple products, one for each class, which are defined by the class-wise alteration matrix $V$, its pattern matrix, usage and the noise matrix $N=[N^{(a)}]_a$, such that for $1\leq a\leq c$
-\begin{align}\label{eq:VBMF}
-\Da= \theta\left(\Ya(X+\Va)^T\right) +N^{(a)}.
+We assume that the data emerges from a Boolean matrix product; yet, we now consider multiple products, one for each class, which are defined by the class-wise alteration matrix $V$, the pattern matrix, usage and the noise matrix $N=[N^{(a)}]_a\in\{-1,0,1\}^{m\times n}$, such that for $1\leq a\leq c$ the data is decomposed as
+\begin{align}\label{eq:CS:VBMF}
+\Da= \theta\left(\Ya(X+\Va)^\top \right) +N^{(a)}.
 \end{align}
-Given a class-wise composed binary data matrix, we consider the task to filter the factorization, defined by $X$, $Y$ and $V$, from the noise.
+Given a class-wise decomposed binary data matrix as shown above, we wish to filter the factorization, defined by $X$, $Y$ and $V$, from the noise.
 %--------------------------------
 % CSALT
 %--------------------------------
-\subsection{C-SALT}\label{sec:CSalt}
-In order to capture class-defining characteristics in the framework of \textsc{Primp}, few extensions have to be made.
+\subsection{C-SALT}\label{sec:CS:CSalt}
+We propose to capture class-defining characteristics in the framework of \textsc{PAL-Tiling}, for which few extensions have to be made.
 We pose two requirements on the interplay between usage and class-specific alterations of patterns: class-specific alterations ought to fit very well to the corresponding class but as little as possible to other classes.
-We introduce a regularizing function to penalize nonconformity to this request.
+We  penalize nonconformity to this request with the function
 \begin{align*}
-S(Y,V) &= \sum_{s=1}^r\sum_{a=1}^c \left(\left|\Ya_{\cdot s}\right|\left|\Va_{\cdot s}\right|-{\Ya}^T\Da \Va_{\cdot s}\right)+\sum_{b\neq a}{Y^{(b)}_{\cdot s}}^TD^{(b)}\Va_{\cdot s}\\
-&=\sum_{a=1}^c\tr\left(\left({\Ya}^T(1^{m_a\times n}-2\Da) + Y^TD\right)\Va\right).
+S(Y,V) &= \sum_{s=1}^r\sum_{a=1}^c \left(\left|\Ya_{\cdot s}\right|\left|\Va_{\cdot s}\right|-{\Ya}^\top \Da \Va_{\cdot s}\right)+\sum_{b\neq a}{Y^{(b)}_{\cdot s}}^\top D^{(b)}\Va_{\cdot s}\\
+&=\sum_{a=1}^c\tr\left(\left({\Ya}^\top (\mathbf{1}-2\Da) + Y^\top D\right)\Va\right).
 \end{align*}
-%The smaller the left summand in the top equation, the more often the class-specific alteration occurs in used transactions of that class. Conversely, as the right summand decreases, the class-specific alteration matches less to foreign classes.
-
-We extend the description length of \textsc{Primp} such that class-specific alterations are encoded in the same way as patterns; by standard codes, assigning item $i\in\mathcal{I}$ a code of length $u_i=-\log\left(\nicefrac{|D_{\cdot i}|}{|D|}\right)$. The objective function $f$ adds the description length to the specificity-regularizer
-\begin{align*}
-f(X,V,Y)&=
--\sum_{s:|Y_{\cdot s}|> 0} \left((|Y_{\cdot s}|{+}1) \cdot \log\left(\frac{|Y_{\cdot s}|}{|Y|+|N|}\right) +X_{\cdot s}^Tu+\sum_{a}{\Va_{\cdot s}}^Tu\right)\\
-&\quad -\sum_{i:|N_{\cdot i}|> 0} \left((|N_{\cdot i}|{+}1) \cdot \log\left(\frac{|N_{\cdot i}|}{|Y|+|N|}\right) +u_i\right)
-+S(Y,V).
-\end{align*}
-This determines the relaxed objective $F(X,V,Y) +\phi(X) +\phi(V)+\phi(Y)$, where
-\begin{align*}
-F(X,V,Y)&= \frac{1}{2}\left(\mu\sum_{a=1}^c\|\Da-\Ya(X{+}\Va)^T\|^2
-+ G(X,V,Y)
-+S(Y,V)\right),
-\end{align*}
-$\mu=1+\log(n)$ and $G$ is defined as stated in  Appendix~\ref{app:func}.
-$F$ has Lipschitz continuous gradients and is suitable for PALM.
+The left summand in the equation on the top becomes smaller the more often the class-specific alteration occurs in used transactions of that class. Conversely, as the right summand decreases, the class-specific alteration matches less to foreign classes. As a result, the regularizing function $S(Y,V)$ returns zero if every class specific alteration occurs exactly at those transactions where the pattern is used, but only in the corresponding class. 
 
 \begin{algorithm}[t]
-\caption{\textsc{C-Salt}($D=[D^{(a)}]_a;\Delta_r=10,\gamma=1.00001$)$\qquad$}
+\caption{The \textsc{PAL-Tiling} extension \textsc{C-Salt}, mining class-specific alterations in a labelled binary database.}
 \begin{algorithmic}[1]
-  \State $(X_K,V_K,Y_K)\gets (\emptyset, \emptyset, \emptyset)$
-  \For {$r\in\{\Delta_r,2\Delta_r,3\Delta_r,\ldots\}$}
-    \State $(X_0,V_0,Y_0) \gets $\Call{IncreaseRank}{$X_K, V_K, Y_K,\Delta_r$} \Comment{Append random columns}
-    \For {$k = 0,1,\ldots$}\label{alg:cs:optStart} \Comment{Select stop criterion}
-   	  %\For {$A\in \{X_k\}$}
-      %\State $X_{k+1}\gets$\Call{Update}{$X,X_k,Y_k,V_k^{(1)}$}
-      \State $\nicefrac{1}{\alpha_k} \gets \gamma M_{\nabla_XF}(V_k,Y_k)$ \label{alg:cs:stepX}
-      \State $X_{k+1} \gets \prox_{\alpha_k\phi}\left(X_k-\alpha_k\nabla_XF(X_k,V_k,Y_k)\right)$ \label{alg:cs:proxX}
-      \State $\nicefrac{1}{\nu_k^{(a)}} \gets \gamma M_{\nabla^{(a)}_VF}(X_{k+1},Y_k)$  \Comment{$1\leq a\leq c$} \label{alg:cs:stepV}
-      \State $\Va_{k+1} \gets \prox_{\nu_k^{(a)}\phi}\left(\Va_k-\nu_k^{(a)}\nabla^{(a)}_VF(X_{k+1},V_{k}^{(a)},Y_k)\right)$ \Comment{$1\leq a\leq c$} \label{alg:cs:proxV}
-      \State $\nicefrac{1}{\beta_k} \gets\gamma M_{\nabla_YF}(X_{k+1},V_{k+1})$  \label{alg:cs:stepY}
-      \State $Y_{k+1} \gets \prox_{\beta_k\phi}\left(Y_k-\beta_k\nabla_YF(X_{k+1},V_{k+1},Y_k)\right)$ \label{alg:cs:proxY}
+    \Function{C-Salt}{$D=[D^{(a)}]_a;\Delta_r=10$}
+        \State $(X_K,V_K,Y_K)\gets (\emptyset, \emptyset, \emptyset)$
+        \For {$r\in\{\Delta_r,2\Delta_r,3\Delta_r,\ldots\}$}
+            \State $(X_0,V_0,Y_0) \gets $\Call{IncreaseRank}{$X_K, V_K, Y_K,\Delta_r$} 
+            \For {$k = 0,1,\ldots$}\label{alg:csalt:optStart} \Comment{Select stopping criterion}
+   	        \State $\alpha_k^{-1} \gets M_{\nabla_XF}(V_k,Y_k)$
+            \State $X_{k+1} \gets \prox_{\alpha_k\phi_B}\left(X_k-\alpha_k\nabla_XF(X_k,V_k,Y_k)\right)$
+            \State $\beta_k^{-1} \gets M_{\nabla_YF}(X_{k+1},V_{k+1})$
+            \State $Y_{k+1} \gets \prox_{\beta_k\phi_B}\left(Y_k-\beta_k\nabla_YF(X_{k+1},V_{k+1},Y_k)\right)$
+            \State ${\gamma_k^{(a)}}^{-1} \gets M_{\nabla^{(a)}_VF}(X_{k+1},Y_k)$  \Comment{$1\leq a\leq c$}
+            \State $\Va_{k+1} \gets \prox_{\gamma_k^{(a)}\phi_B}\left(\Va_k-\gamma_k^{(a)}\nabla^{(a)}_VF(X_{k+1},V_{k}^{(a)},Y_k)\right)$ \Comment{$1\leq a\leq c$} 
       %\EndFor
-    \EndFor\label{alg:cs:optEnd}
-    \State $(X,V,Y)\gets \Call{Round}{f,X_k,V_k,Y_k}$\Comment{Try thresholds from finite set}
-    \If {$r-r(X,V,Y)>1$}\label{alg:cs:rankStart}
+    \EndFor\label{alg:csalt:optEnd}
+    \State $(X,V,Y)\gets \Call{Round}{L,X_k,V_k,Y_k,D}$
+    \IIf {\Call{RankGap}{X,V,Y,r}} 
     	\textbf{return} $(X,V,Y)$
-    \EndIf\label{alg:cs:rankEnd}
+    \EndIIf\label{alg:csalt:rankgap}
     \EndFor
+    \EndFunction
+    \Statex ~
+    \Function{Round}{$L,X_k,Y_k,V_k,D$} 
+    \State $(X^*,V^*,Y^*,L^*)\gets (0,0,0,\infty)$
+    \For {$t_x,t_y\in\{0,0.05,0.1,\ldots 1\}$}
+    \State $(X,V,Y)\gets (\theta_{t_x}(X_k),\theta_{t_x}(V_k),\theta_{t_y}(Y_k))$\label{alg:csalt:defV1}
+    \State $V^{(a)}\gets V^{(a)}-X\circ V^{(a)}$\Comment{$1\leq a\leq c$}
+    \State $U\gets V^{(1)}\circ \ldots \circ V^{(c)}$
+    \State $X\gets \theta(X+ U)$
+    \State $V^{(a)}\gets V^{(a)}- U$\Comment{$1\leq a\leq c$}\label{alg:csalt:defV2}
+    \For{$s\in\{1,\ldots, r\}, a\in\{1,\ldots,c\}$ }
+        \IIf{\Call{Toss}{$X_{\cdot s}+V^{(a)},Y^{(a)}_{\cdot s},D$}}  
+         $(X_{\cdot s},V^{(a)},Y^{(a)}_{\cdot s})\gets (\mathbf{0},\mathbf{0},\mathbf{0})$ \label{alg:csalt:toss}
+        \EndIIf
+    \EndFor
+    \IIf{$L(X,V,Y)< L^*$}
+     $(X^*,V^*,Y^*,L^*)\gets (X,Y,L(X,V,Y))$ 
+    \EndIIf
+  \EndFor
+  \State \textbf{Return} $(X^*,V^*,Y^*)$
+  \EndFunction
 \end{algorithmic}
-\label{alg:cs:C-Salt}
+\label{alg:C-Salt}
 \end{algorithm}
-
-Algorithm~\ref{alg:cs:C-Salt} details \textsc{C-Salt}, which largely follows the framework of \textsc{Primp}. \textsc{C-Salt} has as input the data $D$ and two parameters, for which default values are given, which rarely need to be adjusted in practice. Further information about the robustness and significance of these parameters is provided in~\ref{alg:cs:C-Salt}. For step-wise increased ranks, PALM optimizes the relaxed objective (lines \ref{alg:cs:optStart}-\ref{alg:cs:optEnd}). Note that the alternating minimization of more than two matrices corresponds to the extension of PALM for multiple blocks, as discussed by~\cite{bolte2014proximal}. The required gradients and Lipschitz moduli are stated in Appendix~\ref{app:func}. Subsequently, a rounding procedure  returns the binary matrices $X_{t_1}=\theta_{t_1}(X_K),\ V_{t_1}=\theta_{t_1}(V_K)$  and $Y_{t_2}=\theta_{t_2}(Y_K)$ for thresholds $t_1,t_2\in\{0.05k\mid k\in\{0,1,\ldots,20\}\}$ minimizing $f$. Thereby, the validity of Definition~\ref{def:classSpec} is ensured by setting unsuitable values in $V$ to zero. Furthermore, \textit{trivial} outer products covering fewer than two transactions or items are removed. The number of remaining outer products defines the rank $r(X,V,Y)$. If the gap between the number of possibly and actually modeled outer products is larger than one, the current factorization is returned (line~\ref{alg:cs:rankStart}).
+We include this regularizing function in the objective $L(X,Y,V)$ and its relaxation $F(X,Y,V)$. Since the function $S(Y,V)$ is a polynomial and thus semi-algebraic, its composition with definable functions returns a \KL function, suitable for the optimization via PALM. The overall scheme to derive alternating derivations in a binary data matrix is sketched in Algorithm~\ref{alg:C-Salt}. The algorithm \textsc{C-Salt} largely follows the framework of \textsc{PAL-Tiling}, extending the optimization to more than two matrices which are involved in the factorization. The input of \textsc{C-Salt} is the data matrix $D$ and the rank increment $\Delta_r$, where the transactions belonging to class $a$ are indicated within the chunk $D^{(a)}$. For each considered rank, the optimization scheme of PALM is applied to the nonbinary penalization of the relaxed objective (line \ref{alg:csalt:optStart}-\ref{alg:csalt:optEnd}). The alternating updates with respect to more than two matrices corresponds to the extension of PALM for multiple blocks, as discussed by~\cite{bolte2014proximal}.  Subsequently, a rounding procedure is applied. Within the rounding procedure, the validity of Definition~\ref{def:CS:classSpecAlt} to the class-specific alteration matrix $V$ is ensured (line~\ref{alg:csalt:defV1}-\ref{alg:csalt:defV2}). Once more, we apply a function \textsc{Toss} to remove trivial outer products. The number of remaining outer products defines the rank. If the gap between the number of possibly and actually modeled tiles is larger than one, the current factorization is returned (line~\ref{alg:csalt:rankgap}).
+%\begin{figure}
+\begin{mybox}
+\begin{algSpec}[C-Salt]\label{algSpec:CSalt} Apply \textsc{PAL-Tiling} with the function \textsc{Toss} from Algorithm~\ref{alg:MDL:toss} and the following functions, where the function $L_{\mathsf{CT}}$ and $G$ are the same as denoted in the Algorithm Specification~\ref{algSpec:Primp}.
+\begin{align*}
+c_i =& -\log\left(\frac{|D_{\cdot i}|}{|D|}\right),\ \mu=1+\log(n) &\textit{(constants)}\\
+L(X,V,Y)=& L_{\mathsf{CT}}\left([X\ V^{(1)}\ldots V^{(c)}],Y\right)+S(Y,V)&\textit{(objective)}\\
+\begin{split}
+F(X,V,Y)=& \frac{\mu}{2}\sum_{a=1}^c\left\|\Da-\Ya\left(X{+}\Va\right)^\top \right\|^2\\
+&+\frac{1}{2} G\left([X\ V^{(1)}\ldots V^{(c)}],Y\right)
++S(Y,V)
+\end{split}&\textit{(smooth part)}\\
+%G(X,Y)&=-\sum_{s=1}^r(|Y_{\cdot s}|+1)\log\left(\frac{|Y_{\cdot s}|+1}{|Y|+r}\right) +|X^\top \mathbf{c}| +|Y|,\\
+%--- grad X --
+\nabla_XF(X,V,Y)=&\mu\sum_{a=1}^c\left(\Ya(X{+}\Va)^\top -\Da\right)^\top \Ya+\frac{1}{2}\mathbf{c}\mathbf{1}^\top & \textit{(partial gradient X)}\\
+%--- grad V --
+\begin{split}
+\nabla_\Va F(X,V,Y)=&\mu{(\Ya(X{+}\Va)^\top -\Da)}^\top\Ya\\
+&+\frac{1}{2}\mathbf{c1}^\top+D^\top Y +(\mathbf{1}-2\Da)^\top \Ya
+\end{split}&\textit{(partial gradient V)}\\
+%--- grad Y
+\begin{split}
+\nabla_\Ya F(X,V,Y)=&\mu \left(\Ya(X{+}\Va)^\top-\Da\right)^\top X\\
+&-\frac{1}{2}\left(\log\left(\frac{|Y_{\cdot s}|{+}1}{|Y|{+}r}\right)-1\right)_{js}\\
+ &+ \sum_{b=1}^c\Da V^{(b)}+(\mathbf{1}-2\Da)\Va
+  \end{split}& \textit{(partial gradient Y)}\\
+%-- L-moduli
+  \begin{split}
+      M_{\nabla_X F}(Y,V)=&\mu\|YY^\top \|,\ M_{\nabla_\Va F}(X,Y)=\mu\|\Ya{\Ya}^\top \|\\
+      M_{\nabla_YF}(X,V)=&\|(M_{\nabla_Y^{(a)} F}(X,Y))_a\|\\ M_{\nabla_Y^{(a)} F}(X,V)=&\mu\|(X+\Va)(X+\Va)^\top \|+m_a
+  \end{split} & \textit{(L-moduli)}
+\end{align*}
+\end{algSpec}
+\end{mybox}
+%\end{figure}
+We follow the automatic rank determination scheme by minimizing the description length of the encoding by a code table, as pursued by \textsc{Primp}. The class-specific alterations are denoted by means of standard codes, just as patterns are stated in the code table. Therewith, we obtain an extension of this description length to class-specific alterations as denoted in Algorithm Specification~\ref{algSpec:CSalt}. Correspondingly, we employ the simplistic tossing function from Algorithm~\ref{alg:MDL:toss}. An automatic rank determination by FDR control is also applicable in this setting. We check for the FDR probability bounds whenever the application domain is sensitive to false discoveries.  
 %=========================
 % Experiments
 %========================
 \section{Experiments}
-The experimental evaluations concern the following research questions: First, given that the data matrix is generated as stated in Definition~\ref{def:cs:classSpecAlt}, does \textsc{C-Salt} find the original data structure?
+The experimental evaluations concern the following research questions: First, given that the data matrix is generated as stated in Definition~\ref{def:CS:classSpecAlt}, does \textsc{C-Salt} find the original data structure?
 Second, is the assumption that real-world data emerge as stated in Eq.~(\ref{eq:VBMF}) reasonable, and what effect has the modeling of class-specific alterations on the results?
 We compare against the algorithms \textsc{Dbssl}, the dominated approach proposed in~\cite{miettienen2012finding}, and \textsc{Primp}\footnote{\url{http://sfb876.tu-dortmund.de/primp}}.
 The first question is approached by a series of synthetic datasets, generated according to Eq.~(\ref{eq:VBMF}). To address the second question, we compare on real-world datasets the RSS, computed factorization ranks and visually inspect derived patterns.
 Furthermore, we discuss an application in genome analysis where none of the existing methods provides the crucial information.
 
-For \textsc{C-Salt} and \textsc{Primp} we use as stop criterion a minimum average function decrease (of last 500 iterations) of 0.005 and maximal $k\leq10,000$ iterations. We use the Matlab/C implementation of \textsc{Dbssl} which has been kindly provided by the authors upon request. Setting the minimum support parameter of the employed FP-Growth algorithm proved tricky. Choosing the minimum support too low results in a vast memory consumption (we provided 100GiB RAM); setting it too high yields too few candidate patterns. Hence, this parameter varies between experiments within the range \{2,\ldots,8\}.
+For \textsc{C-Salt} and \textsc{Primp} we use as stopping criterion a minimum average function decrease (of last 500 iterations) of 0.005 and maximal $k\leq10,000$ iterations. We use the Matlab/C implementation of \textsc{Dbssl} which has been kindly provided by the authors upon request. Setting the minimum support parameter of the employed FP-Growth algorithm proved tricky. Choosing the minimum support too low results in a vast memory consumption (we provided 100GiB RAM); setting it too high yields too few candidate patterns. Hence, this parameter varies between experiments within the range \{2,\ldots,8\}.
 
 \textsc{C-Salt} is implemented for GPU, as is \textsc{Primp}. We provide the source code of our algorithms together with the data generating script \footnote{\url{http://sfb876.tu-dortmund.de/csalt}}.
 %----------------------------
@@ -174,17 +212,17 @@ We compute one-to-one matchings $\sigma_1:\{1,\ldots, r\}\rightarrow \{1,\ldots,
 \]
 for selections of columns $S$ and $T$. $\pre^{(a)}_{S,T}$ and $\rec^{(a)}_{S,T}$ denote precision and recall w.r.t. the denoted column selection. Writing $X^{(a)}=X+V^{(a)}$, we compute
 \begin{align*}
-	\pre^{(a)}_{S,T} &= \frac{\left|\left({Y^\star_{\cdot S}}\circ Y_{\cdot T}\right)^{(a)}\left({X^\star_{\cdot S}}\circ X_{\cdot T}\right)^{(a)^T}\right|}{\left|\Ya_{\cdot T}{X^{(a)}_{\cdot T}}^T\right|}, &
-    \rec^{(a)}_{S,T} &= \frac{\left|\left({Y^\star_{\cdot S}}\circ Y_{\cdot T}\right)^{(a)}\left({X^\star_{\cdot S}}\circ X_{\cdot T}\right)^{(a)^T}\right|}{\left|{Y^\star_{\cdot S}}^{(a)}{{X^\star_{\cdot S}}^{(a)}}^T\right|}.
+	\pre^{(a)}_{S,T} &= \frac{\left|\left({Y^\star_{\cdot S}}\circ Y_{\cdot T}\right)^{(a)}\left({X^\star_{\cdot S}}\circ X_{\cdot T}\right)^{(a)^\top }\right|}{\left|\Ya_{\cdot T}{X^{(a)}_{\cdot T}}^\top \right|}, &
+    \rec^{(a)}_{S,T} &= \frac{\left|\left({Y^\star_{\cdot S}}\circ Y_{\cdot T}\right)^{(a)}\left({X^\star_{\cdot S}}\circ X_{\cdot T}\right)^{(a)^\top }\right|}{\left|{Y^\star_{\cdot S}}^{(a)}{{X^\star_{\cdot S}}^{(a)}}^\top \right|}.
 \end{align*}
-We calculate then precision and recall such that planted outer products with indices $R=(1,\ldots, r)$ are compared to outer products of the computed factorization with indices $\sigma_1(R)=(\sigma_1(1),\ldots,\sigma_1(r))$. The corresponding $F$-measure is the micro $F$-measure, which is identified by $F^{(a)}_{R,\sigma_1(R)}$.
+We calculate then precision and recall such that planted outer products with indices $R=(1,\ldots, r)$ are compared to outer products of the computed factorization with indices $\sigma_1(R)=(\sigma_1(1),\ldots,\sigma_1(r))$. The corresponding $\mathsf{F}$-measure is the micro $\mathsf{F}$-measure, which is identified by $F^{(a)}_{R,\sigma_1(R)}$.
 
 Since class-specific alterations of patterns, reflected by the matrix $V$, are particularly interesting in the scope of this paper, we additionally state the recall of $V^\star$, denoted by $\rec_V$. Therefore, we compute a maximum matching $\sigma_2$ between generated class alterations $V^\star$ with usage $Y^\star$ and computed patterns $X_V=[X\ V]$ (setting $V$ to the $(n\times cr)$ zero matrix for other algorithms than \textsc{C-Salt}) with usage $Y_V=[Y \ldots Y]$ (concatenating $c$ times). The recall $\rec_{R,\sigma_2(R)}^{(a)}$ is then computed with respect to the matrices $V^\star, Y^\star, X_V$ and $Y_V$.
 Furthermore, we compute the class-wise factorization rank $r^{(a)}$ as the number of nontrivial outer products, involving more than only one column or row. Outer products where solely one item or one transaction is involved yield no insight for the user and are therefore always discarded. In following plots, we indicate averaged measures over all classes
 \[ F=\frac{1}{c}\sum_a F^{(a)}_{R,\sigma_1(R)}, \quad \rec_V=\frac{1}{c}\sum_a \rec^{(a)}_{R,\sigma_2(R)} \text{ and } r=\frac{1}{c}\sum_a r^{(a)}.
 \]
 Therewith, the size of the class is not taken into account; the discovery of planted structure is considered equally important for every class.
-$F$-measure and recall have values between zero and one. The closer both approach one, the more similar are the obtained and planted factorizations.
+$\mathsf{F}$-measure and recall have values between zero and one. The closer both approach one, the more similar are the obtained and planted factorizations.
 
 We state the synthetic data generation as a procedure which receives the matrix dimensions $(m_a)_a$ ($m=\sum_am_a$) and $n$, the factorization rank $r^\star$, matrix $C\in\{0,1\}^{c\times r}$ and noise probability $p$ as input. The matrix $C$ indicates for each pattern in which classes it is used.
 \begin{description}
@@ -196,9 +234,9 @@ We state the synthetic data generation as a procedure which receives the matrix 
 	\item ${\Va}^\star$ models class-specific alterations of $X^\star$ and
 $\left|\sum_{a=1}^c{\Va_{s}}^\star\right|\leq \nicefrac{2}{3} \left|X^\star_{\cdot s}\right|$
 \end{itemize}
-\item 3. Set $\Da$, flipping every bit of $\theta\left({\Ya}^\star (X^\star+{\Va}^\star)^T\right)$ with probability $p$.
+\item 3. Set $\Da$, flipping every bit of $\theta\left({\Ya}^\star (X^\star+{\Va}^\star)^\top \right)$ with probability $p$.
 \end{description}
-By default, the parameters $r^\star=24$, $m_a=\nicefrac{m}{2}$, where $m$ and $n$ are varied as described in Sec.~\ref{sec:synthExp}, $p=0.1$, and depending on the number of classes we set
+By default, the parameters $r^\star=24$, $m_a=\nicefrac{m}{2}$, where $m$ and $n$ are varied as described in Sec.~\ref{sec:CS:synthExp}, $p=0.1$, and depending on the number of classes we set
 \[C_2=\left[
 \begin{pmatrix}
 1 & 0 & 1\\
@@ -217,13 +255,13 @@ C_4=\left[\begin{pmatrix}
 %-------------------------------------
 % Synthetic Data Experiments
 %-------------------------------------
-\subsection{Synthetic Data Experiments}\label{sec:synthExp}
-We plot for the following series of experiments the averaged $F$-measure, recall $\rec_V$, and the rank (cf. Sec.~\ref{sec:QualityMeas}), against the parameter varied when generating the synthetic data  (see Sec.~\ref{sec:SynthGen}). Error bars have length $2\sigma$. For every experiment, we generate eight matrices: two for each combination of dimensions $(n,m)\in\{(500,1600),\allowbreak(1600,500),\allowbreak(800,1000),\allowbreak(1000,800)\}$.
+\subsection{Synthetic Data Experiments}\label{sec:CS:synthExp}
+We plot for the following series of experiments the averaged $\mathsf{F}$-measure, recall $\rec_V$, and the rank against the parameter varied when generating the synthetic data  (see Sec.~\ref{sec:CS:SynthGen}). Error bars have length $2\sigma$. For every experiment, we generate eight matrices: two for each combination of dimensions $(n,m)\in\{(500,1600),\allowbreak(1600,500),\allowbreak(800,1000),\allowbreak(1000,800)\}$.
 %---------FIGURE NOISE ------------
 \begin{figure}[t!]
 \centering
 \input{plots/CSSynthNoise}
-\caption{Variation of noise (left column), class distribution $\nicefrac{m_1}{m}$ (middle column) and the rank (right column). The $F$-measure, recall of the matrix $V$ (both the higher the better) and the class-wise estimated rank of the calculated factorization is plotted against the varied parameter. Best viewed in color.}
+\caption{Variation of noise (left column), class distribution $\nicefrac{m_1}{m}$ (middle column) and the rank (right column). The $\mathsf{F}$-measure, recall of the matrix $V$ (both the higher the better) and the class-wise estimated rank of the calculated factorization is plotted against the varied parameter. Best viewed in color.}
 \label{fig:noise}
 \end{figure}
 %-----------------------------------
@@ -231,15 +269,15 @@ We plot for the following series of experiments the averaged $F$-measure, recall
 Fig.~\ref{fig:noise} contrasts the results of \textsc{C-Salt}, \textsc{Primp} and \textsc{Dbssl} in the two-class setting. For \textsc{Dbssl}, we consider two instantiations if the rank $r^\star$ is fixed. Both correctly reflect the number of planted specific and common patterns, yet the one rates class-specific alterations as separate patterns and the other counts every pattern with its class-specific alteration as a class-specific pattern. In the experiments varying the rank, we employ the MDL-based selection of the rank proposed for \textsc{Dbssl}. The input candidate constellations of class-specific and common patterns are determined according to the number of planted patterns, i.e., candidate rank constellations are a combination of $r_0\in \nicefrac{r^\star}{3}\pm\{5,0\}$ and  $r_{1}=r_2\in \{\nicefrac{kr^\star}{3}\mid k\in \{1,2,4\}\}$.
 
 Fig.~\ref{fig:noise} shows the performance measures of the competing algorithms when varying three parameters: noise $p$ (left column), ratio of transactions in each class $\nicefrac{m_1}{m}$ (middle column) and rank $r^\star$ (right column).
-We observe an overall high $F$-measure of \textsc{C-Salt} and \textsc{Primp}.
-Both \textsc{Dbssl} instantiations also obtain high $F$-values, but only at lower noise levels and if one class is not very dominant over the other.
-\textsc{C-Salt} and \textsc{Primp} differ most notably in the discovery of class specific alterations measured by $\rec_V$. \textsc{C-Salt} shows a similar recall as \textsc{Dbssl} if the noise is varied but a lower recall if classes are imbalanced. The ranks of returned factorizations by all algorithms lie in a reasonable interval, considering that class-specific alterations can also be interpreted as unattached patterns. Hence, a class-wise averaged rank between 16 and 24 is legitimate. When varying the number of planted patterns, the MDL selection procedure of the rank also yields correct estimations for \textsc{Dbssl}. However, the $F$-measure and recall of $V^\star$ decrease to 0.5 if the rank is not set to the correct parameters for \textsc{Dbssl}.
+We observe an overall high $\mathsf{F}$-measure of \textsc{C-Salt} and \textsc{Primp}.
+Both \textsc{Dbssl} instantiations also obtain high $\mathsf{F}$-values, but only at lower noise levels and if one class is not very dominant over the other.
+\textsc{C-Salt} and \textsc{Primp} differ most notably in the discovery of class specific alterations measured by $\rec_V$. \textsc{C-Salt} shows a similar recall as \textsc{Dbssl} if the noise is varied but a lower recall if classes are imbalanced. The ranks of returned factorizations by all algorithms lie in a reasonable interval, considering that class-specific alterations can also be interpreted as unattached patterns. Hence, a class-wise averaged rank between 16 and 24 is legitimate. When varying the number of planted patterns, the MDL selection procedure of the rank also yields correct estimations for \textsc{Dbssl}. However, the $\mathsf{F}$-measure and recall of $V^\star$ decrease to 0.5 if the rank is not set to the correct parameters for \textsc{Dbssl}.
 
 %---------FIGURE MORE CLASSES ------------
 \begin{figure}[!t]
 \centering
 \input{plots/CSSynthClass}
-\caption{Variation of noise for generated data matrices with three (left) and four classes (right). The $F$-measure, recall of the matrix $V$ (both the higher the better) and the class-wise estimated rank of the calculated factorization (between 16 and 24 can be considered correct) is plotted against the varied parameter. Best viewed in color.}
+\caption{Variation of noise for generated data matrices with three (left) and four classes (right). The $\mathsf{F}$-measure, recall of the matrix $V$ (both the higher the better) and the class-wise estimated rank of the calculated factorization (between 16 and 24 can be considered correct) is plotted against the varied parameter. Best viewed in color.}
 \label{fig:synthClass}
 \end{figure}
 %-----------------------------------
@@ -287,7 +325,7 @@ The untruncated factorizations obtained from \textsc{Dbssl} generally obtain a l
 %--------------------------------------
 % Illustration of Factorizations
 %---------------------------------------
-\subsection{Illustration of Factorizations}\label{sec:Interpret}
+\subsection{Illustration of Factorizations}\label{sec:CS:Interpret}
 \begin{figure}[!t]
   \centering
   \begin{tabular}{ccc@{\hskip 0.1in}cc@{\hskip 0.1in}cc}
@@ -337,7 +375,7 @@ The untruncated factorizations obtained from \textsc{Dbssl} generally obtain a l
     &  \includegraphics[width=0.14\columnwidth]{pics/Wordclouds/MovieDBSSL_3}
     &  \includegraphics[width=0.14\columnwidth]{pics/Wordclouds/MovieDBSSL_4}
   \end{tabular}
-  \caption{Illustration of a selection of derived topics for the 20 News and Movie datasets. The size of a word reflects its frequency in the topic ($\sim Y_{\cdot s}^TD_{\cdot i}$) and the color its class affiliation: pink words are class-common, blue words belong to the first and green words to the second class. Best viewed in color.\label{fig:topics}}
+  \caption{Illustration of a selection of derived topics for the 20 News and Movie datasets. The size of a word reflects its frequency in the topic ($\sim Y_{\cdot s}^\top D_{\cdot i}$) and the color its class affiliation: pink words are class-common, blue words belong to the first and green words to the second class. Best viewed in color.\label{fig:topics}}
 \end{figure}
 Let us inspect the derived most prevalent topics in the form of word clouds.
 Fig.~\ref{fig:topics} displays for every algorithm the top four topics, whose outer product spans the largest area. Class-common patterns are colored pink whereas class-specific patterns are blue or green. Class-specific alterations within topics become apparent by differently colored words in one word cloud. We observe that the topics displayed for the 20-News data are mostly attributed to one of the classes. The topics are generally interpretable and even comparable among the algorithms (cf.\@ the first topic in the Politics dataset). Here, class-specific alterations of \textsc{C-Salt} point at the context in which a topic is discussed, e.g., the press release from the white house after a conference or meeting took place, whereby the latter may be discussed in both threads (cf.\@ the third topic for the Politics dataset).
@@ -346,7 +384,7 @@ The most remarkable contribution of class-specific alterations is given for the 
 %=====================================
 % Genome Data Analysis
 %=====================================
-\subsection{Genome Data Analysis}\label{sec:gene}
+\subsection{Genome Data Analysis}\label{sec:CS:gene}
 The results depicted in the previous section are qualitatively easy to assess. We easily identify overlapping words and filter the important class characteristics from the topics at hand. 
 In this experiment, the importance or meaning of features is unclear and researchers benefit from any summarizing information which is provided by the method, e.g., the common and class-specific parts of a pattern.
 We regard the dataset introduced in~\cite{schramm2015mutational} representing the genomic profile of 18 Neuroblastoma patients. For each patient, samples are taken from three classes: \emph{normal} (N), \emph{primary tumor} (T) and \emph{relapse tumor  cell} (R). The data denotes loci and alterations taking place with respect to a reference genome. Alterations denote nucleotide variations such as $A\rightarrow C$, insertions ($C\rightarrow AC$) and deletions ($AC\rightarrow A$). One sample from each of the classes N and T is given for every patient ($m_N=m_T=18$), one patient lacks one and another has three additional relapse samples ($m_R=20$), resulting in $m=56$ samples.   
@@ -389,4 +427,4 @@ However, using the framework of \textsc{Primp} to minimize the RSS without any r
 % Discussion
 %======================
 \section{Discussion}
-We propose \textsc{C-Salt}, an explorative method to simultaneously derive similarities and differences among sets of transactions, originating from diverse classes. \textsc{C-Salt} solves a Boolean Matrix Factorization (BMF) by means of numerical optimization, extending the method \textsc{Primp} to incorporate classes. We integrate a factor matrix reflecting class-specific alterations of outer products from a BMF (cf.\@ Definition~\ref{def:cs:classSpecAlt}). Therewith, we capture class characteristics, which are lost by unsupervised factorization methods such as \textsc{Primp}. Synthetic experiments show that a planted structure corresponding to our model assumption is filtered by \textsc{C-Salt} (cf.\@ Fig.~\ref{fig:noise}). Even in the case of more than two classes, \textsc{C-Salt} filters complex dependencies among them (cf.\@ Fig~\ref{fig:synthClass}). These experiments also show that the rank is correctly estimated. On interpretable text data, \textsc{C-Salt} derives meaningful factorizations which provide valuable insight into prevalent topics and their class specific characteristics (cf.\@ Table~\ref{tbl:realWorld} and Fig~\ref{fig:topics}). An analysis of genomic data underlines the usefulness of our new factorization method, yielding information which none if the existing algorithms can provide (cf.\@ Sec.~\ref{sec:gene}).
+We propose \textsc{C-Salt}, an explorative method to simultaneously derive similarities and differences among sets of transactions, originating from diverse classes. \textsc{C-Salt} solves a Boolean Matrix Factorization (BMF) by means of numerical optimization, extending the method \textsc{Primp} to incorporate classes. We integrate a factor matrix reflecting class-specific alterations of outer products from a BMF (cf.\@ Definition~\ref{def:cs:classSpecAlt}). Therewith, we capture class characteristics, which are lost by unsupervised factorization methods such as \textsc{Primp}. Synthetic experiments show that a planted structure corresponding to our model assumption is filtered by \textsc{C-Salt} (cf.\@ Fig.~\ref{fig:noise}). Even in the case of more than two classes, \textsc{C-Salt} filters complex dependencies among them (cf.\@ Fig~\ref{fig:synthClass}). These experiments also show that the rank is correctly estimated. On interpretable text data, \textsc{C-Salt} derives meaningful factorizations which provide valuable insight into prevalent topics and their class specific characteristics (cf.\@ Table~\ref{tbl:realWorld} and Fig~\ref{fig:topics}). An analysis of genomic data underlines the usefulness of our new factorization method, yielding information which none if the existing algorithms can provide (cf.\@ Sec.~\ref{sec:CS:gene}).
