@@ -2,36 +2,30 @@
 We state here the more lengthy proofs of results presented in Chapter 2.
 \kmeansobj*
 \begin{proof}
-(\eqref{eq:KM}=\eqref{eq:kmeansYX}) The constraint $Y\in\mathbbm{1}^{m\times r}$ implies that the columns of $Y$ are orthogonal. Thus, the matrix $Y^\top Y=\diag(|Y_{\cdot 1}|,\ldots,|Y_{\cdot r}|)$ is a diagonal matrix. Since for every $j\in\{1,\ldots, m\}$ there is only one $s$ such that $0\neq Y_{js}=1$, we can write 
-\begin{align*}
-\sum_{s=1}^rY_{js}\left\|D_{j\cdot}-\frac{1}{|Y_{\cdot s}|}Y_{\cdot s}^\top D\right\|^2 
-=& \left\|D_{j\cdot}-\sum_{s=1}^r\frac{Y_{js}}{|Y_{\cdot s}|}Y_{\cdot s}^\top D\right\|^2
-%=&\sum_{j=1}^m\|D_{j\cdot}-Y_{j\cdot}\diag(Y\mathbf{1}_r)^{-1}Y^\top D\|^2\\
-%=&\|D-Y\diag(Y\mathbf{1}_r)^{-1}Y^\top D\|^2\\
-%=&\|D-Y(Y^\top Y)^{-1}Y^\top D\|^2
-\end{align*}
-(\eqref{eq:KM}=\eqref{eq:kmeansYX})
-Setting the cluster center matrix $X=D^\top Y(Y^\top Y)^{-1}$, we obtain a candidate solution to the matrix factorization task with binary constraints.
-\[\sum_j\sum_{s=1}^rY_{js}\|D_{j\cdot}-\frac{1}{|Y_{\cdot s}|}Y_{\cdot s}^\top D\|^2=\|D-YX^\top\|^2\]
-A simple proof by contradiction shows that the solution of $r$-means is also the solution to the problem above.  Given $Y\in\mathcal{Y}$, we get the matrix $X$ as defined for $k$-means.
+We have already shown in Section~\ref{sec:ZS:kmeans} that problem~\eqref{eq:KM} is equivalent to Eq.~\eqref{eq:kmeansYXmean}. The equivalence of Eq.~\eqref{eq:kmeansYXmean} and Eq.~\eqref{eq:kmeansYYdaggerD} follows by substitution.
+The equivalence of problem~\eqref{eq:KM} and Eq.~\eqref{eq:kmeansYX} follows from the convexity of the matrix factorization problem when the matrix $Y$ is fixed. We show that for a given matrix $Y\in\mathbbm{1}^{m\times r}$, the matrix $X=D^\top Y(Y^\top Y)^{-1}$
+minimizes the residual sum of squares.
 \begin{align}
-\min_X \|D-YX^\top\|^2 &= \min_X -2\tr(X^\top D^\top Y) + \tr(XY^\top Y X^\top)\nonumber\\
-&= \min_X\sum_s -2X_{\cdot s}^\top D^\top Y_{\cdot s} +\|X_{\cdot s}\|^2|Y_{\cdot s}|\nonumber\\
-	&= \min_X\sum_s |Y_{\cdot s}|\left\|D^\top \frac{Y_{\cdot s}}{|Y_{\cdot s}|}-X_{\cdot s}\right\|^2. \label{eq:proofKMeansX}
+\argmin_X \|D-YX^\top\|^2 &= \argmin_X -2\tr(X^\top D^\top Y) + \tr(XY^\top Y X^\top)\nonumber\\
+&= \argmin_X\sum_s -2X_{\cdot s}^\top D^\top Y_{\cdot s} +\|X_{\cdot s}\|^2|Y_{\cdot s}|\nonumber\\
+	&= \argmin_X\sum_s |Y_{\cdot s}|\left\|D^\top \frac{Y_{\cdot s}}{|Y_{\cdot s}|}-X_{\cdot s}\right\|^2. \label{eq:proofKMeansX}
 \end{align}
-(\eqref{eq:kmeansYX}=\eqref{eq:kmeansTr}) \eqref{eq:kmeansYX} is equal to 
+The last equation shows that the minimum is attained when $X_{\cdot s}=D^\top \frac{Y_{\cdot s}}{|Y_{\cdot s}|}$. 
+
+The equivalence of Eq.~\eqref{eq:kmeansYXmean} and Eq.~\eqref{eq:kmeansTr} follows from the expansion 
 \begin{align*}
-\min_{Y\in\mathcal{Y}} \|D\|^2 -2\tr(D^\top YI_Y^{-1}Y^\top D) +\|Y I_Y^{-1}Y^\top D\|^2,
+\|D-YY^\dagger D\|^2 =  \|D\|^2 -2\tr(D^\top Y(Y^\top Y)^{-1}Y^\top D) +\|Y (Y^\top Y)^{-1}Y^\top D\|^2,
 \end{align*}
-which is equal to \ref{eq:kmeansTr} because
+and the following equation:
 \begin{align*}
-\|Y I_Y^{-1}Y^\top D\|^2&= \tr(D^\top YI_Y^{-1}Y^\top Y I_Y^{-1}Y^\top D)\\
-&=\tr(D^\top YI_Y^{-1}Y^\top D).
+\|Y (Y^\top Y)^{-1}Y^\top D\|^2&= \tr(D^\top Y(Y^\top Y)^{-1}Y^\top Y (Y^\top Y)^{-1}Y^\top D)\\
+&=\tr(D^\top Y(Y^\top Y)^{-1}Y^\top D).
 \end{align*}
-(\ref{item:kmeansTr}=\ref{item:kmeansDD}) follows from completing the square and the fact that
+Likewise, we can add the term 
 \begin{align*}
-\|YI_Y^{-1}Y^\top\|^2 = \tr(YI_Y^{-1}Y^\top YI_Y^{-1}Y^\top) = \tr(I_r)=r 
+\|Y(Y^\top Y)^{-1}Y^\top\|^2 = \tr(Y(Y^\top Y)^{-1}Y^\top Y(Y^\top Y)^{-1}Y^\top) = \tr(I_r)=r 
 \end{align*}
+to the optimization problem in Eq.~\eqref{eq:kmeansTr} and complete the square such that we obtain Eq.~\eqref{eq:kmeansDD}.
 \end{proof}
 
 \BMFpartition*
@@ -42,4 +36,5 @@ Let $(X,Y)$ be the solution to the problem of Eq.~\eqref{eq:BinMF_YPartition}. F
 = \theta(D_{i\cdot}^\top Y_{\cdot s}|Y_{\cdot s}|^{-1}) &\text{ if } D_{i\cdot}^\top Y_{\cdot s}|Y_{\cdot s}|^{-1}\neq \nicefrac{1}{2},\\ 
 \in\{0,1\} &\text{ otherwise} 
 \end{cases}\right\}.\]
+The equivalence of Eq.~\eqref{eq:BinMF_YPartitionThetaX} and Eq.~\eqref{eq:BinMF_YPartititionTr} follows from the expansion of the Frobenius inner product to a sum.
 \end{proof}

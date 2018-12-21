@@ -4,12 +4,12 @@
     	height=.25\linewidth,
     	width=.4\textwidth,
         axis lines = left]
-        \nextgroupplot[ylabel={$\mathsf{F}$},xmin=0,xmax=25.5, ymin=0, ymax=1.1,
-        legend to name=zelda]
+        \nextgroupplot[ylabel={$\mathsf{F}$},title={$C_3$},xmin=0,xmax=25.5, ymin=0, ymax=1.1,
+        legend to name=labelCSSynthClass]
         	\addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_pC3RecV.dat};\addlegendentry{\textsc{C-Salt}};
             \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pC3RecV.dat};\addlegendentry{\textsc{Primp}};
                 \coordinate (top) at (rel axis cs:0,1);% coordinate at top of the first plot
-        \nextgroupplot[xmin=0,xmax=25.5, ymin=0, ymax=1.1]
+        \nextgroupplot[xmin=0,xmax=25.5,title={$C_4$}, ymin=0, ymax=1.1]
                 \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_pC4F.dat};
             	\addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_pC4F.dat};
         \nextgroupplot[ylabel={$\rec_V$},
@@ -31,5 +31,5 @@
                 \coordinate (bot) at (rel axis cs:1,0);% coordinate at bottom of the last plot
     \end{groupplot}
     \path (top)--(bot) coordinate[midway] (group center);
-    \node[right=1em,inner sep=0pt] at(group center -| current bounding box.east) {\pgfplotslegendfromname{zelda}};
+    \node[right=1em,inner sep=0pt] at(group center -| current bounding box.east) {\pgfplotslegendfromname{labelCSSynthClass}};
 \end{tikzpicture}

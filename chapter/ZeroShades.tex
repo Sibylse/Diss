@@ -7,7 +7,7 @@ Cholesky decomposition, principal component analysis and eigendecomposition -- t
 \section{Notation}
 A formal discussion of the state of clustering requires some notation. We visually distinguish between sets, matrices and vectors by displaying sets in calligraphy style $\mathcal{X},\mathcal{Y},\mathcal{Z},\ldots$, matrices in uppercase mode $X,Y,Z,\ldots$ and vectors and constants as lowercase letters $x,y,z$, which we highlight in bold if we want to avoid confusion with constants. We use $\mathbb{R}$ and $\mathbb{R}_+$ to denote the set of real and nonnegative real values. Accordingly, $\mathbb{N}$ denotes the set of natural numbers. Furthermore, we state the set of all $n\times m$-dimensional partition matrices as $\mathbbm{1}^{m\times n}$. That is, $A\in\mathbbm{1}^{m\times n}$ if and only if $A$ is a binary matrix and every row of $A$ has exactly one entry equal to one. 
 
-We write $\mathbf{1}$ to represent a matrix having all elements equal to 1. The dimension of such a matrix can always be inferred from the context. We denote with the matrix $I$ the identity matrix.
+We write $\mathbf{1}$, respectively $\mathbf{0}$, to represent a matrix having all elements equal to 1, respectively 0. The dimension of such a matrix can always be inferred from the context. We denote with the matrix $I$ the identity matrix.
 We often neglect stating the range of indices if that is clear from the context. We strive for uniformity in the use of indices, such that the range is usually deducible from the particular index. As such, we usually have $1\leq i\leq n, 1\leq j\leq m$ and $1\leq s\leq r$.
 
 We assume that our data is given by the matrix $D\in\mathbb{R}^{m\times n}$. The data represents $m$ points $D_{j\cdot}$ for $1\leq j\leq m$ in the $n$-dimensional feature space. For every point, we denote with $\mathcal{N}_\epsilon(j)=\{l| \|D_{j\cdot}-D_{l\cdot}\|<\epsilon\}$ its $\epsilon$-neighborhood.
@@ -20,13 +20,13 @@ Lastly, we remark that $\log$ denotes the natural logarithm.
 % Nonnegative Matrix Factorization
 %==================================
 \section{Nonnegative Matrix Factorization}
-The objective of Nonnegative Matrix Factorization (NMF) makes only a slight alteration to renowned factorizations known as Principal Component Analysis (PCA) or truncated SVD, by requiring that the factor matrices are nonnegative. Unfortunately, this seemingly small modification makes NMF an NP-hard problem~\citep{vavasis2009complexity}, opposed to the polynomially solvable SVD. NMF is originally introduced by \cite{paatero1994positive} under the name positive matrix factorization. It gained much attention since the publications from~\citeauthor{lee1999learning}, showing that the nonnegativity constraints and the resulting parts-based explanation of the data empowers the interpretability of the results. Since then, efficient computations of good approximations to the NMF problem are studied.            
+The objective of Nonnegative Matrix Factorization (NMF) makes only a slight alteration to renowned factorizations known as Principal Component Analysis (PCA) or truncated Singular Value Decompositions (SVD), by requiring that the factor matrices are nonnegative. Unfortunately, this seemingly small modification makes NMF an NP-hard problem~\citep{vavasis2009complexity}, opposed to the polynomially solvable SVD. NMF is originally introduced by \cite{paatero1994positive} under the name positive matrix factorization. It gained much attention since the publications from~\citeauthor{lee1999learning}, showing that the nonnegativity constraints and the resulting parts-based explanation of the data empowers the interpretability of the results. Since then, efficient computations of good approximations to the NMF problem are studied.            
 
-A formal task definition of NMF is given as follows: let $D\in\mathbb{R}_+^{m\times n}$ be the nonnegative data matrix and let $r$ be a specified integer, we refer to as rank. The task of NMF is then to recover nonnegative factors $X\in \mathbb{R}_+^{n\times r}$ and $Y\in \mathbb{R}_+^{m\times r}$ such that $YX^T$ approximates $D$. The quality of the approximation is usually measured by means of the Frobenius norm, that is
+A formal task definition of NMF is given as follows: let $D\in\mathbb{R}_+^{m\times n}$ be the nonnegative data matrix and let $r$ be a specified integer, we refer to as rank. The task of NMF is then to recover nonnegative factors $X\in \mathbb{R}_+^{n\times r}$ and $Y\in \mathbb{R}_+^{m\times r}$ such that $YX^T$ approximates $D$. The quality of the approximation is usually measured by means of the Frobenius norm:
 \begin{equation}
-	\min_{X,Y} F(X,Y) = \frac{1}{2}\left\|D-YX^T\right\|^2 \quad \text{s.t. }X\in \mathbb{R}_+^{n\times r}, Y\in \mathbb{R}_+^{m\times r},\label{eq:NMF} \tag{NMF}
+	\min_{X,Y} F(X,Y) = \frac{1}{2}\left\|D-YX^T\right\|^2 \quad \text{s.t. }X\in \mathbb{R}_+^{n\times r}, Y\in \mathbb{R}_+^{m\times r}.\label{eq:NMF} \tag{NMF}
 \end{equation}
-or the Kullback-Leibler divergence. While the former approach is inherently related to clustering using the Euclidean distance of points, the latter is related to topic models such as probabilitistic latent semantic indexing~\citep{gaussier2005relation,ding2006nonnegative}. We will later discuss the particular relationships of approximations with respect to the Frobenius norm and related clustering objectives. 
+We refer in the following to the function $F(X,Y)=\nicefrac{1}{2}\left\|D-YX^T\right\|^2$ also as the Residual Sum of Squares (RSS). Another popular measurement of the approximation error is the Kullback-Leibler divergence. While the former approach (employing the Frobenius norm) is inherently related to clustering using the Euclidean distance of points, the latter is related to topic models such as probabilitistic latent semantic indexing~\citep{gaussier2005relation,ding2006nonnegative}. We will later discuss the particular relationships of approximations with respect to the Frobenius norm and related clustering objectives. 
 %----------------------------
 % NMF and Clustering
 %----------------------------
@@ -47,12 +47,12 @@ This formulation of the NMF objective shows that suitable factorizations are the
 %-------------------------------
 % Algorithms for NMF
 %-------------------------------
-\subsection{Algorithms for NMF}
+\subsection{Algorithms for NMF}\label{sec:ZS:algNMF}
 There are numerous approaches to solve the optimization problem of NMF in its various versions, including regularizations and constraints. Here, we focus on three approches, which are particularly applied to solve matrix factorizations with binary constraints. For a more thorough overview and discussion of optimization aspects, we refer the reader to~\cite{cichocki2009nonnegative} and~\cite{kim2014algorithms}.
 %
 % Alternating Minimization
 %____________________________
-\subsubsection{Alternating Minimization} \label{sec:ZS:AlternatingMinimization}
+\paragraph{Alternating Minimization}
 The function $F$ from Eq.~\eqref{eq:NMF} is nonconvex, but convex in either $X$ or $Y$, if the other argument is fixed. This property ensures that the \emph{Gauss-Seidel} scheme, also known as \emph{block-coordinate descent}, an \emph{alternating minimization} along one of the matrices while the other one is fixed, returns a stationary point upon convergence. Indeed, \cite{grippo2000convergence} have shown that the nonnegativity constraint ensures the convergence of the sequence $(X_k,Y_k)$ generated by the update rule
 \begin{align}\label{eq:als}
 \begin{split}
@@ -64,7 +64,7 @@ The drawback of this method is solving the subproblems in every iteration, which
 %
 % Multiplicative Updates
 %____________________________
-\subsubsection{Multiplicative Updates}
+\paragraph{Multiplicative Updates}
 NMF received much attention since the publication of the easily implementable multiplicative update algorithm by \cite{lee2001algorithms}. The update rules are defined as element-wise multiplications, given by
 \begin{align}
 X_{is} &\leftarrow X_{is} \frac{D_{\cdot i}^\top Y_{\cdot s}}{X_{i\cdot}Y^\top Y_{\cdot s}}\label{eq:multUpdateX}\\
@@ -78,7 +78,7 @@ The major drawback of multiplicative updates is the conservative choice of the s
 %
 % Proximal Minimization
 %____________________________
-\subsubsection{Proximal Minimization and Projected Gradient} \label{sec:ZS:ProxNMF}
+\paragraph{Proximal Minimization and Projected Gradient}
 Instead of restricting the step size to persistently satisfy the nonnegativity constraint, larger step-sizes can be employed and possibly negative entries can be projected to the positive orthant. Using larger step-sizes improves the convergence rate, but the step-size should not be too large, otherwise the iterates might be zig-zagging around the optimum. We can always fall back upon using linesearch such as the Armijo rule~\citep{lin2007projected}, but having the possibility to calculate suitable stepsizes according to a specified strategy is desirable in practice.  
 
 Assuming that we have a good strategy to efficiently determine the step-sizes $\alpha_k$ and $\beta_k$, the projected gradient procedure for nonnegative matrix factorization performs the following updates:
@@ -121,7 +121,7 @@ Ratio Cut  & $Z=Y(Y^\top Y)^{-1/2}$  &  $A=W-I_W=-L_d$\\
 %-------------------------------------------------
 % $k$-Means
 %-------------------------------------------------
-\subsection{k-Means}
+\subsection{k-Means}\label{sec:ZS:kmeans}
 If there is one algorithm which comes to mind when thinking about clustering, it is likely the $k$-means algorithm~\citep{lloyd1982least}. The objective of $k$-means is founded in the intuitively easily graspable notions of clusters by the within-point scatter, minimizing the intra-cluster similarity.
 Suppose we are given a partition of $m$ points reflected by the clusters $\mathcal{J}_1,\ldots, \mathcal{J}_r$. A cluster is here the set $\mathcal{J}_s\subseteq \{1,\ldots, m\}$ of its point indices. The average distance of points within a cluster is then given as
 \begin{align*}
@@ -167,7 +167,7 @@ The following optimization problems are equivalent to Problem~\eqref{eq:KM}
 \min_{Y}\ &\|DD^\top - YY^\dagger\|^2 &\text{ s.t. }   Y\in\mathbbm{1}^{m\times r} \label{eq:kmeansDD}
 \end{align}
 \end{restatable}
-The various formulations of the objective of $k$-means give rise to multiple optimization approaches. The equivalence of Eqs.~\eqref{eq:kmeansYXmean} and~\eqref{eq:kmeansYX} establishes an alternating minimization scheme, since the optimal cluster center matrix is provided in closed from, given the cluster assignment matrix. We will discuss this procedure, known als Lloyds' minimization, more in detail in Section~\ref{sec:ZS:AlternatingMinimization}. Since $Y$ is orthogonal and nonnegative, Eq.~\eqref{eq:kmeansYX} is approximable by an orthogonal relaxation (cf. \@Sec.\ref{sec:ZS:OrthogonalRelaxation}).
+The various formulations of the objective of $k$-means give rise to multiple optimization approaches. The equivalence of Eqs.~\eqref{eq:kmeansYXmean} and~\eqref{eq:kmeansYX} establishes an alternating minimization scheme, since the optimal cluster center matrix is provided in closed from, given the cluster assignment matrix. We will discuss this procedure, known als Lloyds' minimization, more in detail in Section~\ref{sec:ZS:algNMF}. Since $Y$ is orthogonal and nonnegative, Eq.~\eqref{eq:kmeansYX} is approximable by an orthogonal relaxation (cf. \@Sec.\ref{sec:ZS:OrthogonalRelaxation}).
 The objective in Eq.~\eqref{eq:kmeansTr} resembles the optimization task to find the largest eigenvectors of a symmetric real-valued matrix such as $DD^\top$ (cf.\@ Section~\ref{sec:ZS:SpectralRelaxation}). This relation founds the application of a spectral relaxation~\citep{zha2002spectral}. 
 Eqs.~\@\eqref{eq:kmeansTr} and~\@\eqref{eq:kmeansDD} show that $k$-means can be formulated in sole dependence of the similarity between points, measured by the inner product which equates the cosine similarity between points when the data points are normalized. This is a stepping stone to the application of kernel methods, discussed in the following section.
 
@@ -343,8 +343,7 @@ The elements of the data matrix belonging to a bicluster are approximated with t
 \begin{align}
    \min_{\mathcal{B}} \sum_{i=1}^n\sum_{j=1}^m \left(D_{ji}-\sum_{ (\mathcal{J},\mathcal{I})\in\mathcal{B}:\  (i,j)\in\mathcal{J}\times\mathcal{I}}\mu(D_{\mathcal{JI}})\right)^2 \label{eq:blockConst}
 \end{align}
-This objective is transferable into a matrix factorization problem, involving a tri-factorization as outlined by the following theorem.
-
+This objective is transferable into a matrix factorization problem, involving a tri-fac\-tor\-iza\-tion as outlined by the following theorem.
 \begin{theorem}\label{thm:checkerboard}
 The following optimization problems are equivalent to the objective from Eq.~\eqref{eq:blockConst} subject to
 \[\mathcal{B}\in \left\{\{\mathcal{I}_1,\ldots,\mathcal{I}_r\}\times \{\mathcal{J}_1,\ldots,\mathcal{J}_q\}\mid \dot\bigcup_{s}\mathcal{I}_s=\{1,\ldots,n\},\  \dot\bigcup_{t}\mathcal{J}_t=\{1,\ldots,m\}\right\},\]
@@ -352,21 +351,23 @@ that is the set of biclusters is given as the cartesian product of a partition o
 \begin{align}
     \label{eq:checkerOrig}
     \min_{X,C,Y}&\ \|D-YCX^\top\|^2 &
-    \text{s.t. } X\in \mathbbm{1}^{n\times r},\ Y\in\mathbbm{1}^{m\times r}, C\in\mathbb{R}^{\hat{r}\times r}\\ 
+    \text{s.t. } X\in \mathbbm{1}^{n\times r},\ Y\in\mathbbm{1}^{m\times r}, C\in\mathbb{R}^{q\times r}\\ 
     \label{eq:checkerAvg}
 \min_{X,Y}&\ \|D-YCX^\top\|^2&
-\text{s.t. } X\in \mathbbm{1}^{n\times r},\ Y\in\mathbbm{1}^{m\times r}, C= Y^\dagger D {X^\dagger}^\top\\
+\text{s.t. } X\in \mathbbm{1}^{n\times r},\ Y\in\mathbbm{1}^{m\times q}, C= Y^\dagger D {X^\dagger}^\top\\
 \max_{X,Y}&\ \tr(D^\top YCX^\top) &
-\text{s.t. } X\in \mathbbm{1}^{n\times r},\ Y\in\mathbbm{1}^{m\times r}, C= Y^\dagger D {X^\dagger}^\top
+\text{s.t. } X\in \mathbbm{1}^{n\times r},\ Y\in\mathbbm{1}^{m\times q}, C= Y^\dagger D {X^\dagger}^\top
 \end{align}
 \end{theorem}
+The proof follows the techniques of expanding the Frobenius inner product into a sum and employing the convexity of matrix factorization objectives when all but one matrix is fixed. We do not explicitly state the proof of this theorem here, but it is easily adapted from Theorem~\ref{thm:kmeansobj}.
+
 Since the columns in $Y$ and $X$ are orthogonal, there is a permutation of rows and columns such that every bicluster appears as a coherent block in the factorization matrix. This is where the name checkerboard clustering comes from, the visualization by the left matrix in Fig.~\ref{fig:blockclusters} shows that the partition of the data matrix by biclusters results in a checkerboard pattern. There are two row clusters and three column clusters. Each intersection of row cluster $t$ and column cluster $s$ reflects one bicluster, which is approximated by the constant $C_{ts}$. Such an approximation with constant biclusters goes back to ~\cite{hartigan1972direct}, who proposes said approximation for a tree partitioning model.
 
 The equivalence of the objectives from Eqs.~\eqref{eq:checkerOrig} and~\eqref{eq:checkerAvg}  goes back to~\cite{gaul1996new} and allows for an alternating minimization with respect to one matrix, while fixing the other two~\citep{maurizio2001double,wang2011fast,cho2004minimum}. This procedure adapts Lloyd's algorithm from $k$-means clustering (cf.\@ Section~\ref{sec:ZS:Lloyds}). Furthermore, the orthogonal nonnegative relaxation (cf. \@Section~\ref{sec:ZS:OrthogonalRelaxation}) is also adapted for the optimization of tri-factorizations~\citep{ding2006orthogonal, yoo2010orthogonal}. The relationship between checkerboard and $k$-means clustering becomes apparent when determining that every feature belongs to its own cluster, that is setting $X=I_n$ in Eq.~\eqref{eq:checkerAvg}. This modification transfers the two-sided clustering of the checkerboard model into the one-sided clustering of $k$-means. 
 %-------------------------------------------
-% The Plaid Model
+% Plaid Model
 %------------------------------------------
-\subsection{The Plaid Model}
+\subsection{Plaid Model}
 The plaid model originates from a bioinformatics application in microarray data analysis. Microarrays are used to measure and reflect the gene expressions of patients. Let us say, the number of patients is $m$ and the number of genes is $n$. Among a set of patients, some genes may co-regulate. That is, the genes exhibit similar expression patterns among the set of patients. Such a set of patients together with the co-regulating genes identifies a bicluster. In this case, saying that every bicluster approximates the corresponding part of the data matrix by a single aggregated value, as known from checkerboard clustering is not enough. Some genes have generally higher or lower expression levels than other genes and the same holds for patients. Therefore, the plaid model introduces bias terms for each patient $\mu(D_{j\mathcal{I}})$ and gene $\mu(D_{\mathcal{J}i})$ to model deviations from the average bicluster value. Denoting again with $\mathcal{B}$ the set of all possible biclusterings, we state the objective of plaid clustering as:
 \begin{align}
    \min_{\mathcal{B}} \sum_{i=1}^n\sum_{j=1}^m \left(D_{ji}-\sum_{\substack{(\mathcal{J},\cdot)\in\mathcal{B}:\\  j\in\mathcal{J}}}\mu(D_{\mathcal{J}i}) - \sum_{\substack{(\cdot,\mathcal{I})\in\mathcal{B}:\\  i\in\mathcal{I}}} \mu(D_{j\mathcal{I}})+ \sum_{\substack{(\mathcal{J},\mathcal{I})\in\mathcal{B}:\\  (i,j)\in\mathcal{J}\times\mathcal{I}}} \mu(D_{\mathcal{JI}})\right)^2. \label{eq:plaid}
@@ -389,7 +390,7 @@ The following optimization problems are equivalent to the plaid optimization pro
 %------------------------------------------------
 % The Block Diagonal Model
 %------------------------------------------------
-\subsection{The Block Diagonal Model and Bipartite Graph Cuts}
+\subsection{Block Diagonal Model and Bipartite Graph Cuts}
 The models discussed so far allow for varying numbers of row- and column- clusters, being arbitrarily combined to create a bicluster. However, a special interpretation is given for tri-factorizations approximating the data matrix as known from checkerboard clustering (cf. \@Eq.~\eqref{eq:checkerOrig}) when biclusters represent a one-to-one relationship of row- and column-clusters. This task is also known under the name of constant biclustering~\citep{madeira2004biclustering}. The corresponding matrix factorization formulations follow from the equivalences of checkerboard objectives in Theorem~\ref{thm:checkerboard} and the observation that a one-to-one correspondence between row- and column-clusters implies that the middle scaling matrix $C$ is diagonal.
 \begin{corollary}\label{thm:blockdiagonal}
 Let the set of possible biclusters be given as
@@ -441,7 +442,7 @@ y\\ x
 &\Leftrightarrow Dx=\lambda y \ \wedge \ Dy=\lambda x\label{eq:singEigK}\\
 &\Rightarrow DD^\top y = \lambda^2 y \wedge DD^\top x=\lambda^2 x. \nonumber
 \end{align}
-The equation above yields in combination with Eq.~\eqref{?} that eigenvalues of $W$ are also singular values of $D$. On the other hand, if $\lambda$ is a singular value of $D$ then the term on the right of Eq.~\eqref{eq:singEigK} holds for some vectors $x$ and $y$. Thus, $\lambda$ is also an eigenvalue of $W$ by the equivalence in Eq.~\eqref{eq:singEigK}. As a result, the eigenvalues of $W$ equate the singular values of $D$ and a similar argumentation yields that eigenvectors of $W$ correspond to left and right singular vectors of $D$. This relationship still holds if the weight matrix is normalized. Therefore, the eigenvectors of the $(n+m)\times (n+m)$ dimensional matrix $W$ are efficiently computed by the singular vectors of the $m\times n$ dimensional matrix $D$. 
+The equation above yields that eigenvalues of $W$ are also singular values of $D$. On the other hand, if $\lambda$ is a singular value of $D$ then the term on the right of Eq.~\eqref{eq:singEigK} holds for some vectors $x$ and $y$. Thus, $\lambda$ is also an eigenvalue of $W$ by the equivalence in Eq.~\eqref{eq:singEigK}. As a result, the eigenvalues of $W$ equate the singular values of $D$ and a similar argumentation yields that eigenvectors of $W$ correspond to left and right singular vectors of $D$. This relationship still holds if the weight matrix is normalized. Therefore, the eigenvectors of the $(n+m)\times (n+m)$ dimensional matrix $W$ are efficiently computed by the singular vectors of the $m\times n$ dimensional matrix $D$. 
 
 The computation of $W$'s eigenvectors is relevant for a spectral relaxation, as originally proposed by~\cite{zha2001bipartite,dhillon2001co}. Newer methods minimizing bipartite graph cuts discuss how to learn the graph representation of $W$, respectively $D$, together with the optimal clustering~\citep{nie2017learning}. This trend has also been observed with respect to spectral clustering (cf. \@Section~\ref{sec:ZS:graphCut}).
 The spectral relaxation emerges from the fact that the trace maximization in Eq.~\eqref{eq:blockDiagW} yields the eigenvectors to the largest eigenvalues of $W$ if the matrix $Z$ is only required to be real-valued and orthonormal. We discuss this relationship more in Section~\ref{sec:ZS:SpectralRelaxation}. Here, the eigenvectors are given by the singular vectors of $D$, thus we could also speak of a singular value relaxation instead. The relationship of block-diagonal clustering and SVD becomes also apparent when we regard the tri-factorization of Eq.~\eqref{eq:blockDiagC}. Relaxing the constraints of $X$ and $Y$ to orthogonality constraints for real-valued matrices $X$ and $Y$ results in a truncated SVD. In this case, the largest absolute singular values are denoted on the diagonal of matrix $C$.

@@ -4,39 +4,48 @@
 \input{fonspecifications}
 \begin{document}
 \selectlanguage{english}
-%\include{chapter/titelseite}
+\include{chapter/titlepage}
 \blankpage
 \include{chapter/abstract}
 \pagenumbering{roman}
 \tableofcontents
 \cleardoublepage
 \pagenumbering{arabic}
+\mbox{}
 
-\nomenclature{$\mathbbm{1}^{m\times n}$}{Set of all binary $m\times n$ partition matrices; every row vector is a unit vector}
-\nomenclature{$A,B,C,\ldots$}{Matrices}
-\nomenclature{$\mathbb{R}, \mathbb{R}_+$}{The set of all real values, respectively the set of all nonnegative values}
-\nomenclature{$\mathcal{A},\mathcal{B},\mathcal{C},\ldots$}{Sets}
-\nomenclature{$D$}{Data matrix}
-\nomenclature{$I$}{Identity matrix}
-\nomenclature{$\mathbf{1}$}{Constant one matrix: $\mathbf{1}_{ji}=1$}
-\nomenclature{$\theta$}{Heaviside step function}
-\nomenclature{$\|v\|$}{Entrywise 2-norm (Frobenius norm)}
-\nomenclature{$|\cdot|$}{Entrywise 1-norm}
-\nomenclature{$\mathcal{N}_\epsilon(j)$}{The set of all points lying in the $\epsilon$-ball around point $j$}
-\nomenclature{$\langle \cdot, \cdot \rangle$}{The Frobenius inner product}
-\nomenclature{$\diag(x)$}{Diagonal matrix whose elements on the diagonal are indicated by the vector $x$}
- 
-\printnomenclature
+\nomenclature[02]{$\mathbbm{1}^{m\times n}$}{Set of all binary $m\times n$ partition matrices; every row vector is a unit vector}
+\nomenclature[01]{$A,B,C,\ldots$}{Matrices}
+\nomenclature[02]{$\mathbb{R}, \mathbb{R}_+$}{The set of all real values, respectively the set of all nonnegative values}
+\nomenclature[01]{$\mathcal{A},\mathcal{B},\mathcal{C},\ldots$}{Sets}
+\nomenclature[03]{$D$}{Data matrix}
+\nomenclature[03]{$I$}{Identity matrix}
+\nomenclature[03]{$A_{\mathcal{J}\mathcal{I}}$}{Submatrix of $A$, containing only the rows in the set $\mathcal{J}$ and columns in $\mathcal{I}$}
+\nomenclature[03]{$\thickbar{A}$}{The Boolean complement matrix $\mathbf{1}-A$ for a binary matrix $A$}
+\nomenclature[03]{$\mathbf{1},\mathbf{0}$}{Constant one or zero matrix: $\mathbf{1}_{ji}=1$, $\mathbf{0}_{ji}=0$}
+\nomenclature[04]{$\theta$}{Heaviside step function}
+\nomenclature[05]{$\lVert\,{\cdot}\,\rVert$}{Entrywise 2-norm (Frobenius norm)}
+\nomenclature[05]{$\mid\cdot\mid$}{Entrywise 1-norm}
+\nomenclature[04]{$\mathcal{N}_\epsilon(j)$}{The set of all points lying in the $\epsilon$-ball around point $j$}
+\nomenclature[05]{$\langle \cdot, \cdot \rangle$}{The Frobenius inner product}
+\nomenclature[03]{$\diag(x)$}{Diagonal matrix whose elements on the diagonal are indicated by vector $x$}
+\nomenclature[03]{$Y^\dagger$}{Moore-Penrose inverse $(Y^\top Y)^{-1}Y^\top$}
+\nomenclature[04]{$\mu(A)$}{The average of all elements in the matrix $A$}
+\nomenclature[03]{$I_A$}{The diagonal matrix $\diag(A\mathbf{1})$}
+\nomenclature[06]{$\circ$}{Hadamard product}
+\nomenclature[06]{$\odot$}{Boolean product}
+
+
+\printnomenclature[2 cm]
 % chapter
 \include{chapter/introduction}
 \include{chapter/ZeroShades}
 \include{chapter/algorithms}
-\include{chapter/Spectacl}
+%\include{chapter/Spectacl}
 \include{chapter/paltiling}
-\include{chapter/RankSelectionMDL}
-\include{chapter/RankSelectionFDR}
-\include{chapter/csalt}
-\include{chapter/conclusion}
+%\include{chapter/RankSelectionMDL}
+%\include{chapter/RankSelectionFDR}
+%\include{chapter/csalt}
+%\include{chapter/conclusion}
 
 % Anhang
 \appendix

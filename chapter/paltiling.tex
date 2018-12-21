@@ -114,7 +114,7 @@ converges to a critical point of the function $\Psi$.
 %---------------------------------------
 % The Kurdyka-{\L}ojasiewicz Property
 %---------------------------------------
-\subsection{The Kurdyka-{\L}ojasiewicz Property}
+\subsection{Kurdyka-{\L}ojasiewicz Property}
 Deriving the \KL property on the basis of its definition is hard. luckily, there are some classes of functions, which allow for a more easy derivation of the \KL property. We introduce here the semi-algebraic and definable functions. 
 \begin{definition}[Semi-algebraic Sets and Functions]
 A set $\mathcal{X}\subseteq \mathbb{R}^n$ is called \emph{semi-algebraic} if it is equal to a finite union $\mathcal{X}=\mathcal{X}_1\cup\ldots\cup\mathcal{X}_k$ of sets
@@ -164,7 +164,7 @@ PALM states no convexity requirements for convergence in Theorem~\ref{thm:palmCo
 %-----------------------------------
 % A Binary Proximal Mapping
 %-----------------------------------
-\subsection{A Binary Proximal Mapping}
+\subsection{A Binary Proximal Mapping}\label{sec:PT:binprox}
 While the Mexican hat function can be seen as an $\ell2$ regularization equivalent penalizer for binary values, here, we choose an $\ell1$-equivalent form.
 Specifically, we choose $\phi_B(X)=\sum_{i,j}\Lambda(X_{ij})$, which employs the one-dimensional function 
 \[
@@ -187,7 +187,7 @@ to restrict matrix entries to the interval $[0,1]$ and to penalize non-binary va
 We derive with the following proposition a closed form for the computation of the exact minimum as assigned by the proximal mapping with respect to $\phi_B$. 
 \begin{theorem}
 Let $\alpha>0$ and $\phi_B(X)=\sum_{i,j}\Lambda(X_{ij})$ for $X\in\R^{m\times n}$. The proximal operator of $\alpha\phi_B$ maps the matrix $X$ to the matrix $\prox_{\alpha\phi_B}(X)=A\in [0,1]^{m\times n}$ defined by $A_{ji}=\prox_{\alpha\Lambda}(X_{ji})$, where for $x\in \R$ it holds that
-    \begin{equation}\label{eq:prox}
+    \begin{equation}\label{eq:binprox}
 	\prox_{\alpha \Lambda}(x)=
     \begin{cases}
         \max\{0,x-2\alpha\} &x\leq0.5\\
@@ -196,7 +196,7 @@ Let $\alpha>0$ and $\phi_B(X)=\sum_{i,j}\Lambda(X_{ij})$ for $X\in\R^{m\times n}
     \end{equation}
 \end{theorem}
 \begin{proof}
-Let $\alpha>0$, $X\in\R^{m\times n}$ for some $m,n\in\N$ and $A=\prox_{\alpha\phi_B}(X)$. The function $\phi_B$ is fully separable across all matrix entries. In this case, the proximal operator can be applied entry-wise to the composing scalar functions \citep{parikh2014proximal}, i.e., $A_{ji}=\prox_{\alpha\Lambda}(X_{ji})$. It remains to derive the proximal mapping of $\Lambda$ (Eq.~(\ref{eq:prox})).
+Let $\alpha>0$, $X\in\R^{m\times n}$ for some $m,n\in\N$ and $A=\prox_{\alpha\phi_B}(X)$. The function $\phi_B$ is fully separable across all matrix entries. In this case, the proximal operator can be applied entry-wise to the composing scalar functions \citep{parikh2014proximal}, i.e., $A_{ji}=\prox_{\alpha\Lambda}(X_{ji})$. It remains to derive the proximal mapping of $\Lambda$ (Eq.~\eqref{eq:binprox}).
 
 The proximal operator reduces to Euclidean projection if the argument lies outside of the function's domain \citep{parikh2014proximal} and it follows that
 \[\prox_{\alpha\Lambda}(x)=\theta(x) \text{ if } x\notin[0,1].\]
@@ -240,7 +240,7 @@ Similarly, the semi-algebraic property of $\phi_B$, being a finite sum of functi
 %--------------------------------------
 % The General Boolean Matrix Factorization Framework PAL-Tiling 
 %--------------------------------------
-\subsection{The General Boolean Matrix Factorization Framework PAL-Tiling }\label{sec:PT:vanillaAlg}
+\subsection{General Boolean Matrix Factorization Framework:  PAL-Tiling }\label{sec:PT:vanillaAlg}
 %------ ALG PALTILING -----
 \begin{algorithm}[t]
 \caption{The proposed general optimization scheme \textsc{PAL-Tiling} for Boolean matrix factorization. The implementation of the function \textsc{Toss}, used in the function \textsc{Round}, specifies which tiles are kept and therefore also when the rank increasing is terminated.}
@@ -285,12 +285,12 @@ We sketch our method, the general optimization scheme for Boolean matrix factori
 Let us now go through the algorithm step by step. 
 The factor matrices are initialized as empty matrices (having rank zero). At every rank increase, $\Delta_r$ columns of random values between zero and one are appended to the current matrices $(X_K,Y_K)$ in line~\ref{alg:paltiling:increaseRank}. In lines~\ref{alg:paltiling:opt} and \ref{alg:paltiling:round}, the Boolean factorization of rank $r$ is calculated. The function $\phi_B$ is the nonbinary penalization function, which has been defined in the previous Section. After the numerical minimization of the relaxed objective $F(X,Y)$, the matrices $X_K$ and $Y_K$, having entries between zero and one, are rounded to binary matrices $X$ and $Y$ with respect to the Boolean factorization objective $L(X,Y)$. If the rounding procedure returns binary matrices having a rank smaller than $r$, then the current factorization is returned (line~\ref{alg:paltiling:rankGap}). Otherwise, we increase the rank and add $\Delta_r$ random columns to the relaxed solution of the former iteration $(X_K,Y_K)$. Note that our method is not greedy as only the initialization of the factor matrices is based on the result of the former iteration. During the optimization of the relaxed objective, the results of former iterations, employing a smaller rank, might very well be changed.
 
-As a stopping criterion we propose to check whether the average function decrease of the last hundred iterations is smaller than a small threshold. That is, at iteration $k$ we check whether $\nicefrac{1}{100}\sum_{t=k-100}^k(F(X_{t-1},Y_{t-1})-F(X_t,Y_t))<q_K$. How to set the parameter $q_K$ is typically easily inferred from observing the function decrease during the first $10,000$ iterations. For most datasets, a maximum number of ten thousand iterations is appropriate. However, tracing the average function decrease helps to decide when to abort the optimization earlier due to convergence. \todo{Check with code if thats correct}
+As a stopping criterion we propose to check whether the average function decrease of the last hundred iterations is smaller than a small threshold. That is, at iteration $k$ we check whether $\nicefrac{1}{500}\sum_{t=k-500}^k(F(X_{t-1},Y_{t-1})-F(X_t,Y_t))<q_K$. How to set the parameter $q_K$ is typically easily inferred from observing the function decrease during the first $10,000$ iterations. For most datasets, a maximum number of ten thousand iterations is appropriate. However, tracing the average function decrease helps to decide when to abort the optimization earlier due to convergence. Throughout this work, we employ a stopping criterion of maximal 50,000 optimization iterations or a minimum average function decrease of $q_K=10^{-4}$.
 
-We outline the rounding function in Algorithm~\ref{alg:paltiling} as well. This function basically computes the thresholding parameters $t_x$ and $t_y$ with which the relaxed factor matrices are rounded to binary matrices, such that the objective function $L$ is minimized. However, some some tiles of the binary factorization are tossed according to a specified criterion. Therefore, particular instances of the \textsc{PAL-Tiling} algorithm require the specification of the objective function $L(X,Y)$, its smooth relaxation $F(X,Y)$ together with the corresponding gradient and its Lipschitz moduli $M_{\nabla_XF}(Y)$ and $X_{\nabla_YF}(x)$ and the function $\textsc{Toss}$.
+We also outline the rounding function in Algorithm~\ref{alg:paltiling}. This function basically computes the thresholding parameters $t_x$ and $t_y$ with which the relaxed factor matrices are rounded to binary matrices, such that the objective function $L$ is minimized. However, some some tiles of the binary factorization are tossed according to a specified criterion. Therefore, particular instances of the \textsc{PAL-Tiling} algorithm require the specification of the objective function $L(X,Y)$, its smooth relaxation $F(X,Y)$ together with the corresponding gradient and its Lipschitz moduli $M_{\nabla_XF}(Y)$ and $X_{\nabla_YF}(x)$ and the function $\textsc{Toss}$.
 
-The default objective in Boolean matrix factorization is the minimization of the residual sum of squares as stated in problem~\ref{eq:BoolMF}. We state the function, gradients and Lipschitz constants, required for the minimization via \textsc{PAL-Tiling} if the rank of the factorization is provided.
-\begin{mybox}
+The default objective in Boolean matrix factorization is the minimization of the residual sum of squares as stated in problem~\eqref{eq:BoolMF}. We state the function, gradients and Lipschitz constants, required for the minimization via \textsc{PAL-Tiling} if the rank of the factorization is provided.
+%\begin{mybox}
 \begin{algSpec}\label{algSpec:BMF}
 Vanilla \textsc{PAL-Tiling}: Apply \textsc{PAL-Tiling} with the following specification of functions:
 \begin{align*}
@@ -301,7 +301,7 @@ Vanilla \textsc{PAL-Tiling}: Apply \textsc{PAL-Tiling} with the following specif
     M_{\nabla_XF}(Y)&>\|YY^T\|, \quad M_{\nabla_YF}(X)>\|XX^T\| &\textit{(L-moduli)} 
 \end{align*}
 \end{algSpec}
-\end{mybox}
+%\end{mybox}
 The stated Lipschitz-moduli are easily derived via the inequality
 \begin{align*}
     \|\nabla_XF(X,Y) - \nabla_UF(U,Y)\| &= \|(YX^\top-D)^\top Y - (YU^\top-D)^\top Y\|\\

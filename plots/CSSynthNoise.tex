@@ -5,7 +5,7 @@
 \begin{tikzpicture}[baseline]
 		\begin{axis}[
         	axis lines = left,
-			%title={$D\in\{0,1\}^{800\times1000}$},
+			title={Noise},
             height=.25\linewidth,
             width=.33\linewidth,
 			ylabel={$\mathsf{F}$},
@@ -23,6 +23,7 @@
 \begin{tikzpicture}[baseline]
 		\begin{axis}[
         	axis lines = left,
+        	title={Class Distribution},
             height=.25\linewidth,
             width=.33\linewidth,
 			xmin=0,xmax=0.52, ymin=0, ymax=1.1
@@ -39,6 +40,7 @@
 \begin{tikzpicture}[baseline]
 		\begin{axis}[
         	axis lines = left,
+        	title={Rank},
             height=.25\linewidth,
             width=.33\linewidth,
 			xmin=0,xmax=45, ymin=0, ymax=1.1
@@ -143,8 +145,8 @@
 			xlabel={$r^\star$},
 			xmax=45, xmin=0, ymin=0,
             legend columns =-1,
-            legend entries={\textsc{C-Salt},\textsc{Primp},\textsc{Dbssl[$r_c,2r_c,2r_c$]},\textsc{Dbssl[$0,r^\star,r^\star$]},\textsc{MdlDbssl}},
-            legend to name=named
+            legend entries={\textsc{C-Salt},\textsc{Primp},\textsc{Dbssl[$r_c,2r_c,2r_c$]},\textsc{Dbssl[$0,2r_c,2r_c$]},\textsc{MdlDbssl}},
+            legend to name=labelCSSynthNoise
 			]
             \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_rR.dat};
             \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_rR.dat};
@@ -154,4 +156,4 @@
 		\end{axis}
 \end{tikzpicture}\\
 
-\pgfplotslegendfromname{named}
+\pgfplotslegendfromname{labelCSSynthNoise}

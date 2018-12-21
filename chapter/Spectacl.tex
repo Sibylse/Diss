@@ -1,43 +1,42 @@
 \chapter{A Spectral Approach to Density Based Clustering}
 \label{chap:Spectacl}
 Despite being one of the core tasks of data mining, and despite having been around since the $1930$s \citep{driver1932quantitative,klimek1935culture,tryon1939cluster}, the question of clustering has not yet been answered in a
-manner that doesn't come with innate deficits. Equally, we will not be able to provide such an answer. Several advanced solutions to the clustering problem have become quite famous, and justly so, for delivering insight in data where the clusters do not offer themselves up easily.  \emph{Spectral Clustering} provides an answer to the curse of dimensionality
+manner that doesn't come with innate deficits. Equally, we will not be able to provide such an answer. Several advanced solutions to the clustering problem have become quite famous, and justly so, for delivering insight in data where the clusters do not offer themselves up easily.  \emph{Spectral clustering} provides an answer to the curse of dimensionality
 inherent in the clustering task formulation, by reducing dimensionality through the spectrum of the
 similarity matrix of the data.  \emph{DBSCAN} \citep{ester1996density} is a density-based clustering algorithm 
-which has won the SIGKDD test of time award in 2014.  Both Spectral Clustering and DBSCAN can find 
+which has won the SIGKDD test of time award in 2014.  Both spectral clustering and DBSCAN can find 
 non-linearly separable clusters, which trips up naive clustering approaches; these algorithms deliver 
 good results. In this paper, we propose a new clustering model which encompasses the strengths of both 
-Spectral Clustering and DBSCAN; the combination can overcome some of the innate disadvantages of both 
+spectral clustering and DBSCAN; the combination can overcome some of the innate disadvantages of both 
 individual methods.
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{pics/SAIntroCircles.pdf}
 %\input{plots/SAIntroCircles}
-\caption{Performance of Spectral Clustering, DBSCAN, and \textsc{SpectACl} on two concentric circles. Best viewed in color.}
+\caption{Performance of spectral clustering, DBSCAN, and \textsc{SpectACl} on two concentric circles. Best viewed in color.}
 \label{fig:intro}
 \end{figure}
 
-For all their strengths, even the most advanced clustering methods nowadays still can be tripped up by some pathological cases: datasets where the human observer immediately sees what is going on, but which prove to remain tricky for all state-of-the-art clustering algorithms.  One such example is the dataset illustrated in Figure \ref{fig:intro}: we will refer to it as the \emph{two circles} dataset.  It consists of two noisily\footnote{the scikit-learn clustering documentation (cf. \url{https://scikit-learn.org/stable/modules/clustering.html}) shows how \textsc{SC} and DBSCAN can succeed on this dataset, but that version contains barely any noise (scikit's noise parameter set to 0.05, instead of our still benign 0.1).} separated concentric circles, each encompassing the same number of observations.  As the leftmost plot in Figure \ref{fig:intro} shows, Spectral Clustering does not at all uncover the innate structure of the data: two clusters are discovered, but both incorporate about half of each circle.  It is well-known that Spectral Clustering is highly sensitive to noise \cite[Figure 1]{bojchevski2017robust}; if
+For all their strengths, even the most advanced clustering methods nowadays still can be tripped up by some pathological cases: datasets where the human observer immediately sees what is going on, but which prove to remain tricky for all state-of-the-art clustering algorithms.  One such example is the dataset illustrated in Figure \ref{fig:intro}: we will refer to it as the \emph{two circles} dataset.  It consists of two noisily\footnote{the scikit-learn clustering documentation (cf. \url{https://scikit-learn.org/stable/modules/clustering.html}) shows how \textsc{SC} and DBSCAN can succeed on this dataset, but that version contains barely any noise (scikit's noise parameter set to 0.05, instead of our still benign 0.1).} separated concentric circles, each encompassing the same number of observations.  As the leftmost plot in Figure \ref{fig:intro} shows, spectral clustering does not at all uncover the innate structure of the data: two clusters are discovered, but both incorporate about half of each circle.  It is well-known that spectral clustering is highly sensitive to noise \cite[Figure 1]{bojchevski2017robust}; if
 two densely connected communities are additionally connected to each other via a narrow bridge of only
 a few observations, spectral clustering runs the risk of reporting these communities plus the bridge as
 a single cluster, whereas two clusters plus a few noise observations (outliers) would be the desired 
 outcome.
-The middle plots in Figure \ref{fig:intro} shows how DBSCAN (with $minpts$ set to $25$ and $26$, respectively) fails to realize that there are two clusters. This is hardly surprising, since DBSCAN is known to struggle with several clusters of varying density, and that is exactly what we are dealing with here: since both circles consist of the same number of observations, the inner circle is substantially more dense than the outer circle.  The rightmost plot in Figure \ref{fig:intro} displays the result of the new clustering method that we introduce in this paper, \textsc{SpectACl} (\emph{Spectral Averagely-dense Clustering}): it accurately delivers the clustering that represents the underlying phenomena in the dataset.
-
-Our new clustering method \textsc{SpectACl} combines the benefits of Spectral Clustering and DBSCAN, while alleviating some of the innate disadvantages of each individual method.  
-This method finds clusters having a large average density, where the appropriate density for each cluster is automatically determined through the spectrum of the weighted adjacency matrix.
-Hence, \textsc{SpectACl} does not suffer
-from sensitivity to the $\text{minPts}$ parameter as DBSCAN does, and unlike DBSCAN it can natively handle several clusters with varying densities.  As known from the spectral clustering pipeline, the final step of \textsc{SpectACl} is an embedding postprocessing step using $k$-means. However, unlike spectral clustering, the theoretically sound application of $k$-means to the embedding step yields a robust, practically useful algorithm in \textsc{SpectACl}: from \textsc{SpectACl}'s objective function we derive an upper bound by means of the eigenvector decomposition and derive that the optimization of our upper bound is equal to $k$-means on the eigenvectors.  Our Python implementation, and the data generating and evaluation script, are publicly available\footnote{\url{https://sfb876.tu-dortmund.de/spectacl}}.
-
+The middle plots in Figure \ref{fig:intro} shows how DBSCAN (with $minpts$ set to $25$ and $26$, respectively) fails to realize that there are two clusters. This is hardly surprising, since DBSCAN is known to struggle with several clusters of varying density, and that is exactly what we are dealing with here: since both circles consist of the same number of observations, the inner circle is substantially more dense than the outer circle.  The rightmost plot in Figure \ref{fig:intro} displays the result of the new clustering method that we introduce in this paper, \textsc{SpectACl} (\emph{Spectral Averagely-dense Clustering}): it accurately delivers the clustering that represents the underlying phenomena in the dataset. Our main contributions are:
+\begin{itemize}
+    \item we propose a new clustering method \textsc{SpectACl}, combining the benefits of spectral clustering and DBSCAN, while alleviating some of the innate disadvantages of each individual method,
+    \item unlike spectral clustering, the discretization step applying $k$-means to the spectral embedding is theoretically sound in \textsc{SpectACl}: from \textsc{SpectACl}'s objective function we derive an upper bound by means of the eigenvector decomposition and derive that the optimization of our upper bound is equal to $k$-means on the eigenvectors,
+    \item we show that pursuing a spectral relaxation for a density-based approach yields interpretable eigenvectors, displaying the relevant parts of clusters.
+\end{itemize}
 %================================
 % Spectral Clustering and Robustness
 %================================
 \section{Spectral Clustering and the Robustness Issue}
 Beyond theoretical concerns, an often reported issue with spectral clustering results is the noise sensitivity. This might be attributed to its relation with the minimum cut paradigm, where few edges suffice to let two clusters appear as one.   
 
-The state-of-the-art in Spectral Clustering research includes two approaches aiming at increasing robustness towards noise. The one is to incorporate ideas from density-based clustering, such as requiring that every node in a cluster has a minimal node degree~\cite{bojchevski2017robust}. Minimizing the cut subject to the minimum degree constraint resembles finding a connected component of core points, as performed by DBSCAN. The drawback of this approach is that it introduces a new parameter to spectral clustering, influencing the quality of the result.  
-The other is to learn the graph representation simultaneously with the clustering~\cite{bojchevski2017robust,kang2018unified,nie2017learning}. This is generally achieved by alternating updates of the clustering and the graph representation, requiring the computation of a truncated eigendecomposition in every iteration step. This results in higher computational costs.
-Of these newer methods, we compare our method against the robust spectral clustering algorithm~\cite{bojchevski2017robust}, since it incorporates both the notion of density and the learning of the graph representation.
+The state-of-the-art in spectral clustering research includes two approaches aiming at increasing robustness towards noise. The one is to incorporate ideas from density-based clustering, such as requiring that every node in a cluster has a minimal node degree~\citep{bojchevski2017robust}. Minimizing the cut subject to the minimum degree constraint resembles finding a connected component of core points, as performed by DBSCAN. The drawback of this approach is that it introduces a new parameter to spectral clustering, influencing the quality of the result.  
+The other is to learn the graph representation simultaneously with the clustering~\citep{bojchevski2017robust,kang2018unified,nie2017learning}. This is generally achieved by alternating updates of the clustering and the graph representation, requiring the computation of a truncated eigendecomposition in every iteration step. This results in higher computational costs.
+Of these newer methods, we compare our method against the robust spectral clustering algorithm by~\cite{bojchevski2017robust}, since it incorporates both the notion of density and the learning of the graph representation.
 
 %===============================================
 % Spectral Averagely-Dense Clustering
@@ -54,7 +53,7 @@ The objective function returns the sum of average node degrees $\delta(Y_{\cdot 
 
 Note that our Objective~\eqref{eq:avgDensObj} is equivalent to minimum ratio cut if the matrix $W$ is normalized. In this case, the Laplacian is given as $L=I-\tilde{W}$, and subtracting the identity matrix from Equation~\eqref{eq:avgDensObj} does not change the objective.
 
-We derive a new relationship for the solution of Objective~\eqref{eq:avgDensObj} and the spectrum of the adjacency matrix. Thereby, we establish a connection with the application of $k$-means to the spectral embedding. As a result, our method encompasses the same steps as Spectral Clustering, and hence it can be efficiently computed even for large scale data. 
+We derive a new relationship for the solution of Objective~\eqref{eq:avgDensObj} and the spectrum of the adjacency matrix. Thereby, we establish a connection with the application of $k$-means to the spectral embedding. As a result, our method encompasses the same steps as spectral clustering, and hence it can be efficiently computed even for large scale data. 
 %-------------------------------------------
 % Dense Clusters and Eigenvectors
 %-------------------------------------------
@@ -71,7 +70,7 @@ A comparison with the $k$-means objective from Equation~\eqref{eq:kmeansTr} show
 
 Unfortunately, applying $k$-means to the spectral embedding $U$ does not yield acceptable clusterings. The objective of $k$-means is nonconvex, having multiple local solutions. The number of local solutions increases with every eigenvector which we include in the eigendecomposition from $W$, due to the orthogonality of eigenvectors. That is, with every included eigenvector, we increase the volume of the subspace, in which we search for suitable binary cluster indicator vectors. As a result, $k$-means returns clusterings whose objective function value approximates the global minimum, but which reflect seemingly haphazard groupings of the data points.
 
-The eigenvectors are not only orthogonal, but also real-valued, having positive as well as negative values. The first eigenvectors have a high value of the density function $\delta$, but the mixture of signs in its entries makes an interpretation as cluster indicators difficult. If the eigenvectors would be nonnegative, then they would have an interpretation as fuzzy cluster indicators, where the magnitude of the entry $V_{jk}$ indicates the degree to which point $j$ is assigned to the fuzzy cluster $k$. Applying $k$-means to a set of highly dense fuzzy cluster indicators would furthermore reduce the space in which we search for possible cluster centers to the positive quadrant. One possibility is to approximate the matrix $W$ by a symmetric nonnegative matrix factorization, but this replaces the polynomially solvable eigendecomposition with an NP-hard problem~\cite{vavasis2009complexity}. 
+The eigenvectors are not only orthogonal, but also real-valued, having positive as well as negative values. The first eigenvectors have a high value of the density function $\delta$, but the mixture of signs in its entries makes an interpretation as cluster indicators difficult. If the eigenvectors would be nonnegative, then they would have an interpretation as fuzzy cluster indicators, where the magnitude of the entry $V_{jk}$ indicates the degree to which point $j$ is assigned to the fuzzy cluster $k$. Applying $k$-means to a set of highly dense fuzzy cluster indicators would furthermore reduce the space in which we search for possible cluster centers to the positive quadrant. One possibility is to approximate the matrix $W$ by a symmetric nonnegative matrix factorization, but this replaces the polynomially solvable eigendecomposition with an NP-hard problem~\citep{vavasis2009complexity}. 
 We conduct another approach, showing that fuzzy cluster indicators are derivable from the eigenvalues by a simple projection.
 
 \begin{observation}\label{thm:project}
@@ -98,42 +97,70 @@ Since $u_j=|v_j|$, from the inequality above follows that $Wu\geq\lambda u$. Mul
 We refer to the eigenvectors, whose entries are replaced with their absolute values, i.e., $u_j=|v_j|$ for $1\leq j\leq m$, as \emph{projected eigenvectors}. 
 The projected eigenvectors have locally similar values, resulting in the gradually changing shapes, illustrated on the two circles dataset in Figure~\ref{fig:binaryEmb}. We see that the projected eigenvectors have an interpretation as fuzzy cluster indicators: a strongly indicated dense part of one of the two clusters fades out along the circle trajectory. Furthermore, we see that the projected eigenvectors are not orthogonal, since some regions are repeatedly indicated over multiple eigenvectors. These varying views on possible dense and fuzzy clusters are beneficial in order to robustly identify the clustering structure.   
 
-Applying $k$-means to the first $d$ projected eigenvectors yields a set of $r$ binary basis vectors, which indicate clusters in the subspace of points with an average density larger than $\lambda_d$. We summarize the resulting method \textsc{SpectACl} (Spectral Averagely-dense Clustering) with the following steps:
-\begin{enumerate}
-    \item compute the adjacency matrix $W$;
-    \item compute the truncated eigendecomposition\\ $W\approx V^{(d)}\Lambda^{(d)}{V^{(d)}}^\top$;
-    \item compute the projected embedding $U_{jk}=|V_{jk}^{(d)}||\lambda_k|^{1/2}$;
-    \item compute a $k$-means clustering, finding $r$ clusters on the embedded data $U$. 
-\end{enumerate}
-These steps perform a minimization of an upper bound on the average cluster density function with respect to $W$ if $d=m$. In the general case $d\ll m$, we optimize an approximation of the objective function, replacing $W$ with the nonnegative product $UU^\top$. Certainly, a similar argument could be made for the pipeline of spectral clustering, considering the approximate objective~\eqref{eq:approxTrunc} for $d=r$. However, the difference is that the result of Spectral Clustering deteriorates with an increasing accuracy of the eigendecomposition approximation $(d\rightarrow m)$ due to orthogonality and negative entries in the eigenvectors as outlined above. We show in our experimental evaluation that the result of our method does in average not deteriorate with an increasing dimension of the embedding.
+Applying $k$-means to the first $d$ projected eigenvectors yields a set of $r$ binary basis vectors, which indicate clusters in the subspace of points with an average density larger than $\lambda_d$. We summarize the resulting method \textsc{SpectACl} (Spectral Averagely-dense Clustering) in Algorithm~\ref{alg:spectacl}.
+\begin{algorithm}[t]
+\caption{Spectral Averagely Dense Clustering} 
+\begin{algorithmic}[1]
+  \Function{SpectACl}{$W,r$} \Comment{$W$: adjacency matrix}
+  \State $V^{(d)}\Lambda^{(d)}{V^{(d)}}^\top\gets$ truncated eigendecomposition of $W$ \label{alg:spectacl:truncEig}
+  \State $U_{jk}\gets|V_{jk}^{(d)}||\lambda_k|^{1/2}$ \Comment{projected embedding}
+  \State $\displaystyle (X,Y)\gets \argmin_{X,Y}\|U-YX^\top\|^2$ s.t. $Y\in\mathbbm{1}^{m\times r}, X\in\mathbbm{R}^{n\times r}$ \Comment{$k$-means}
+  \State \Return $Y$
+  \EndFunction
+\end{algorithmic}
+\label{alg:spectacl}
+\end{algorithm}
+%\begin{enumerate}
+    %\item compute the adjacency matrix $W$;
+    %\item compute the truncated eigendecomposition\\ $W\approx V^{(d)}\Lambda^{(d)}{V^{(d)}}^\top$;
+    %\item compute the projected embedding $U_{jk}=|V_{jk}^{(d)}||\lambda_k|^{1/2}$;
+    %\item compute a $k$-means clustering, finding $r$ clusters on the embedded data $U$. 
+%\end{enumerate}
+The algorithm performs a minimization of an upper bound on the average cluster density function with respect to $W$ if $d=m$. In the general case $d\ll m$, we optimize an approximation of the objective function, replacing $W$ with the nonnegative product $UU^\top$. Certainly, a similar argument could be made for the pipeline of spectral clustering, considering the approximate objective~\eqref{eq:approxTrunc} for $d=r$. However, the difference is that the result of spectral clustering deteriorates with an increasing accuracy of the eigendecomposition approximation $(d\rightarrow m)$ due to orthogonality and negative entries in the eigenvectors as outlined above. We show in our experimental evaluation that the result of our method does in average not deteriorate with an increasing dimension of the embedding.
 
-The matrix $W$ from the first step is here calculated by the $\epsilon$-neighborhood graph. However, our method is in principle applicable to any provided (weighted) adjacency matrix. We recall that the average density objective is equivalent to the ratio cut objective if we normalize the matrix $W$. We refer to this version as normalized \textsc{SpectACl}. In the normalized case, we compute the adjacency matrix according to the $k$-nearest neighbor graph, which is suggested for applications of Spectral Clustering.
+The matrix $W$ from the first step is here calculated by the $\epsilon$-neighborhood graph. However, our method is in principle applicable to any provided (weighted) adjacency matrix. We recall that the average density objective is equivalent to the ratio cut objective if we normalize the matrix $W$. We refer to this version as normalized \textsc{SpectACl}. In the normalized case, we compute the adjacency matrix according to the $k$-nearest neighbor graph, which is suggested for applications of spectral clustering.
 
 Hence, our method only depends on the parameters $r$ and $\epsilon$, respectively $k$. How to determine the number of clusters, which is a general problem for clustering tasks, is beyond scope of this paper. We do provide a heuristic to determine $\epsilon$ and evaluate the sensitivity to the parameters $\epsilon$ and $k$. 
 %================================
 % Experimental evaluation
 %================================
 \section{Experimental Evaluation}
-We conduct experiments on a series of synthetic datasets, exploring the ability to detect the ground truth clustering in the presence of noise. On real-world data, we compare the Normalized Mutual Information (NMI) of obtained models with respect to provided classes. A small qualitative evaluation is given by means of a handwriting dataset, illustrating the clusters obtained by \textsc{SpectACl}. 
+We conduct experiments on a series of synthetic datasets, exploring the ability to detect the ground truth clustering in the presence of noise. On real-world data, we compare the Normalized Mutual Information (NMI) of obtained models with respect to provided classes. A small qualitative evaluation is given by means of a handwriting dataset, illustrating the clusters obtained by \textsc{SpectACl}. Our Python implementation, and the data generating and evaluation script, are publicly available\footnote{\url{https://sfb876.tu-dortmund.de/spectacl}}.
 %------- Synthetic Datasets ----------
-\subsection{Synthetic Datasets}
+\subsection{Experiments on Synthetic Data}\label{sec:SA:synthExp}
 We generate benchmark datasets, using the renowned scikit library. For each shape ---moons, circles, and blobs--- and noise specification we generate $m=1500$ data points. The noise is Gaussian, as provided by the scikit noise parameter; cf.\@ \url{http://scikit-learn.org}. Our experiments pit five competitors against each other: two new ones presented in this paper, and three baselines.  
-We compare our method \textsc{SpectACl}, using the $\epsilon$-neighborhood graph represented by $W$ (denoted \textsc{SpectACl}) and the symmetrically normalized adjacency matrix $\diag(W_{knn}\mathbf{1})^{-1/2}W_{knn}\diag(W_{knn}\mathbf{1})^{-1/2}$ where $W_{knn}$ is the adjacency matrix to the $k$-nearest neighbor graph (denoted \textsc{SpectACl} (Normalized), or (N) as shorthand). The parameter $\epsilon$ is determined as the smallest radius such that $99\%$ of the points have at least ten neighbors and the number of nearest neighbors is set to $k=10$. We compare against the scikit implementations of DBSCAN (denoted DBSCAN) and symmetrically normalized spectral clustering (denoted \textsc{SC}). For DBSCAN, we use the same $\epsilon$ as for \textsc{SpectACl} and set the parameter $minPts=10$, which delivered the best performance on average. We also compare against the provided Python implementation of Robust Spectral Clustering~\cite{bojchevski2017robust} (denoted \textsc{RSC}), where default values apply. Unless mentioned otherwise, our setting for the embedding dimensionality is $d=50$.
+We compare our method \textsc{SpectACl}, using the $\epsilon$-neighborhood graph represented by $W$ (denoted \textsc{SpectACl}) and the symmetrically normalized adjacency matrix $\diag(W_{knn}\mathbf{1})^{-1/2}W_{knn}\diag(W_{knn}\mathbf{1})^{-1/2}$ where $W_{knn}$ is the adjacency matrix to the $k$-nearest neighbor graph (denoted \textsc{SpectACl} (Normalized), or (N) as shorthand). The parameter $\epsilon$ is determined as the smallest radius such that $99\%$ of the points have at least ten neighbors and the number of nearest neighbors is set to $k=10$. We compare against the scikit implementations of DBSCAN (denoted DBSCAN) and symmetrically normalized spectral clustering (denoted \textsc{SC}). For DBSCAN, we use the same $\epsilon$ as for \textsc{SpectACl} and set the parameter $minPts=10$, which delivered the best performance on average. We also compare against the provided Python implementation of robust spectral clustering~\citep{bojchevski2017robust} (denoted \textsc{RSC}), where default values apply. Unless mentioned otherwise, our setting for the embedding dimensionality is $d=50$.
 %-------------------------
-\subsubsection{Evaluation}
-We assess the quality of computed clusterings by means of the ground truth. Given a clustering $Y\in\{0,1\}^{m\times r}$ and the ground truth model $Y^*\in\{0,1\}^{m\times r}$, we compute the $F$-measure. The bijection of matching clusters $\sigma$ is computed with the Hungarian algorithm~\cite{kuhn1955hungarian}, maximizing $F=\sum_s F(s,\sigma(s))$, where
-\[F(s,t) = 2\frac{\pre(s,t)\rec(s,t)}{\pre(s,t)+\rec(s,t)},\]
+\paragraph{Evaluation}
+We assess the quality of computed clusterings by means of the ground truth. Given a clustering $Y\in\{0,1\}^{m\times r}$ and the ground truth model $Y^*\in\{0,1\}^{m\times r}$, we evaluate the clustering by means of an adaptation of the micro-averaged $\mathsf{F}$-measure, known from multi-class classification tasks. The bijection of matching clusters $\sigma$ is computed with the Hungarian algorithm~\citep{kuhn1955hungarian}, maximizing $\mathsf{F}=\sum_s \mathsf{F}(s,\sigma(s))$, where
+\[\mathsf{F}(s,t) = 2\frac{\pre(s,t)\rec(s,t)}{\pre(s,t)+\rec(s,t)},\]
 $$
 \pre(s,t) = \frac{Y_{\cdot s}^\top Y^*_{\cdot t}}{|Y_{\cdot s}|} \quad\text{and}\quad \rec(s,t) = \frac{Y_{\cdot s}^\top Y^*_{\cdot t}}{|Y^*_{\cdot t}|}.
 $$
-These functions denote precision and recall, respectively. The $F$-measure takes values in $[0,1]$; the closer to one, the more similar are the computed clusterings to the ground truth. 
+These functions denote precision and recall, respectively. 
+ %-----------------
+ %-----------------
+ %-----------------
+Based on the perfect matching $\sigma$, we calculate precision and recall for the obtained factorization by
+\begin{align*}
+\pre &= \frac{\sum_{s=1}^r|Y^*_{\cdot s}\circ Y_{\cdot \sigma(s)} |}{\sum_{s=1}^r|Y_{\cdot s} |} 
+= \frac{|Y^*\circ Y_{\cdot \sigma(\cdot)}|}{|Y|}\\ 
+\rec &= \frac{\sum_{s=1}^r|Y^*_{\cdot s}\circ Y_{\cdot \sigma(s)} |}{\sum_{s=1}^r|Y_{\cdot s}^* |} 
+    = \frac{|Y^*\circ Y_{\cdot\sigma(\cdot)}|}{|Y^*|}.
+\end{align*}
+The micro $\mathsf{F}$-measure is then defined in terms of precision and recall as above. This is equivalent to a convex combination of the $\mathsf{F}(s,\sigma(s)$-measurements:  
+\begin{align*}
+	\mathsf{F}&=2\frac{\pre\cdot\rec}{\pre+\rec}
+    = \sum_{s=1}^r\frac{\left|Y^*_{\cdot s}\right| + \left|Y_{\cdot\sigma(s)}\right|}{\left|Y^*\right|+\left|Y \right|}\mathsf{F}(s,\sigma(s)).
+\end{align*}
+The $\mathsf{F}$-measure takes values in $[0,1]$; the closer to one, the more similar are the computed clusterings to the ground truth. 
 %-------- Noise Variation --------
-\subsubsection{Noise Sensitivity}
+\paragraph{Noise Sensitivity}
 %---------FIGURE noise plot------------
 \begin{figure*}[t]
 \centering
 \input{plots/SASynthNoisePlot}
-\caption{Variation of noise, comparison of $F$-measures (the higher the better) for the two moons (left), the two circles (middle) and three blobs (right) datasets.}
+\caption{Variation of noise, comparison of $\mathsf{F}$-measures (the higher the better) for the two moons (left), the two circles (middle) and three blobs (right) datasets.}
 \label{fig:noisePlot}
 \end{figure*}
 %\tikzexternalenable
@@ -146,30 +173,30 @@ These functions denote precision and recall, respectively. The $F$-measure takes
 \label{fig:synthViz}
 \end{figure}
 %\tikzexternaldisable
-In this series of experiments, we evaluate the robustness of considered algorithms against noise. For every noise and shape specification, we generate five datasets. A visualization of the clusterings for three generated datasets is given in Figure~\ref{fig:synthViz}, setting the noise parameter to $0.1$. Note that the depicted plot of the three blobs dataset shows a rare but interesting case, where two of the clusters are overlapping. In Figure~\ref{fig:noisePlot} we plot for every considered algorithm the averaged $F$-measures against the noise.  
+In this series of experiments, we evaluate the robustness of considered algorithms against noise. For every noise and shape specification, we generate five datasets. A visualization of the clusterings for three generated datasets is given in Figure~\ref{fig:synthViz}, setting the noise parameter to $0.1$. Note that the depicted plot of the three blobs dataset shows a rare but interesting case, where two of the clusters are overlapping. In Figure~\ref{fig:noisePlot} we plot for every considered algorithm the averaged $\mathsf{F}$-measures against the noise.  
 
-From Figure~\ref{fig:noisePlot} we observe that \textsc{SpectACl} typically attains the highest $F$-value, showing also a very low variance in the results. The sole exception is the case of the two moons dataset when no noise is added (leftmost figure). A closer inspection of the embedding in this case shows, that \textsc{SpectACl} is tripped up by the absolute symmetry in the synthetic data. Since this is unlikely to occur in the real world, we do not further elaborate on this special case. 
-The normalized version of \textsc{SpectACl} does not exhibit the artifact of symmetry, yet its results are less accurate when the noise is high ($>0.1$). Particularly interesting is the comparison of normalized \textsc{SpectACl} with \textsc{SC}, since both methods employ the same weighted adjacency matrix. We observe that both methods have a similar $F$-measure for the two moons as well as the three blobs data when the noise is at most $0.15$. For the three blobs data and a higher noise level, normalized \textsc{SpectACl} has a lower $F$-value than \textsc{SC}. However, remarkable is the difference at the two circles dataset, where  normalized \textsc{SpectACl} attains notably higher $F$-values than \textsc{SC}. As Figure \ref{fig:synthViz} illustrates, normalized \textsc{SpectACl} detects the trajectory of the two circles while \textsc{SC} cuts both circles in half. 
+From Figure~\ref{fig:noisePlot} we observe that \textsc{SpectACl} typically attains the highest $\mathsf{F}$-value, showing also a very low variance in the results. The sole exception is the case of the two moons dataset when no noise is added (leftmost figure). A closer inspection of the embedding in this case shows, that \textsc{SpectACl} is tripped up by the absolute symmetry in the synthetic data. Since this is unlikely to occur in the real world, we do not further elaborate on this special case. 
+The normalized version of \textsc{SpectACl} does not exhibit the artifact of symmetry, yet its results are less accurate when the noise is high ($>0.1$). Particularly interesting is the comparison of normalized \textsc{SpectACl} with \textsc{SC}, since both methods employ the same weighted adjacency matrix. We observe that both methods have a similar $\mathsf{F}$-measure for the two moons as well as the three blobs data when the noise is at most $0.15$. For the three blobs data and a higher noise level, normalized \textsc{SpectACl} has a lower $\mathsf{F}$-value than \textsc{SC}. However, remarkable is the difference at the two circles dataset, where  normalized \textsc{SpectACl} attains notably higher $\mathsf{F}$-values than \textsc{SC}. As Figure \ref{fig:synthViz} illustrates, normalized \textsc{SpectACl} detects the trajectory of the two circles while \textsc{SC} cuts both circles in half. 
 
-Comparing these results with Robust Spectral Clustering (\textsc{RSC}), learning the graph structure together with the spectral clustering does not drastically affect the result. Given the two moons or the two circles dataset, the $F$-measure of \textsc{RSC} is close to that of \textsc{SC}. The example clusterings in the top row of Figure~\ref{fig:synthViz} show that \textsc{RSC} is able to correct the vanilla spectral clustering, where a chunk from the wrong moon is added to the blue cluster. Yet, in the case of the two circles with different densities, both methods fail to recognize the circles (cf.\@ Figure~\ref{fig:synthViz}, middle row). Surprisingly, on the easiest-to-cluster dataset of the three blobs, \textsc{RSC} attains notably lower $F$-measures than spectral clustering.
+Comparing these results with Robust Spectral Clustering (\textsc{RSC}), learning the graph structure together with the spectral clustering does not drastically affect the result. Given the two moons or the two circles dataset, the $\mathsf{F}$-measure of \textsc{RSC} is close to that of \textsc{SC}. The example clusterings in the top row of Figure~\ref{fig:synthViz} show that \textsc{RSC} is able to correct the vanilla spectral clustering, where a chunk from the wrong moon is added to the blue cluster. Yet, in the case of the two circles with different densities, both methods fail to recognize the circles (cf.\@ Figure~\ref{fig:synthViz}, middle row). Surprisingly, on the easiest-to-cluster dataset of the three blobs, \textsc{RSC} attains notably lower $\mathsf{F}$-measures than spectral clustering.
 
 The plots for DBSCAN present the difficulty to determine a suitable setting of parameters $\epsilon$ and $minpts$. The method to determine these parameters is suitable if the noise is low. However, beyond a threshold, DBSCAN decides to pack all points into one cluster. We also adapted the heuristic for the parameter selection, determining $\epsilon$ as the minimum radius such that $70-90\%$ of all points have at least $minPts=10$ neighbors. This does not fundamentally solve the problem: it merely relocates it to another noise threshold.
 % - - - - Parameter Sensitivity - - - -
-\subsubsection{Parameter Sensitivity}
-We present effects of the parameter settings for \textsc{SpectACl}, namely the embedding dimension $d$, the neighborhood radius $\epsilon$ and the number of nearest neighbors $k$. We summarize the depiction of these experiments in Figure \ref{fig:paramPlot}. The plots on the top row show that the results of \textsc{SpectACl} are robust to the parameters determining the adjacency matrix. The fluctuations of the $F$-measure when $\epsilon>0.6$ are understandable, since the coordinates of points are limited to $[0,3]$. That is, $\epsilon=0.6$ roughly equates the diameter of the smaller blob on the top left in Figure~\ref{fig:synthViz} and is quite large. 
+\paragraph{Parameter Sensitivity}
+We present effects of the parameter settings for \textsc{SpectACl}, namely the embedding dimension $d$, the neighborhood radius $\epsilon$ and the number of nearest neighbors $k$. We summarize the depiction of these experiments in Figure \ref{fig:paramPlot}. The plots on the top row show that the results of \textsc{SpectACl} are robust to the parameters determining the adjacency matrix. The fluctuations of the $\mathsf{F}$-measure when $\epsilon>0.6$ are understandable, since the coordinates of points are limited to $[0,3]$. That is, $\epsilon=0.6$ roughly equates the diameter of the smaller blob on the top left in Figure~\ref{fig:synthViz} and is quite large. 
 %---------FIGURE epsilon plot------------
 \begin{figure}[t]
 \centering
 \input{plots/SAEpsKnnPlots}
-\caption{Variation of latent parameters used for \textsc{SpectACl}. The neighborhood radius $\epsilon$ (top left) and the number of nearest neighbors $k$ (top right) determine the adjacency matrix for \textsc{SpectACl} and its normalized version. The parameter $d$ (bottom left and right) specifies the number of projected eigenvectors. We plot the $F$-measure (the higher the better) against the variation of the parameter.}
+\caption{Variation of latent parameters used for \textsc{SpectACl}. The neighborhood radius $\epsilon$ (top left) and the number of nearest neighbors $k$ (top right) determine the adjacency matrix for \textsc{SpectACl} and its normalized version. The parameter $d$ (bottom left and right) specifies the number of projected eigenvectors. We plot the $\mathsf{F}$-measure (the higher the better) against the variation of the parameter.}
 \label{fig:paramPlot}
 \end{figure}
-The plots on the bottom of Figure~\ref{fig:paramPlot} indicate that \textsc{SpectACl} in the unnormalized and normalized version generally only require the dimension of the embedding to be large enough. In this case, setting $d>25$ is favorably. The only exception is the two circles dataset when using normalized \textsc{SpectACl}, where the $F$-measure starts to fluctuate if $d>75$. A possible explanation for this behavior is that eigenvalues in the normalized case lie between zero and one. When we inspect the first $50$ projected eigenvectors of the normalized adjacency matrix, then we see that the last 19 eigenvectors do not reflect any sensible cluster structure, having eigenvalues in $[0.4,0.54]$. In unnormalized \textsc{SpectACl}, the unhelpful eigenvectors have a very low density and thus also a very low eigenvalue, being barely taken into account during the optimization.
+The plots on the bottom of Figure~\ref{fig:paramPlot} indicate that \textsc{SpectACl} in the unnormalized and normalized version generally only require the dimension of the embedding to be large enough. In this case, setting $d>25$ is favorably. The only exception is the two circles dataset when using normalized \textsc{SpectACl}, where the $\mathsf{F}$-measure starts to fluctuate if $d>75$. A possible explanation for this behavior is that eigenvalues in the normalized case lie between zero and one. When we inspect the first $50$ projected eigenvectors of the normalized adjacency matrix, then we see that the last 19 eigenvectors do not reflect any sensible cluster structure, having eigenvalues in $[0.4,0.54]$. In unnormalized \textsc{SpectACl}, the unhelpful eigenvectors have a very low density and thus also a very low eigenvalue, being barely taken into account during the optimization.
 
 %---------------------------------
 % Real World Datasets
 %-------------------------------
-\subsection{Real-World Datasets}
+\subsection{Real-World Data Experiments}
 %----------TABLE Real World Data---------------
 \begin{table}%[!hp]
 	\centering
@@ -185,26 +212,26 @@ The plots on the bottom of Figure~\ref{fig:paramPlot} indicate that \textsc{Spec
 $\mu$.}%\left(\frac{\mathcal{N}_\epsilon(j)}{m}\right)$.}
 \label{tbl:realDescr}
 \end{table}
-We conduct experiments on selected real-world datasets, whose characteristics are summarized in Table~\ref{tbl:realDescr}. The Pulsar dataset\footnote{\url{https://www.kaggle.com/pavanraj159/predicting-pulsar-star-in-the-universe}} contains samples of Pulsar candidates, where the positive class of real Pulsar examples poses a minority against noise effects. The Sloan dataset\footnote{\url{https://www.kaggle.com/lucidlenn/sloan-digital-sky-survey}} comprises measurements of the Sloan Digital Sky Survey, where every observation belongs either to a star, a galaxy or a quasar. The MNIST dataset~\citep{lecun1998gradient} 
-is a well-known collection of handwritten ciphers. The SNAP dataset refers to the Email EU core network 
+We conduct experiments on selected real-world datasets, whose characteristics are summarized in Table~\ref{tbl:realDescr}. The \emph{Pulsar} dataset\footnote{\url{https://www.kaggle.com/pavanraj159/predicting-pulsar-star-in-the-universe}} contains samples of Pulsar candidates, where the positive class of real Pulsar examples poses a minority against noise effects. The \emph{Sloan} dataset\footnote{\url{https://www.kaggle.com/lucidlenn/sloan-digital-sky-survey}} comprises measurements of the Sloan Digital Sky Survey, where every observation belongs either to a star, a galaxy or a quasar. The \emph{MNIST} dataset~\citep{lecun1998gradient} 
+is a well-known collection of handwritten ciphers. The \emph{SNAP} dataset refers to the Email EU core network 
 %data\footnote{\url{https://snap.stanford.edu/data/email-Eu-core.html}}, 
-data \cite{leskovec2015snap}, 
-which consists of an adjacency matrix (hence this dataset has no features in the traditional sense). For this dataset, we only compare the two versions of \textsc{SpectACl} and spectral clustering, since Robust Spectral Clustering and DBSCAN do not support a direct specification of the adjacency matrix.  
+data~\citep{leskovec2015snap}, 
+which consists of an adjacency matrix (hence this dataset has no features in the traditional sense). For this dataset, we only compare the two versions of \textsc{SpectACl} and spectral clustering, since robust spectral clustering and DBSCAN do not support a direct specification of the adjacency matrix.  
 %----------TABLE Real World NMI---------------
 \begin{table}%[!hp]
 	\centering
 	\begin{tabular}{lrrrr}\toprule
 	Algorithm & Pulsar & Sloan & MNIST & SNAP  \\\midrule
-    \textsc{SpectACl} &	0.151 & 0.224 & 0.339 & 0.232\\
-    \textsc{SpectACl}(N) & 0.005 & 0.071 & 0.756 & 0.104\\
-    DBSCAN & 0.001 & 0.320 & 0.005 & --\\
-    \textsc{SC} & 0.025 & 0.098 & 0.753 & 0.240\\
+    \textsc{SpectACl} &	\textbf{0.151} & 0.224 & 0.339 & 0.232\\
+    \textsc{SpectACl}(N) & 0.005 & 0.071 & \textbf{0.756} & 0.104\\
+    DBSCAN & 0.001 & \textbf{0.320} & 0.005 & --\\
+    \textsc{SC} & 0.025 & 0.098 & 0.753 & \textbf{0.240}\\
     \textsc{RSC} & 0.026 & 0.027 &0.740 & --\\ \bottomrule
     \end{tabular}
 \caption{Normalized Mutual Information (NMI) score (the higher the better) for real-world datasets.}
 \label{tbl:realNMI}
 \end{table}
-Table~\ref{tbl:realNMI} summarizes the normalized mutual information between the found clustering and the clustering which is defined by the classification. We observe that the unnormalized version of \textsc{SpectACl} obtains the highest NMI on the pulsar dataset, the second-highest on the Sloan dataset, a significantly lower NMI than \textsc{RSC}, \textsc{SC} and the normalized version on the MNIST sample and a similar NMI on the SNAP dataset. The Sloan and MNIST datasets pose interesting cases. The notoriously underperforming DBSCAN obtains the highest NMI at the Sloan dataset while obtaining the lowest $F$-measure of $0.09$, where \textsc{SpectACl} obtains the highest $F$-measure of $0.52$. The datasets Pulsar and Sloan are clustered in accordance with the classes when using the density-based approach, yet the MNIST clustering corresponds more with the clustering when using the minimum-cut associated approaches.
+Table~\ref{tbl:realNMI} summarizes the normalized mutual information between the found clustering and the clustering which is defined by the classification. We observe that the unnormalized version of \textsc{SpectACl} obtains the highest NMI on the pulsar dataset, the second-highest on the Sloan dataset, a significantly lower NMI than \textsc{RSC}, \textsc{SC} and the normalized version on the MNIST sample and a similar NMI on the SNAP dataset. The Sloan and MNIST datasets pose interesting cases. The notoriously underperforming DBSCAN obtains the highest NMI at the Sloan dataset while obtaining the lowest $\mathsf{F}$-measure of $0.09$, where \textsc{SpectACl} obtains the highest $\mathsf{F}$-measure of $0.52$. The datasets Pulsar and Sloan are clustered in accordance with the classes when using the density-based approach, yet the MNIST clustering corresponds more with the clustering when using the minimum-cut associated approaches.
 
 To understand why \textsc{SpectACl} fails to return clusters in accordance with the MNIST classes, we display some exemplary points for three \textsc{SpectACl} clusters in Figure~\ref{fig:mnist}. On the one hand, some identified clusters indeed contain only one cipher, e.g., there are clusters for zeros, ones and sixes exclusively. On the other hand, the clusters depicted in the figure contain a mixture of digits, where the digits are written in a cursive style or rather straight. Hence, instead of identifying the numbers, \textsc{SpectACl} identifies clusters of handwriting style, which is interesting information discovered from the dataset, albeit not the information the MNIST task asks for. To be fair, it is far from impossible that a similar rationale can be given for the clusters \textsc{SpectACl}'s competitors find on the Pulsar or Sloan dataset; we lack the astrophysical knowledge required to similarly assess those results.
 %================================
@@ -245,12 +272,12 @@ To understand why \textsc{SpectACl} fails to return clusters in accordance with 
 % Discussion
 %====================
 \section{Discussion}
-We introduce \textsc{SpectACl} (\emph{Spectral Averagely-dense Clustering}): a new clustering method that combines benefits from Spectral Clustering and the density-based DBSCAN algorithm, while avoiding some of their drawbacks. 
+We introduce \textsc{SpectACl} (\emph{Spectral Averagely-dense Clustering}): a new clustering method that combines benefits from spectral clustering and the density-based DBSCAN algorithm, while avoiding some of their drawbacks. 
 
 By computing the spectrum of the weighted adjacency matrix, \textsc{SpectACl} automatically determines the appropriate density for each cluster.  This eliminates the specification of the $minpts$ parameter which is required in DBSCAN, and as we have seen in Figure \ref{fig:intro}, this specification is a serious hurdle for a DBSCAN user to overcome. On two concentric circles with the same number of observations (and hence with different densities), a DBSCAN run with $minpts=25$ lumps all observations into one big cluster.  When increasing $minpts$ by one, DBSCAN jumps to four clusters, none of which are appropriate. \textsc{SpectACl}, conversely, can natively handle these nonconvex clusters with varying densities.
 
-In both Spectral Clustering and \textsc{SpectACl}, the final step is to postprocess intermediate results with $k$-means. Whether this choice is appropriate for Spectral Clustering remains open to speculation.  However, from the objective function of \textsc{SpectACl}, we derive an upper bound through the eigenvector decomposition, whose optimization we show to be equal to $k$-means optimization.  Hence, for \textsc{SpectACl}, we demonstrate that this choice for $k$-means postprocessing is mathematically fundamentally sound.
+In both spectral clustering and \textsc{SpectACl}, the final step is to postprocess intermediate results with $k$-means. Whether this choice is appropriate for spectral clustering remains open to speculation.  However, from the objective function of \textsc{SpectACl}, we derive an upper bound through the eigenvector decomposition, whose optimization we show to be equal to $k$-means optimization.  Hence, for \textsc{SpectACl}, we demonstrate that this choice for $k$-means postprocessing is mathematically fundamentally sound.
 
-In comparative experiments, competing with DBSCAN, Spectral Clustering, and Robust Spectral Clustering, we find on synthetic data that the unnormalized version of \textsc{SpectACl} is the most robust to noise (cf.\@ Figure~\ref{fig:noisePlot}), and finds the appropriate cluster structure in three scenarios while the competitors all fail to do so at least once (cf.\@ Figure~\ref{fig:synthViz}).  On real-life data, \textsc{SpectACl} outperforms the competition on the inherently noisy Pulsar dataset and the Sloan dataset, it performs similarly to Spectral Clustering on the SNAP dataset, and it is defeated by both Spectral Clustering and Robust Spectral Clustering on the MNIST dataset (cf.\@ Table~\ref{tbl:realNMI}). The latter observation is explained when looking at the resulting clusters: as Figure~\ref{fig:mnist} illustrates, \textsc{SpectACl} focuses on clusters representing handwriting style rather than clusters representing ciphers, which is not unreasonable behavior for an unsupervised method such as clustering; this uncovered information is merely not reflected in the NMI scores displayed in the table.
+In comparative experiments, competing with DBSCAN, spectral clustering, and robust spectral clustering, we find on synthetic data that the unnormalized version of \textsc{SpectACl} is the most robust to noise (cf.\@ Figure~\ref{fig:noisePlot}), and finds the appropriate cluster structure in three scenarios while the competitors all fail to do so at least once (cf.\@ Figure~\ref{fig:synthViz}).  On real-life data, \textsc{SpectACl} outperforms the competition on the inherently noisy Pulsar dataset and the Sloan dataset, it performs similarly to spectral clustering on the SNAP dataset, and it is defeated by both spectral clustering and robust spectral clustering on the MNIST dataset (cf.\@ Table~\ref{tbl:realNMI}). The latter observation is explained when looking at the resulting clusters: as Figure~\ref{fig:mnist} illustrates, \textsc{SpectACl} focuses on clusters representing handwriting style rather than clusters representing ciphers, which is not unreasonable behavior for an unsupervised method such as clustering; this uncovered information is merely not reflected in the NMI scores displayed in the table.
 
 Figure~\ref{fig:paramPlot} provides evidence that \textsc{SpectACl} is robust with respect to its parameter settings.  Hence, in addition to its solid foundation in theory and good empirical performance on data, \textsc{SpectACl} provides a clustering method that is easy to use in practice.  Hence, \textsc{SpectACl} is an ideal candidate for outreach beyond data mining experts.

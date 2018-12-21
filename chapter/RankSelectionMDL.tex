@@ -5,14 +5,17 @@ The possibility to derive a Boolean factorization by means of  numerical optimiz
 However, this objective is difficult to delineate: where to draw the line between structure and noise? One possibility is to apply the \emph{Minimum Description Length} (MDL) principle as proposed by \cite{miettinen2014mdl4bmf} to reduce the considerations into one: exploit just as many regularities as serves the compression of the data. Here, regularities indicate the structural part, 
 the similarities between observations which establish a cluster. The description length counterbalances the complexity of the model (the amount of derived clusters) with the fit to the data, measured by the size of the encoded data using the model. Decisive for the feasibility of extracted components is the definition of the encoding. 
 
-\cite{miettinen2014mdl4bmf} evaluate several encodings with respect to their ability to filter a planted structure from noise. Candidate clusters are created by the Boolean matrix factorization \textsc{Asso} and are afterwards selected such that a specified description length is minimized. Another framework proposed by \cite{lucchese2014unifying} greedily selects the clusters which directly minimize the description length. Most recently, \cite{karaev2015getting} propose another greedy scheme with focus on a setting where noise effects more likely flip a one to zero than the other way round. All these methods are capable to identify the underlying clusters in respectively examined settings. By and large, the experiments indicate however that the quality considerably varies depending on the distribution of noise and characteristics of the dataset~\citep{miettinen2014mdl4bmf,karaev2015getting}.  
-
-We employ the framework \emph{PAL-Tiling} to optimize a description length having a smooth, real-valued approximation, suitable for the optimization via PALM.\todo{main contributions instead} The built-in regularization of the model complexity by MDL is used to derive factorizations which do not use more tiles than necessary. We propose two algorithms as specifications of \textsc{PAL-Tiling}: one applying $\ell 1$-regularization on the matrix factorization (\textsc{Panpal}) and one employing an encoding by code tables as proposed by \cite{siebes2006item} (\textsc{Primp}). 
-We assess the algorithms' ability to filter the \textit{true} underlying structure from the noise. Therefore, we compare various performance measures in a controlled setting of synthetically generated data as well as for real-world data. We show that \textsc{Primp} is capable of recovering the latent structure in spite of varying database characteristics and noise distributions. In addition, we visualize the derived categorization into clusters by means of images, showing that our conducted minimization procedure of \textit{PAL-Tiling} yields interpretable groupings. 
+\cite{miettinen2014mdl4bmf} evaluate several encodings with respect to their ability to filter a planted structure from noise. Candidate clusters are created by the Boolean matrix factorization \textsc{Asso} and are afterwards selected such that a specified description length is minimized. Another framework proposed by \cite{lucchese2014unifying} greedily selects the clusters which directly minimize the description length. Most recently, \cite{karaev2015getting} propose another greedy scheme with focus on a setting where noise effects more likely flip a one to zero than the other way round. All these methods are capable to identify the underlying clusters in respectively examined settings. By and large, the experiments indicate however that the quality considerably varies depending on the distribution of noise and characteristics of the dataset~\citep{miettinen2014mdl4bmf,karaev2015getting}.  Our main contributions are:
+\begin{itemize}
+    \item We facilitate the application of the framework \emph{PAL-Tiling} to optimize a description length having an approximation which is suitable for the optimization via PALM, \item we algorithmically integrate the built-in regularization of the model complexity by MDL in order to derive factorizations which do not use more tiles than necessary,
+    \item we propose two algorithms as specifications of \textsc{PAL-Tiling}: one applying $\ell 1$-regularization on the matrix factorization (\textsc{Panpal}) and one employing an encoding by code tables as proposed by \cite{siebes2006item} (\textsc{Primp}). 
+\end{itemize}
+ 
+%We assess the algorithms' ability to filter the \textit{true} underlying structure from the noise. Therefore, we compare various performance measures in a controlled setting of synthetically generated data as well as for real-world data. We show that \textsc{Primp} is capable of recovering the latent structure in spite of varying database characteristics and noise distributions. In addition, we visualize the derived categorization into clusters by means of images, showing that our conducted minimization procedure of \textit{PAL-Tiling} yields interpretable groupings. 
 %=============================
 % The MDL Principle
 %=============================
-\section{The MDL Principle}
+\section{MDL Principle}
 MDL is introduced by \cite{rissanen1978modeling} as an applicable version of Kolmogorov complexity~\citep{li2008introduction,grunwald2007minimum}.
 The learning task to find the best model according to the MDL principle is given by the following minimization problem 
 \begin{align*}
@@ -78,7 +81,7 @@ In every iteration, the description length of the current factorization is compa
 \cite{miettinen2014mdl4bmf} argue that the encoding used in \textsc{Panda} is too coarse. They investigate multiple encodings, applying \textsc{Asso} as Boolean factorization method. Their best-performing encoding is called \emph{Typed XOR DtM} encoding. This is based upon the description of $n$-dimensional binary vectors by number and distribution of ones. 
 We refer to  the Typed XOR DtM description length as $L_{\mathsf{TXD}}$ and to the corresponding algorithm as \textsc{Mdl4bmf}. The experimental evaluation suggests that \textsc{Mdl4bmf}'s rank estimation is accurate in a setting with moderate noise, i.e., less than $15\%$, and moderate number of planted tiles, i.e., less than 15. It seems to have a tendency to underfit, as opposed to \textsc{Panda}, which returns on some synthetically generated datasets a rank ten times higher than the actual rank.
 
-On the other hand, the heuristic optimization of \textsc{Panda} is applicaple to any objective function. \cite{lucchese2014unifying} enhance the algorithm \textsc{Panda} to a faster version \textsc{Panda+} and empirically evaluate the ability to detect the \emph{true} clustering via various description lengths and optimization algorithms. In this evaluation with respect to synthetically generated datasets, having less than $10\%$ equally distributed noise, \textsc{Panda+} using the Typed XOR description length $L_{\mathsf{TX}}$ is outperforming any other choice. The performance is explained with the objective of \textsc{Panda+}'s factorization method, which aims at directly minimizing the description length, opposed to \textsc{Asso}, minimizing only the approximation error.
+On the other hand, the heuristic optimization of \textsc{Panda} is applicaple to any objective function. \cite{lucchese2014unifying} enhance the algorithm \textsc{Panda} to a faster version \textsc{Panda+} and empirically evaluate the ability to detect the \emph{true} clustering via various description lengths and optimization algorithms. In the evaluation with respect to synthetically generated datasets, having less than $10\%$ equally distributed noise, \textsc{Panda+} using the Typed XOR description length $L_{\mathsf{TX}}$ is outperforming any other choice. The performance is explained with the direct minimization of the description length in \textsc{Panda+}, opposed to \textsc{Asso}, minimizing only the residual sum of squares.
 
 Another algorithm which tries to incorporate the direct optimization of the MDL-cost measure is \textsc{Nassau}~\citep{karaev2015getting}. Remarking that the formerly proposed algorithms do not reconsider which clusters have been mined at previous iterations, \textsc{Nassau} refines the whole factorization every few steps, employing \textsc{Asso} for the \ref{eq:BoolMF} optimization. The experiments focus on a setting where noise effects which flip a one to a zero are prevalent. In this case, differences to \textsc{Mdl4bmf} are often hard to capture while \textsc{Nassau} typically outperforms \textsc{Panda+}. 
 
@@ -114,7 +117,7 @@ We specify the function \textsc{Toss} in Algorithm~\ref{alg:MDL:toss}, which we 
 %------------------------------------
 \subsection{Panpal}\label{sec:MDL:panpal}
 The cost measure $L_{\ell 1}$ (as applied by \textsc{Panda}) is easily  integrated into \textsc{PAL-Tiling}. Since the proximal operator ensures that the factor matrices in all steps are nonnegative, the $\ell 1$-norm of the factor matrices equates a simple summation over all matrix entries. Thus, the $\ell 1$-norm is a smooth function on the nonnegative domain of the factor matrices and can be used as regularizing function. We call the resulting algorithm \textsc{Panpal} as it employs the cost measure of \textsc{Panda} in the minimization technique \textsc{PAL-Tiling}:
-\begin{mybox}
+%\begin{mybox}
 \begin{algSpec}[Panpal] \label{algSpec:panpal}
 Apply \textsc{PAL-Tiling} with the function \textsc{Toss} from Algorithm~\ref{alg:MDL:toss} and the following functions:
 \begin{align*}
@@ -125,7 +128,7 @@ Apply \textsc{PAL-Tiling} with the function \textsc{Toss} from Algorithm~\ref{al
 M_{\nabla_XF}(Y)&>\|YY^\top \| \quad M_{\nabla_YF}(X)>\|XX^\top \| & \textit{(L-moduli)}
 \end{align*}
 \end{algSpec}
-\end{mybox}
+%\end{mybox}
 The smooth relaxation $F$ in \textsc{Panpal} is a polynomial function and thus semi-algebraic. Therefore, the optimization of the relaxed objective of \textsc{Panpal} via PALM converges to a local minimum.
 %-------------------------
 % primp
@@ -176,7 +179,7 @@ The remaining terms which compose the model complexity are limited upwards by a 
 Thus, we minimize the relaxed function as denoted in the box below. 
 The required Lipschitz constants are computed in Appendix~\ref{chap:AppendixMDL}. We refer to this algorithm as \textsc{Primp}, as it performs \textsc{PAL-Tiling} with the objective of \textsc{Krimp}.   
 
-\begin{mybox}
+%\begin{mybox}
 \begin{algSpec}[Primp]\label{algSpec:Primp}
 Apply \textsc{PAL-Tiling} with the function \textsc{Toss} from Algorithm~\ref{alg:MDL:toss} and the following functions:
 \begin{align*}
@@ -189,31 +192,31 @@ Apply \textsc{PAL-Tiling} with the function \textsc{Toss} from Algorithm~\ref{al
     M_{\nabla_X F}(Y)&>\mu\|YY^\top \|\quad M_{\nabla_Y F}(X)>\mu\|XX^\top \|+m & \textit{(L-moduli)}
 \end{align*}
 \end{algSpec}
-\end{mybox}
+%\end{mybox}
 The smooth relaxation of Primp is a definable function, because it is a composition of polynomials, division by functions which are not zero and the definable logarithmic function. Therefore, the iterates in the relaxed optimization converge to a local minimum of the relaxed objective.
 %=================================
 % Experiments
 %=================================
 \section{Experiments}\label{sec:MDL:Experiments}
 We conduct experiments on a series of synthetic data matrices, exploring the ability to detect the planted factorization, i.e., to recover generated matrices X and Y in presence of various noise structures. In real-world data experiments we compare the description lengths of obtained models. Also, we perform a qualitative evaluation of the factor methods, visualizing the algorithms' understanding of tiles and noise on the basis of images. We compare the \textsc{PAL-Tiling} instances \textsc{Panpal} and \textsc{Primp} with the available implementations of 
-\textsc{PaNDa+}\footnote{\url{http://hpc.isti.cnr.it/~claudio/web/archives/20131113/index.html}}, \textsc{Mdl4bmf}\footnote{\label{note1}\url{http://people.mpi-inf.mpg.de/~skaraev/}} and \textsc{Nassau}\footnoteref{note1}. Concerning \textsc{Panpal} and \textsc{Primp}, we apply $K=50,000$ iterations. We apply the same set of thresholds $T$ \todo{what is this for again?} to \textsc{Mdl4bmf}, which is also the average increment used in experiments by \cite{miettinen2014mdl4bmf,lucchese2014unifying,karaev2015getting}. For \textsc{Panda+} we choose the TypedXOR measure and use 20 randomization rounds and correlating items as suggested in the literature \citep{lucchese2014unifying}. Apart from that, the default settings apply. 
+\textsc{PaNDa+}\footnote{\url{http://hpc.isti.cnr.it/~claudio/web/archives/20131113/index.html}}, \textsc{Mdl4bmf}\footnote{\label{note1}\url{http://people.mpi-inf.mpg.de/~skaraev/}} and \textsc{Nassau}\footnoteref{note1}. For \textsc{Panda+} we choose the TypedXOR measure and use 20 randomization rounds and correlating items as suggested in the literature \citep{lucchese2014unifying}. Apart from that, the default settings apply. 
 
 We exclude \textsc{Slim} from our experiments as it can not be fairly compared to Boolean matrix factorization algorithms. To illustrate, \textsc{Slim} returns far more patterns ($500$ to $3000$ monotonically increasing with noise) than planted (25) in our synthetic data sets. Hence, a depiction of this algorithm's rank would distort the rank charts.
 
-For synthetic and real world experiments, we set the rank increment $\Delta_r=10$; sensitivity to this parameter is explored in Section~\ref{sec:MDL:SynthParamSensitivity}. For our image evaluation, we set (if possible) a maximum number of $10$ returned tiles and depict the four most informative tiles. Here, we set $\Delta_r=1$, to consistently allow for multiple factorization rounds. 
+For synthetic and real world experiments, we set the rank increment $\Delta_r=10$; sensitivity to this parameter is explored in Section~\ref{sec:MDL:SynthData}. For our image evaluation, we set (if possible) a maximum number of $10$ returned tiles and depict the four most informative tiles. Here, we set $\Delta_r=1$, to consistently allow for multiple factorization rounds. 
 
 A separate run time comparison of the aforementioned algorithms is not conducted. This is because we can not guarantee that the underlying data structures and platform specific optimizations are equally well tuned, especially for the approaches for which we make use of the reference implementation (\textsc{Panda+}, \textsc{Mdl4bmf} and \textsc{Nassau}). Note, however, that due to the formulation of \textsc{PAL-Tiling} in terms of linear algebra, a highly parallel implementation on graphics processing units (GPU) is straightforward. Therefore, experiments regarding \textsc{Panpal} and \textsc{Primp} are executed on a GPU with 2688 arithmetic cores and 6GiB GDDR5 memory. The run time of the GPU based algorithms is about 50 times lower, compared to the ordinary implementations, e.g., a task that is finished by \textsc{Primp} in a few seconds, requires 30 minutes by \textsc{Mdl4bmf}. We provide the source code of our algorithms together with the data generating script\footnote{\url{http://sfb876.tu-dortmund.de/primp}}.
 %-------------------------------
 % Synthetic Data Experiments
 %-------------------------------
 \subsection{Experiments on Synthetic Data} \label{sec:MDL:SynthData}
-We generate data matrices according to the scheme established by \cite{miettinen2014mdl4bmf,karaev2015getting} and \cite{lucchese2014unifying}. Yet, we constrain the set of generated factor matrices to contain at least one percent of uniquely assigned ones to ensure linear independence of column vectors. This ensures that for $r^*\leq n,m$ and generated matrices $X^*\in\{0,1\}^{n\times r^*}$ and $Y^*\in\{0,1\}^{m\times r^*}$, the matrix $D=Y^* {X^*}^\top $ indeed has rank $r^*$. We describe the data generation process as a function from dimensions $n$ and $m$, rank $r^*$, density parameter $d$ and noise probabilities $p_+^*$ and $p_-^*$ as stated in Algorithm~\ref{alg:generateBMF}. 
+We generate data matrices according to the scheme established by \cite{miettinen2014mdl4bmf,karaev2015getting} and \cite{lucchese2014unifying}. Yet, we constrain the set of generated factor matrices to contain at least one percent of uniquely assigned ones to ensure linear independence of column vectors. This ensures that for $r^*\leq n,m$ and generated matrices $X^*\in\{0,1\}^{n\times r^*}$ and $Y^*\in\{0,1\}^{m\times r^*}$, the matrix $D=Y^* {X^*}^\top $ indeed has rank $r^*$. We describe the data generation process as a function from dimensions $n$ and $m$, rank $r^*$, density parameter $d$ and noise probabilities $p_+^*$ and $p_-^*$ as stated in Algorithm~\ref{alg:MDL:generateBMF}. 
 \begin{algorithm}[t]
 \caption{Generation of synthetic datasets for Boolean matrix factorizations.}
 \begin{algorithmic}[1]
   \Function{GenerateNoisyBMF}{$n,m,r^*,d,p_+^*,p_-^*$}
-  	\State $X\gets UniformlyRandom(\{X^*\in\{0,1\}^{n\times r}\mid 0.1n\leq|X_{\cdot s}|\leq dn\})$
-  	\State $Y\gets UniformlyRandom(\{Y^*\in\{0,1\}^{m\times r}\mid 0.1m\leq|Y_{\cdot s}|\leq dm\})$
+  	\State $X^*\gets UniformRand(\{X\in\{0,1\}^{n\times r}\mid 0.01n\leq|X_{\cdot s}|\leq dn\})$
+  	\State $Y^*\gets UniformRand(\{Y\in\{0,1\}^{m\times r}\mid 0.01m\leq|Y_{\cdot s}|\leq dm\})$
   	\State $D\gets Y^*\odot {X^*}^\top$
   	\For {$1\leq j\leq m, 1\leq i\leq n$}
 %  	    \If{$D_{ji}=1$} 
@@ -224,6 +227,7 @@ We generate data matrices according to the scheme established by \cite{miettinen
   	    \State \algorithmicif\ $D_{ji}=1$\ \algorithmicthen\ $D_{ji}\gets 0$ with probability $p_-^*$ 
   	    \State \phantom{\algorithmicif\ $D_{ji}=1$}\ \algorithmicelse\ \ $D_{ji}\gets 1$ with probability $p_+^*$ 
     \EndFor
+    \State \textbf{Return} $(X^*,Y^*,D)$
   \EndFunction
 \end{algorithmic}
 \label{alg:MDL:generateBMF}
@@ -252,36 +256,24 @@ Variation & $p_+[\%]$ & $p_-^*[\%]$ & $r$ & $d$ & Density $[\%]$ & Overlap $[\%]
 %----------------------------------------
 %\subsection{Measuring the Tiling Quality}\label{sec:MDL:Eval}
 
-We quantify how well a computed clustering $(X,Y)$  matches the planted clustering $(X^*,Y^*)$ by an adaptation of the micro-averaged F-measure, known from multi-class classification tasks. In this regard, we identify a planted tile $Y^*_{\cdot s }{X^*_{\cdot s}}^\top $  with a class which contains the tuples $(j,i)$ which indicate ones. Then, a suitable  one-to-one matching $\sigma$ between computed and planted tiles allows to compare the \textit{true} labels $Y^*_{j s }{X^*_{i s}}^\top $  with the \textit{predicted} labels $Y_{j \sigma(s) }{X_{i \sigma(s)}}^\top $.
-Therewith, we can naturally calculate precision and recall and finally the $\mathsf{F}$-measure. 
-
-We assume w.l.o.g.\@ that $X,X^*\in\{0,1\}^{n\times r}$ and $Y,Y^*\in\{0,1\}^{n\times r}$, otherwise we attach zero columns to the matrices such that the dimensions match. 
-We compute with the Hungarian algorithm a permutation $\sigma:\{1,\ldots, r\}\rightarrow \{1,\ldots,r\}$ which matches computed and planted tiles one-to-one such that $\sum_{s=1}^rF_{s,\sigma(s)}$ is maximized. The $F_{s,t}$-measure is calculated for $1\leq s,t\leq r$ by  
-\[
-	F_{s,t}=2\frac{\pre_{s,t}\cdot\rec_{s,t}}{\pre_{s,t}+\rec_{s,t}},
-\]
-where $\pre_{s,t}$ and $\rec_{s,t}$ denote precision and recall between the planted tile $(X^*_{\cdot s},Y^*_{\cdot s})$ and computed tile $(X_{\cdot t},Y_{\cdot t})$
+\paragraph{Evaluation}
+We quantify how well a computed clustering $(X,Y)$  matches the planted clustering $(X^*,Y^*)$ by the $\mathsf{F}$-measure, as proposed in Section~\ref{sec:SA:synthExp}.
+We assume w.l.o.g.\@ that $X,X^*\in\{0,1\}^{n\times r}$ and $Y,Y^*\in\{0,1\}^{n\times r}$, otherwise we attach zero columns to the matrices such that the dimensions match. We require the following substitutions of precision and recall, in order to take the selection of features in a tile into account:
 \begin{align*}
-	\pre_{s,t} &= \frac{|(Y^*_{\cdot s}\circ Y_{\cdot t})(X^*_{\cdot s}\circ X_{\cdot t})^\top |}{|Y_{\cdot t}X_{\cdot t}^\top |} &\quad 
-    \rec_{s,t} &= \frac{|(Y^*_{\cdot s}\circ Y_{\cdot t})(X^*_{\cdot s}\circ X_{\cdot t})^\top |}{|Y^*_{\cdot s}{X^*_{\cdot s}}^\top |}.  
+	\pre(s,t) &= \frac{|(Y^*_{\cdot s}\circ Y_{\cdot t})(X^*_{\cdot s}\circ X_{\cdot t})^\top |}{|Y_{\cdot t}X_{\cdot t}^\top |} &\quad 
+    \rec(s,t) &= \frac{|(Y^*_{\cdot s}\circ Y_{\cdot t})(X^*_{\cdot s}\circ X_{\cdot t})^\top |}{|Y^*_{\cdot s}{X^*_{\cdot s}}^\top |}. 
 \end{align*}
-Having computed the perfect matching $\sigma$, we calculate precision and recall for the obtained factorization by
+Accordingly, the calculation of precision and recall for the whole factorization is adapted such that
 \begin{align*}
 \pre &= \frac{\sum_{s=1}^r|(Y^*_{\cdot s}\circ Y_{\cdot \sigma(s)})(X^*_{\cdot s}\circ X_{\cdot \sigma(s)})^\top |}{\sum_{s=1}^r|Y_{\cdot s}X_{\cdot s}^\top |} 
 = \frac{|(Y^*\circ Y_{\cdot \sigma(\cdot)})(X^*\circ X_{\cdot \sigma(\cdot)})^\top |}{|YX^\top |}\\ 
 \rec &= \frac{\sum_{s=1}^r|(Y^*_{\cdot s}\circ Y_{\cdot \sigma(s)})(X^*_{\cdot s}\circ X_{\cdot \sigma(s)})^\top |}{\sum_{s=1}^r|Y_{\cdot s}^* {X_{\cdot s}^*}^\top |} 
     = \frac{|(Y^*\circ Y_{\cdot\sigma(\cdot)})(X^*\circ X_{\cdot \sigma(\cdot)})^\top |}{|Y^*{X^*}^\top |}.
 \end{align*}
-The micro $\mathsf{F}$-measure is defined in terms of precision and recall as defined above. This is equivalent to a convex combination of the $F_{s,\sigma(s)}$-measurements:  
-\begin{align*}
-	F&=2\frac{\pre\cdot\rec}{\pre+\rec}
-    = \sum_{s=1}^r\frac{\left|Y^*_{\cdot s}{X^*_{\cdot s}}^\top \right| + \left|Y_{\cdot\sigma(s)}X_{\cdot\sigma(s)}^\top \right|}{\left|Y^* {X^*}^\top \right|+\left|Y X^\top \right|}F_{s,\sigma(s)}.
-\end{align*}
-The $\mathsf{F}$-measure has values between zero and one. The closer it approaches one, the more accurate the obtained tiling is. The plots which display the $\mathsf{F}$-measure indicate the average value with error bars having the length of twice the standard deviation.
-
-We express the values of involved cost measures in relation to the empty model
+The plots which display the $\mathsf{F}$-measure indicate the average value with error bars having the length of twice the standard deviation.
+We furthermore express the values of involved cost measures in relation to the empty model
 \[
-	\%f(X,Y,D) = \frac{f(X,Y,D)}{f(\mathbf{0}_n,\mathbf{0}_m,D)}\cdot 100.
+	\%F(X,Y) = \frac{F(X,Y)}{F(\mathbf{0},\mathbf{0})}\cdot 100.
 \]
 %----------------------------
 % Make some Noise
@@ -373,11 +365,11 @@ The average rank estimations of \textsc{Primp} have a maximum aberration of five
 	\centering
     \begin{adjustbox}{max width=\textwidth}
 	\begin{tabular}{clrrrrr}\toprule
- & Algorithm & $\mathsf{F}$-measure & $\%F_{\mathsf{RSS}}$ & $\%L_{\mathsf{CT}}$ & $\%L_{\ell 1}$  & $\%L_{\mathsf{TXD}}$  \\ \midrule
+ & Algorithm & $\mathsf{F}$-measure & $\%RSS$ & $\%L_{\mathsf{CT}}$ & $\%L_{\ell 1}$  & $\%L_{\mathsf{TXD}}$  \\ \midrule
  \rowcolor{black!10}
 \multirow{6}{*}{\cellcolor{white}\rotatebox{90}{ $p_\pm=25\%$ }  } 
 &Planted& 1.0 $\pm$ 0.0 & 88.37 $\pm$ 1.24 & 89.88 $\pm$ 1.25 & 89.51 $\pm$ 1.25 & 96.5 $\pm$ 0.61\\
- & \textsc{Primp} & $\mathbf{0.9\pm0.05}$ & $\mathbf{89.58\pm1.71}$ & $\mathbf{91.0\pm1.54}$ & $\mathbf{90.65\pm1.59}$ & $\mathbf{97.0\pm0.62}$\\
+ & \textsc{Primp} & \textbf{0.9}$\pm$\textbf{0.05} & \textbf{89.58}$\pm$\textbf{1.71} & \textbf{91.0}$\pm$\textbf{1.54} & \textbf{90.65}$\pm$\textbf{1.59} & \textbf{97.0}$\pm$\textbf{0.62}\\
  & \textsc{Panpal} & 0.35 $\pm$ 0.2 & 97.17 $\pm$ 1.62 & 97.56 $\pm$ 1.46 & 97.47 $\pm$ 1.49 & 99.16 $\pm$ 0.56\\
  & \textsc{Mdl4bmf} & 0.46 $\pm$ 0.08 & 96.6 $\pm$ 0.86 & 97.25 $\pm$ 0.76 & 97.11 $\pm$ 0.77 & 99.2 $\pm$ 0.25\\
  & \textsc{Panda} & 0.14 $\pm$ 0.11 & 99.14 $\pm$ 0.77 & 99.28 $\pm$ 0.62 & 99.24 $\pm$ 0.66 & 99.75 $\pm$ 0.19\\
@@ -386,7 +378,7 @@ The average rank estimations of \textsc{Primp} have a maximum aberration of five
 \rowcolor{black!10}
 \multirow{6}{*}{\cellcolor{white}\rotatebox{90}{ $r^* = 45$ }  }  
 & Planted & 1.0 $\pm$ 0.0 &  50.27 $\pm$ 1.25 & 54.67 $\pm$ 1.29 & 53.29 $\pm$ 1.29 & 69.77 $\pm$ 0.96\\
- & \textsc{Primp} & $\mathbf{1.0\pm0.0}$ & $\mathbf{50.32\pm1.23}$ & $\mathbf{54.74\pm1.27}$ & $\mathbf{53.35\pm1.27}$ & $\mathbf{69.85\pm0.93}$\\
+ & \textsc{Primp} & \textbf{1.0}$\pm$\textbf{0.0} & \textbf{50.32}$\pm$\textbf{1.23} & \textbf{54.74}$\pm$\textbf{1.27} & \textbf{53.35}$\pm$\textbf{1.27} & \textbf{69.85}$\pm$\textbf{0.93}\\
  & \textsc{Panpal} & 0.67 $\pm$ 0.1 & 73.0 $\pm$ 6.04 & 75.04 $\pm$ 5.56 & 74.29 $\pm$ 5.71 & 84.66 $\pm$ 3.78\\
  & \textsc{Mdl4bmf} & 0.8 $\pm$ 0.04 & 62.67 $\pm$ 1.41 & 66.72 $\pm$ 1.53 & 65.48 $\pm$ 1.46 & 79.21 $\pm$ 1.03\\
  & \textsc{Panda} & 0.53 $\pm$ 0.02 & 89.02 $\pm$ 1.76 & 92.34 $\pm$ 2.16 & 92.76 $\pm$ 2.09 & 86.0 $\pm$ 0.7\\
@@ -394,11 +386,11 @@ The average rank estimations of \textsc{Primp} have a maximum aberration of five
 \rowcolor{black!10}
  \multirow{6}{*}{\cellcolor{white}\rotatebox{90}{ $d=0.3$ }  } 
 &Planted &  1.0 $\pm$ 0.0  & 24.94 $\pm$ 2.74 & 27.84 $\pm$ 2.78 & 27.11 $\pm$ 2.7 & 51.97 $\pm$ 1.04\\
- & \textsc{Primp} & 0.7 $\pm$ 0.1  & $\mathbf{27.04\pm2.46}$ & $\mathbf{31.23\pm2.33}$ & $\mathbf{30.33\pm2.25}$ & 57.52 $\pm$ 2.03\\
- & \textsc{Panpal}  & $\mathbf{0.92\pm0.11}$ & 29.45 $\pm$ 3.17 & 31.98 $\pm$ 3.06 & 31.31 $\pm$ 3.1 & 57.09 $\pm$ 3.86\\
+ & \textsc{Primp} & 0.7 $\pm$ 0.1  & \textbf{27.04}$\pm$\textbf{2.46} & \textbf{31.23}$\pm$\textbf{2.33} & \textbf{30.33}$\pm$\textbf{2.25} & 57.52 $\pm$ 2.03\\
+ & \textsc{Panpal}  & \textbf{0.92}$\pm$\textbf{0.11} & 29.45 $\pm$ 3.17 & 31.98 $\pm$ 3.06 & 31.31 $\pm$ 3.1 & 57.09 $\pm$ 3.86\\
  & \textsc{Mdl4bmf} & 0.59 $\pm$ 0.04 & 45.08 $\pm$ 2.14 & 48.53 $\pm$ 2.01 & 47.88 $\pm$ 1.96 & 73.81 $\pm$ 1.49\\
  & \textsc{Panda} & 0.51 $\pm$ 0.05 & 54.12 $\pm$ 8.9 & 57.07 $\pm$ 8.83 & 56.74 $\pm$ 8.86 & 75.88 $\pm$ 2.32\\
- & \textsc{Nassau} & 0.9 $\pm$ 0.09 & 29.11 $\pm$ 5.19 & 32.07 $\pm$ 5.2 & 31.42 $\pm$ 5.2 & $\mathbf{56.79\pm4.2}$\\ 
+ & \textsc{Nassau} & 0.9 $\pm$ 0.09 & 29.11 $\pm$ 5.19 & 32.07 $\pm$ 5.2 & 31.42 $\pm$ 5.2 & \textbf{56.79}$\pm$\textbf{4.2}\\ 
  \bottomrule
 \end{tabular}
 \end{adjustbox}
@@ -408,9 +400,9 @@ The average rank estimations of \textsc{Primp} have a maximum aberration of five
 
 We have seen how well the competing algorithms perform with regard to the $\mathsf{F}$-measure. Then again, assessing the performance on real data requires other measurements. Possible candidates are the optimized description lengths. Subsequently, we relate selected costs of computed and planted models to the $\mathsf{F}$-measure and discuss whether we can deduce a suitable extraction of the underlying model from a low cost measure; is lower always better? 
 
-Table~\ref{tbl:avgCosts} displays average costs of the returned factorization, measured by the functions $F_{\mathsf{RSS}}$, the residual sum of squares, $L_{\mathsf{CT}}$, the compression size obtained by code tables, $L_{\ell 1}$, the $\ell 1$-regularized residual sum of squares and $L_{\mathsf{TXD}}$, the Typed XOR DtM measure. All these measurements are listed in relation to the empty model. We examine three parameter settings, one for the highest value in each variation of the data generation parameters $r^*, d$ and $p_\pm$. Thereby, default settings of $r^*=25$, $d=0.1$, $p_\pm=10\%$ apply. The values of the planted model are shaded out while the highest $\mathsf{F}$-measure and lowest mean costs of computed models are highlighted. 
+Table~\ref{tbl:avgCosts} displays average costs of the returned factorization, measured by the functions $RSS$, the residual sum of squares, $L_{\mathsf{CT}}$, the compression size obtained by code tables, $L_{\ell 1}$, the $\ell 1$-regularized residual sum of squares and $L_{\mathsf{TXD}}$, the Typed XOR DtM measure. All these measurements are listed in relation to the empty model. We examine three parameter settings, one for the highest value in each variation of the data generation parameters $r^*, d$ and $p_\pm$. Thereby, default settings of $r^*=25$, $d=0.1$, $p_\pm=10\%$ apply. The values of the planted model are shaded out while the highest $\mathsf{F}$-measure and lowest mean costs of computed models are highlighted. 
 
-We trace that a high $\mathsf{F}$-measure often corresponds to lower costs, regardless of the cost function. This effect is immediately perceivable at rows where \textsc{Primp} attains highest $\mathsf{F}$-values and all of its costs are highlighted as well. Yet, the experiments for $d=0.3$ display a  more diverse ranking among the measurements. In this setting, \textsc{Primp} decidedly overestimates the rank but still obtains lowest costs in all but the $L_\mathsf{TXD}$ measure. \textsc{Panpal} attains the highest $\mathsf{F}$-value, closely followed by \textsc{Nassau}. Both algorithms reach second or third lowest cost measurements by the functions $F_{\mathsf{RSS}},L_{\mathsf{CT}}$ and $L_{\ell 1}$. The $L_\mathsf{TXD}$ description length reflects here the order of $\mathsf{F}$-values more suitably but still not accurately; \textsc{Nassau} obtains lowest costs, closely followed by \textsc{Panpal} and \textsc{Primp}. All in all, none of the description lengths reflects the ranking of the $\mathsf{F}$-measure in this particular case. If the $\mathsf{F}$-measure would be unknown, then a possible clue would be given by the estimated rank, showing that slight improvements in the costs of \textsc{Primp} are achieved by a disproportionate increase of the rank. 
+We trace that a high $\mathsf{F}$-measure often corresponds to lower costs, regardless of the cost function. This effect is immediately perceivable at rows where \textsc{Primp} attains highest $\mathsf{F}$-values and all of its costs are highlighted as well. Yet, the experiments for $d=0.3$ display a  more diverse ranking among the measurements. In this setting, \textsc{Primp} decidedly overestimates the rank but still obtains lowest costs in all but the $L_\mathsf{TXD}$ measure. \textsc{Panpal} attains the highest $\mathsf{F}$-value, closely followed by \textsc{Nassau}. Both algorithms reach second or third lowest cost measurements by the functions $RSS,L_{\mathsf{CT}}$ and $L_{\ell 1}$. The $L_\mathsf{TXD}$ description length reflects here the order of $\mathsf{F}$-values more suitably but still not accurately; \textsc{Nassau} obtains lowest costs, closely followed by \textsc{Panpal} and \textsc{Primp}. All in all, none of the description lengths reflects the ranking of the $\mathsf{F}$-measure in this particular case. If the $\mathsf{F}$-measure would be unknown, then a possible clue would be given by the estimated rank, showing that slight improvements in the costs of \textsc{Primp} are achieved by a disproportionate increase of the rank. 
 
 While the $L_\mathsf{TXD}$ costs appear suitable to reflect an appropriate extraction of tiles for $d=0.3$, in the setting of $p_\pm=25\%$ we observe another facet. Here, we see that  \textsc{Nassau} reaches the same average $L_\mathsf{TXD}$ measurement as \textsc{Panda+} although \textsc{Nassau} increases the residual sum of squares in comparison to the empty model. This is indicated by relative costs larger than $100\%$ in all measurements but $L_\mathsf{TXD}$. Still, the ranking with respect to $L_\mathsf{TXD}$ matches the ranking of the $\mathsf{F}$-measure, but the example shows that a compression with respect to the $L_\mathsf{TXD}$ description length is achievable without adaptation to the data.
 
@@ -432,41 +424,41 @@ While the $L_\mathsf{TXD}$ costs appear suitable to reflect an appropriate extra
     \caption{Characteristics of considered datasets: Number of rows $m$, number of columns $n$ and density $|D|/(nm)$ in percent.}
     \label{tbl:dataStats}
 \end{table}
-We conduct experiments on five datasets, whose characteristics are summarized in Table~\ref{tbl:dataStats}. \textit{Chess} and \textit{Mushroom} are discretized benchmark UCI datasets having a comparatively high density and around 50 times more rows than columns. The \textit{Abstracts} dataset indicates the presence of stemmed words, excluding stop-words, in all ICDM paper abstracts until 2007 \citep{deBie2011maximum}. It is a sparse dataset with around 5 times as many columns (words) as rows (documents). Finally, the \textit{MovieLens5M} and \textit{MovieLens500K} are binarized versions of the \textit{MovieLens10M}\footnote{\url{http://grouplens.org/datasets/movielens/10m/}} and \textit{MovieLens1M}\footnote{\url{http://grouplens.org/datasets/movielens/1m/}} datasets, where rows correspond to users and columns to movies. We set $D_{ji}=1$ iff user $j$ recommends movie $i$ with more than three out of five stars. After selecting only those users which recommend more than 50 movies and those movies which receive more than five recommendations, we obtain two datasets with a balanced number of of rows and columns. The \textit{MovieLens5M} dataset, containing 5 million ones, and the \textit{MovieLens500K} dataset, having 500 thousand ones, have a (as one would expect, due to the dataset domain) high amount of negative noise due to missing values. Originally, we intended to consider only the \textit{MovieLens5M} dataset, but \textsc{Nassau} and \textsc{Mdl4bmf} could not terminate in reasonable time -- we aborted the calculations after one month. Therefore, we also prepared the smaller \textit{MovieLens500K} dataset. (For comparison: While \textsc{Primp}, \textsc{Panpal} and \textsc{Panda+} require around ten minutes to compute the result for \textit{MovieLens500K}, \textsc{Mdl4bmf} and \textsc{Nassau} need more than five days.)  Furthermore, we note that we transpose the \textit{Abstracts} dataset for \textsc{Nassau}, as it returns zero tiles otherwise.
+We conduct experiments on five datasets, whose characteristics are summarized in Table~\ref{tbl:dataStats}. \emph{Chess} and \emph{Mushroom} are discretized benchmark UCI datasets having a comparatively high density and around 50 times more rows than columns. The \emph{Abstracts} dataset indicates the presence of stemmed words, excluding stop-words, in all ICDM paper abstracts until 2007 \citep{deBie2011maximum}. It is a sparse dataset with around 5 times as many columns (words) as rows (documents). Finally, the \emph{MovieLens5M} and \emph{MovieLens500K} are binarized versions of the MovieLens10M\footnote{\url{http://grouplens.org/datasets/movielens/10m/}} and MovieLens1M\footnote{\url{http://grouplens.org/datasets/movielens/1m/}} datasets, where rows correspond to users and columns to movies. We set $D_{ji}=1$ iff user $j$ recommends movie $i$ with more than three out of five stars. After selecting only those users which recommend more than 50 movies and those movies which receive more than five recommendations, we obtain two datasets with a balanced number of of rows and columns. The MovieLens5M dataset, containing 5 million ones, and the MovieLens500K dataset, having 500 thousand ones, have a (as one would expect, due to the dataset domain) high amount of negative noise due to missing values. Originally, we intended to consider only the MovieLens5M dataset, but \textsc{Nassau} and \textsc{Mdl4bmf} could not terminate in reasonable time -- we aborted the calculations after one month. Therefore, we also prepared the smaller MovieLens500K dataset. (For comparison: While \textsc{Primp}, \textsc{Panpal} and \textsc{Panda+} require around ten minutes to compute the result for MovieLens500K, \textsc{Mdl4bmf} and \textsc{Nassau} need more than five days.)  Furthermore, we note that we transpose the Abstracts dataset for \textsc{Nassau}, as it returns zero tiles otherwise.
 
 We state the estimated rank and the attained costs, relative to the costs of the empty model for every considered dataset and algorithm in Table~\ref{tbl:realWorldCosts}. The lowest costs are highlighted for each measure and dataset. We observe, similarly to the evaluation of description lengths in Section~\ref{sec:MDL:SynthData}, a tendency toward compliance among the rankings of all measures, except for the Typed XOR description length. 
-As such, \textsc{Primp} mostly obtains minimal costs in all datasets but \textit{Mushroom}, where \textsc{Mdl4bmf} reaches the lowest overall cost measures. The models of \textsc{Panda+} exhibit for sparse datasets low Typed XOR DtM measurements although the fit to the data is low ($F_\mathsf{RSS}>100\%$). The discrepancy between the $L_\mathsf{TXD}$ compression size and the other measurements is most remarkably for the \textit{MovieLens} datasets. Here, the ranking with respect to $L_\mathsf{TXD}$ is  almost inverse to the ranking with respect to other measurements.
+As such, \textsc{Primp} mostly obtains minimal costs in all datasets but Mushroom, where \textsc{Mdl4bmf} reaches the lowest overall cost measures. The models of \textsc{Panda+} exhibit for sparse datasets low Typed XOR DtM measurements although the fit to the data is low ($F_\mathsf{RSS}>100\%$). The discrepancy between the $L_\mathsf{TXD}$ compression size and the other measurements is most remarkably for the MovieLens datasets. Here, the ranking with respect to $L_\mathsf{TXD}$ is  almost inverse to the ranking with respect to other measurements.
 \begin{table}%[!hp]
 	\centering
 	\begin{tabular}{cclrrrrr}\toprule
-    \multicolumn{2}{c}{Data} & Algorithm & Rank & $ \%F_{\mathsf{RSS}}$ & $ \%L_{\mathsf{CT}}$ & $\%L_{\ell 1}$  & $\%L_{\mathsf{TXD}}$  \\ \midrule
-\multirow{5}{*}{\rotatebox{90}{ Abstracts }  } 
+    \multicolumn{2}{c}{Data} & Algorithm & Rank & $ \%RSS$ & $ \%L_{\mathsf{CT}}$ & $\%L_{\ell 1}$  & $\%L_{\mathsf{TXD}}$  \\ \midrule
+\multirow{5}{*}{Abstracts} 
  && \textsc{Primp} & 46 & \textbf{93.0} & \textbf{98.6} & \textbf{96.33} & 96.12\\
  && \textsc{Panpal} & 1 & 99.8 & 99.96 & 99.89 & 99.74\\
  && \textsc{Mdl4bmf} & 24 & 95.84 & 100.68 & 100.49 & 97.05\\ 
  && \textsc{Nassau} & 3 & 99.81 & 101.76 & 103.05 & 96.84\\
  && \textsc{Panda+} & 133 & 113.34 & 125.27 & 140.49 & \textbf{88.19}\\
  \midrule
-\multirow{5}{*}{\rotatebox{90}{ Chess }  } &
+\multirow{5}{*}{Chess} &
  & \textsc{Primp} & 18 & \textbf{24.61} & \textbf{31.3} & \textbf{29.32} & \textbf{62.8}\\
  && \textsc{Panpal} & 6 & 40.76 & 46.71 & 45.67 & 78.92\\
  && \textsc{Mdl4bmf} & 3 & 35.91 & 39.34 & 39.51 & 68.88\\ 
  && \textsc{Nassau} & 10 & 31.92 & 39.03 & 38.94 & 65.78\\
  && \textsc{Panda+} & 27 & 25.76 & 36.58 & 35.74 & 65.01\\
  \midrule
-\multirow{6}{*}{\rotatebox{90}{MovieLens}} & \multirow{3}{*}{\rotatebox{90}{500K  }  }
+\multirow{6}{*}{MovieLens} & \multirow{3}{*}{500K}
  & \textsc{Primp} & 78 & \textbf{88.59} & \textbf{93.29} & \textbf{91.4} & 89.37\\
  && \textsc{Panpal} & 15 & 94.05 & 95.92 & 94.87 & 92.26\\
  && \textsc{Mdl4bmf} & 56 & 89.65 & 94.97 & 93.43 & 88.72\\
  && \textsc{Nassau} & 29 & 111.15 & 118.47 & 120.58 & 85.89\\
  && \textsc{Panda+} & 120 & 160.93 & 165.61 & 168.58 & \textbf{79.49}\\
 \cmidrule(lr{0em}){2-8}
- & \multirow{3}{*}{\rotatebox{90}{5M}  }
+ & \multirow{3}{*}{5M}
  & \textsc{Primp} & 209 & \textbf{89.31} & \textbf{93.14} & \textbf{91.2} & 88.16\\
  && \textsc{Panpal} & 38 & 93.68 & 95.72 & 94.39 & 88.73\\
  && \textsc{Panda+} & 1919 & 181.42 & 202.87 & 201.45 & \textbf{72.23}\\
  \midrule
-\multirow{5}{*}{\rotatebox{90}{ Mushroom }  }
+\multirow{5}{*}{Mushroom}
  && \textsc{Primp} & 14 & 35.75 & 40.89 & 40.25 & 56.09\\
  && \textsc{Panpal} & 7 & 44.03 & 51.23 & 48.52 & 63.75\\
  && \textsc{Mdl4bmf} & 87 & \textbf{23.39} & \textbf{36.6} & \textbf{32.47} & \textbf{50.37}\\

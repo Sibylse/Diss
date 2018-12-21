@@ -16,10 +16,10 @@ nbDBSCStyle/.style={cRSC,dashed,mark options ={cRSC},mark repeat={5}, thick, err
         legend columns =-1, title style={yshift=-1.5ex},
         axis lines = left]
         %
-        \nextgroupplot[ylabel={$F$}, xlabel={$\epsilon$},
+        \nextgroupplot[ylabel={$\mathsf{F}$}, xlabel={$\epsilon$},
         	title={\textsc{SpectACl}},
         	xmin=0.08,xmax=1, ymin=0.0, ymax=1.2,
-        	legend to name=zelda]
+        	legend to name=labelSAEpsKnnPlots]
         	\addplot+[nmStyle]  table[x=x,y=y,y error=std] {nm_epsSpectACl_eps.dat};
             \addlegendentry{moons};
         	\addplot+[ncStyle]  table[x=x,y=y,y error=std] {nc_epsSpectACl_eps.dat};
@@ -40,10 +40,11 @@ nbDBSCStyle/.style={cRSC,dashed,mark options ={cRSC},mark repeat={5}, thick, err
         	\addplot+[ncStyle]  table[x=x,y=y,y error=std] {nc_kSpectACl_knn_n.dat};
             \addplot+[nbStyle]  table[x=x,y=y,y error=std] {nb_kSpectACl_knn_n.dat};
             %
-        \nextgroupplot[ylabel={$F$}, xlabel={$d$},
+        \nextgroupplot[ylabel={$\mathsf{F}$}, xlabel={$d$},
         	%title={\textsc{SpectACl}},
         	xmin=0,xmax=190, ymin=0.0, ymax=1.2,
-        	legend to name=zelda]
+        	%legend to name=labelSAEpsKnnPlots
+        	]
         	\addplot+[nmStyle]  table[x=x,y=y,y error=std] {nm_dSpectACl_eps.dat};
             \addlegendentry{moons};
         	\addplot+[ncStyle]  table[x=x,y=y,y error=std] {nc_dSpectACl_eps.dat};
@@ -61,4 +62,4 @@ nbDBSCStyle/.style={cRSC,dashed,mark options ={cRSC},mark repeat={5}, thick, err
     \end{groupplot} 
 \end{tikzpicture}\\
 
-\pgfplotslegendfromname{zelda}
+\pgfplotslegendfromname{labelSAEpsKnnPlots}
