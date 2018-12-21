@@ -291,8 +291,8 @@ We also outline the rounding function in Algorithm~\ref{alg:paltiling}. This fun
 
 The default objective in Boolean matrix factorization is the minimization of the residual sum of squares as stated in problem~\eqref{eq:BoolMF}. We state the function, gradients and Lipschitz constants, required for the minimization via \textsc{PAL-Tiling} if the rank of the factorization is provided.
 %\begin{mybox}
-\begin{algSpec}\label{algSpec:BMF}
-Vanilla \textsc{PAL-Tiling}: Apply \textsc{PAL-Tiling} with the following specification of functions:
+\begin{algSpec}[Vanilla \textsc{PAL-Tiling}]\label{algSpec:BMF}
+Apply \textsc{PAL-Tiling} with the following specification of functions:
 \begin{align*}
     L(X,Y) &= |D-\theta(YX^\top)| & \textit{(objective)}\\
     F(X,Y)&=\|D-YX^\top\|^2 &\textit{(smooth relaxed part)}\\
