@@ -51,7 +51,7 @@ The objective function returns the sum of average node degrees $\delta(Y_{\cdot 
 \delta(Y_{\cdot s},W) = \frac{Y_{\cdot s}^\top W Y_{\cdot s}}{\|Y_{\cdot s}\|^2} =\frac{1}{|Y_{\cdot s}|}\sum_{j:Y_{js}=1} W_{j\cdot}Y_{\cdot s}.
 \end{align}  
 
-Note that our Objective~\eqref{eq:avgDensObj} is equivalent to minimum ratio cut if the matrix $W$ is normalized. In this case, the Laplacian is given as $L=I-\tilde{W}$, and subtracting the identity matrix from Equation~\eqref{eq:avgDensObj} does not change the objective.
+Note that our Objective~\eqref{eq:avgDensObj} is equivalent to minimum ratio cut if the matrix $W$ is normalized. In this case, the Laplacian is given as $L=I-\tilde{W}$, and subtracting the identity matrix from Eq.~\eqref{eq:avgDensObj} does not change the objective.
 
 We derive a new relationship for the solution of Objective~\eqref{eq:avgDensObj} and the spectrum of the adjacency matrix. Thereby, we establish a connection with the application of $k$-means to the spectral embedding. As a result, our method encompasses the same steps as spectral clustering, and hence it can be efficiently computed even for large scale data. 
 %-------------------------------------------
@@ -62,11 +62,11 @@ The function $\delta$ from Eq.~\eqref{eq:delta} is also known as the Rayleigh qu
 depend on spectral properties of the applied matrix. As such, the density $\delta(y,W)\in [\lambda_m,\lambda_1]$ is bounded by the smallest and largest eigenvalues of the matrix $W$~\citep{collatz1978spektren}. The extremal densities are attained at the corresponding eigenvectors. A simple calculation shows that the eigenvectors $V_{\cdot 1},\ldots,V_{\cdot d}$ to the $d$-largest eigenvalues span a space whose points have a minimum density $\delta(y,W)\geq\lambda_d$. 
 Thus, the projection of $W$ onto the subspace spanned by the first eigenvectors reduces the dimensionality of the space in which we have to search for optimal clusters.
 
- This insight suggests a naive approach, where we approximate $W$ by its truncated eigendecomposition. We restate in this case the optimization problem to find averagely dense clusters from Equation~\eqref{eq:avgDensObj} as
+ This insight suggests a naive approach, where we approximate $W$ by its truncated eigendecomposition. We restate in this case the optimization problem to find averagely dense clusters from Eq.~\eqref{eq:avgDensObj} as
 \begin{align}\label{eq:approxTrunc}
 \max_{Y\in\mathbbm{1}^{m\times r}} \sum_s \frac{Y_{\cdot s}^\top V^{(d)}\Lambda^{(d)} {V^{(d)}}^\top Y_{\cdot s}}{|Y_{\cdot s}|}.
 \end{align}
-A comparison with the $k$-means objective from Equation~\eqref{eq:kmeansTr} shows that the objective above is a trace maximization problem which is equivalent to $k$-means clustering on the data matrix $U=V^{(r)}\left(\Lambda^{(r)}\right)^{1/2}$. 
+A comparison with the $k$-means objective from Eq.~\eqref{eq:kmeansTr} shows that the objective above is a trace maximization problem which is equivalent to $k$-means clustering on the data matrix $U=V^{(r)}\left(\Lambda^{(r)}\right)^{1/2}$. 
 
 Unfortunately, applying $k$-means to the spectral embedding $U$ does not yield acceptable clusterings. The objective of $k$-means is nonconvex, having multiple local solutions. The number of local solutions increases with every eigenvector which we include in the eigendecomposition from $W$, due to the orthogonality of eigenvectors. That is, with every included eigenvector, we increase the volume of the subspace, in which we search for suitable binary cluster indicator vectors. As a result, $k$-means returns clusterings whose objective function value approximates the global minimum, but which reflect seemingly haphazard groupings of the data points.
 
