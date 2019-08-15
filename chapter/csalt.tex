@@ -41,7 +41,7 @@ V^\top =\begin{bmatrix}
 V^{(a)T}
 \end{bmatrix}_a.
 \end{align}
-The ($m_a\times n$)-matrix $D^{(a)}$ comprises the $m_a$ transactions belonging to class $a$. The total number of transactions is therefore given by $m=m_1+\ldots+m_c$. Likewise, we explicitly notate the class-related $(m_a\times r)$- and $(n\times r)$-dimensional parts of the $m\times r$ and $n\times rc$ factor matrices $Y$ and $V$ as $Y^{(a)}$ and $\Va$. These factor matrices are properly introduced in Section~\ref{sec:CS:CSalt}.
+The $m_a\times n$ matrix $D^{(a)}$ comprises the $m_a$ transactions belonging to class $a$. The total number of transactions is therefore given by $m=m_1+\ldots+m_c$. Likewise, we explicitly notate the class-related $m_a\times r$- and $n\times r$-dimensional parts of the $m\times r$ and $n\times rc$ factor matrices $Y$ and $V$ as $Y^{(a)}$ and $\Va$. These factor matrices are properly introduced in Section~\ref{sec:CS:CSalt}.
 %--------- FIGURE USAGE ------------
 \begin{figure}[!t]
 \centering
@@ -50,12 +50,12 @@ The ($m_a\times n$)-matrix $D^{(a)}$ comprises the $m_a$ transactions belonging 
 \label{fig:CS:usageJSMF}
 \end{figure}
 %-------------------------------------
-If the given data matrix is class-wise concatenated (cf.\@ Eq.~(\ref{eq:CS:DaYaVa})), a first approach for finding class-defining characteristics is to separately derive factorizations for each class. However, simple approximation measurements such as the residual sum of squares of a Boolean factorization are already nonconvex and have multiple local optima.
-Due to this local view of computed models, class-wise factorizations are not easy to interpret; they lack a view on the global structure. Puzzling together the (parts of) patterns defining (dis-)similarities of classes afterwards, is not trivial.
+If the given data matrix is classwise concatenated (cf.\@ Eq.~(\ref{eq:CS:DaYaVa})), a first approach for finding class-defining characteristics is to separately derive factorizations for each class. However, simple approximation measurements such as the residual sum of squares of a Boolean factorization are already nonconvex and have multiple local optima.
+Due to this local view of computed models, classwise factorizations are not easy to interpret; they lack a view on the global structure. Puzzling together the (parts of) patterns defining (dis-)similarities of classes afterwards, is not trivial.
 
 In the case of nonnegative, labeled data matrices, measures such as Fisher's linear discriminant criterion are minimized to derive weighted feature vectors, that are patterns in the binary case, which discriminate most between classes. This variant of NMF is successfully implemented for classification problems such as face recognition~\citep{nikitidis2014projected} and identification of cancer-associated genes~\citep{odibat2014efficient}.
 
-For social media retrieval, \cite{gupta2010nonnegative} introduce Joint Subspace Matrix Factorization (JSMF). Focusing on the two-class setting, they assume that data points emerge not only from discriminative but also from common subspaces. JSMF infers for a given nonnegative data matrix and ranks $r_0,r_1$ and $r_2$ a factorization as displayed in Figure~\ref{fig:CS:usageJSMF}. Note that there are exactly $r_0$ columns in the factor matrix $Y$ spanning over points from both classes and $r_1$ respectively $r_2$ columns whose nonzero entries are restricted to class one or two. Multiplicative updates are used to minimize a weighted sum of class-wise computed residual sums of squares.
+For social media retrieval, \cite{gupta2010nonnegative} introduce Joint Subspace Matrix Factorization (JSMF). Focusing on the two-class setting, they assume that data points emerge not only from discriminative but also from common subspaces. JSMF infers for a given nonnegative data matrix and ranks $r_0,r_1$ and $r_2$ a factorization as displayed in Figure~\ref{fig:CS:usageJSMF}. Note that there are exactly $r_0$ columns in the factor matrix $Y$ spanning over points from both classes and $r_1$ respectively $r_2$ columns whose nonzero entries are restricted to class one or two. Multiplicative updates are used to minimize a weighted sum of classwise computed residual sums of squares.
 %\[\min_{X,Y}\sum_{a\in\{1,2\}}\frac{\mu_a}{2}\left\|\Da-\begin{bmatrix}
 %\Ya_S & \Ya_D
 %\end{bmatrix} \begin{bmatrix}
@@ -88,11 +88,11 @@ Given a binary data matrix composed from multiple classes, we assume that the da
 Let $X\in\{0,1\}^{n\times r}$ and $V\in \{0,1\}^{n\times cr}$ be binary matrices.
 We say the matrix $V$ models \emph{class-specific alterations of $X$} if $\|X\circ \Va\|=0$ for all $1\leq a\leq c$, and $\|V^{(1)}\circ\ldots\circ V^{(c)}\|=0$.
 \end{definition}
-We assume that the data emerges from a Boolean matrix product; yet, we now consider multiple products, one for each class, which are defined by the class-wise alteration matrix $V$, the pattern matrix, usage and the noise matrix $N=[N^{(a)}]_a\in\{-1,0,1\}^{m\times n}$, such that for $1\leq a\leq c$ the data is decomposed as
+We assume that the data emerges from a Boolean matrix product; yet, we now consider multiple products, one for each class, which are defined by the classwise alteration matrix $V$, the pattern matrix, usage and the noise matrix $N=[N^{(a)}]_a\in\{-1,0,1\}^{m\times n}$, such that for $1\leq a\leq c$ the data is decomposed as
 \begin{align}\label{eq:CS:VBMF}
 \Da= \theta\left(\Ya(X+\Va)^\top \right) +N^{(a)}.
 \end{align}
-Given a class-wise decomposed binary data matrix as shown above, we wish to filter the factorization, defined by $X$, $Y$ and $V$, from the noise.
+Given a classwise decomposed binary data matrix as shown above, we wish to filter the factorization, defined by $X$, $Y$ and $V$, from the noise.
 %--------------------------------
 % CSALT
 %--------------------------------
@@ -205,10 +205,10 @@ For \textsc{C-Salt} and \textsc{Primp} we use as stopping criterion a minimum av
 %-------------------------------------
 \subsection{Experiments on Synthetic Data}\label{sec:CS:synthExp}
 \paragraph{Evaluation}
-For synthetic datasets, we compare the computed models against the planted structure by the known adaptation of the micro-averaged $\mathsf{F}$-measure. However, here we compute the $\mathsf{F}$-measure for every class with respect to the matrices $Y^{(a)}$ and $X^{(a)}=X+V^{(a)}$. We denote the class-wise calculated $\mathsf{F}$-measure with $\mathsf{F}^{(a)}$.
+For synthetic datasets, we compare the computed models against the planted structure by the known adaptation of the micro-averaged $\mathsf{F}$-measure. However, here we compute the $\mathsf{F}$-measure for every class with respect to the matrices $Y^{(a)}$ and $X^{(a)}=X+V^{(a)}$. We denote the classwise calculated $\mathsf{F}$-measure with $\mathsf{F}^{(a)}$.
 
-Since class-specific alterations of patterns, reflected by the matrix $V$, are particularly interesting in the scope of this work, we additionally state the recall of $V^*$, denoted by $\rec_V$. Therefore, we compute another maximum matching $\sigma_V$ between generated class alterations $V^*$ with usage $Y^*$ and computed patterns $X_V=[X\ V]$ (setting $V$ to the $(n\times cr)$ zero matrix for other algorithms than \textsc{C-Salt}) with usage $Y_V=[Y \ldots Y]$ (concatenating $c$ times). The recall $\rec_V^{(a)}$ is then computed with respect to the matrices $V^* Y^*, X_V$ and $Y_V$.
-Furthermore, we compute the class-wise factorization rank $r^{(a)}$ as the number of nontrivial outer products, involving more than only one column or row. Outer products where solely one item or one transaction is involved yield no insight for the user and are therefore always discarded. In following plots, we indicate averaged measures over all classes
+Since class-specific alterations of patterns, reflected by the matrix $V$, are particularly interesting in the scope of this work, we additionally state the recall of $V^*$, denoted by $\rec_V$. Therefore, we compute another maximum matching $\sigma_V$ between generated class alterations $V^*$ with usage $Y^*$ and computed patterns $X_V=[X\ V]$ (setting $V$ to the $n\times cr$ zero matrix for other algorithms than \textsc{C-Salt}) with usage $Y_V=[Y \ldots Y]$ (concatenating $c$ times). The recall $\rec_V^{(a)}$ is then computed with respect to the matrices $V^* Y^*, X_V$ and $Y_V$.
+Furthermore, we compute the classwise factorization rank $r^{(a)}$ as the number of nontrivial outer products, involving more than only one column or row. Outer products where solely one item or one transaction is involved yield no insight for the user and are therefore always discarded. In following plots, we indicate averaged measures over all classes
 \[ \mathsf{F}=\frac{1}{c}\sum_a \mathsf{F}^{(a)}, \quad \rec_V=\frac{1}{c}\sum_a \rec^{(a)}_{\sigma_2} \text{ and } r=\frac{1}{c}\sum_a r^{(a)}.
 \]
 Therewith, the size of the class is not taken into account; the discovery of planted structure is considered equally important for every class.
@@ -250,7 +250,7 @@ C_4=\begin{pmatrix}
 1 & 0 & 1 & 1 & 0\\
 1 & 0 & 1 & 1 & 1\\
 \end{pmatrix}.\]
-For every matrix entry $C_{ab}$, we sample an $m_a\times \nicefrac{r}{c_r}$- dimensional matrix $Y^{(ab)}$, such that the resulting usage matrix is a concatenation of the matrices $Y^{(ab)}$. For example, the usage matrix generated according to $C_2$ has a shape as depicted in Figure~\ref{fig:CS:usageJSMF}.
+For every matrix entry $C_{ab}$, we sample an $m_a\times \nicefrac{r}{c_r}$ matrix $Y^{(ab)}$, such that the resulting usage matrix is a concatenation of the matrices $Y^{(ab)}$. For example, the usage matrix generated according to $C_2$ has a shape as depicted in Figure~\ref{fig:CS:usageJSMF}.
 By default, we set the parameters $r^*=24$, $m_a=\nicefrac{m}{c}$ and the noise flipping probability $p=0.1$.
 
 \paragraph{Sensitivity to Noise and class distributions}
@@ -259,7 +259,7 @@ We plot for the following series of experiments the averaged $\mathsf{F}$-measur
 \begin{figure}[t!]
 \centering
 \input{plots/CSSynthNoise}
-\caption{Variation of noise, class distribution $\nicefrac{m_1}{m}$  and the rank. The $\mathsf{F}$-measure, recall of the matrix $V$ (both the higher the better) and the class-wise estimated rank of the calculated factorization is plotted against the varied parameter. Best viewed in color.}
+\caption{Variation of noise, class distribution $\nicefrac{m_1}{m}$  and the rank. The $\mathsf{F}$-measure, recall of the matrix $V$ (both the higher the better) and the classwise estimated rank of the calculated factorization is plotted against the varied parameter. Best viewed in color.}
 \label{fig:CS:noise}
 \end{figure}
 %-----------------------------------
@@ -269,13 +269,13 @@ Figure~\ref{fig:CS:noise} contrasts the results of \textsc{C-Salt}, \textsc{Prim
 Figure~\ref{fig:CS:noise} shows the performance measures of the competing algorithms when varying three parameters: noise $p^*$, ratio of transactions in each class $\nicefrac{m_1}{m}$ and rank $r^*$.
 We observe an overall high $\mathsf{F}$-measure of \textsc{C-Salt} and \textsc{Primp}.
 Both \textsc{Dbssl} instantiations also obtain high $\mathsf{F}$-values, but only at lower noise levels and if one class is not very dominant over the other.
-\textsc{C-Salt} and \textsc{Primp} differ most notably in the discovery of class specific alterations measured by $\rec_V$. \textsc{C-Salt} shows a similar recall as \textsc{Dbssl} if the noise is varied but a lower recall if classes are imbalanced. The ranks of returned factorizations by all algorithms lie in a reasonable interval, considering that class-specific alterations can also be interpreted as unattached patterns. Hence, a class-wise averaged rank between 16 and 24 is legitimate. When varying the number of planted patterns, the MDL selection procedure of the rank also yields correct estimations for \textsc{Dbssl}. However, the $\mathsf{F}$-measure and recall of $V^\star$ decrease to 0.5 if the rank is not set to the correct parameters for \textsc{Dbssl}.
+\textsc{C-Salt} and \textsc{Primp} differ most notably in the discovery of class specific alterations measured by $\rec_V$. \textsc{C-Salt} shows a similar recall as \textsc{Dbssl} if the noise is varied but a lower recall if classes are imbalanced. The ranks of returned factorizations by all algorithms lie in a reasonable interval, considering that class-specific alterations can also be interpreted as unattached patterns. Hence, a classwise averaged rank between 16 and 24 is legitimate. When varying the number of planted patterns, the MDL selection procedure of the rank also yields correct estimations for \textsc{Dbssl}. However, the $\mathsf{F}$-measure and recall of $V^\star$ decrease to 0.5 if the rank is not set to the correct parameters for \textsc{Dbssl}.
 
 %---------FIGURE MORE CLASSES ------------
 \begin{figure}[!t]
 \centering
 \input{plots/CSSynthClass}
-\caption{Variation of noise for generated data matrices with three (left) and four classes (right). The $\mathsf{F}$-measure, recall of the matrix $V$ (both the higher the better) and the class-wise estimated rank of the calculated factorization (between 16 and 24 can be considered correct) is plotted against the varied parameter. Best viewed in color.}
+\caption{Variation of noise for generated data matrices with three (left) and four classes (right). The $\mathsf{F}$-measure, recall of the matrix $V$ (both the higher the better) and the classwise estimated rank of the calculated factorization (between 16 and 24 can be considered correct) is plotted against the varied parameter. Best viewed in color.}
 \label{fig:synthClass}
 \end{figure}
 %-----------------------------------

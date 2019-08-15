@@ -4,13 +4,18 @@
 \input{fonspecifications}
 \begin{document}
 \selectlanguage{english}
+% Titlepage
+%\thispagestyle{empty}
+\pagestyle{empty}
 \include{chapter/titlepage}
-\blankpage
+%\thispagestyle{empty}
+%\pagestyle{empty}
+%\blankpage
 \include{chapter/abstract}
 \pagenumbering{roman}
 \tableofcontents
+%\thispagestyle{empty}
 \cleardoublepage
-\pagenumbering{arabic}
 \mbox{}
 
 \nomenclature[02]{$\mathbbm{1}^{m\times n}$}{Set of all binary $m\times n$ partition matrices; every row vector is a unit vector}
@@ -22,7 +27,7 @@
 \nomenclature[03]{$A_{\mathcal{J}\mathcal{I}}$}{Submatrix of $A$, containing only the rows in the set $\mathcal{J}$ and columns in $\mathcal{I}$}
 \nomenclature[03]{$\thickbar{A}$}{The Boolean complement matrix $\mathbf{1}-A$ for a binary matrix $A$}
 \nomenclature[03]{$\mathbf{1},\mathbf{0}$}{Constant one or zero matrix: $\mathbf{1}_{ji}=1$, $\mathbf{0}_{ji}=0$}
-\nomenclature[04]{$\theta$}{Heaviside step function}
+\nomenclature[04]{$\theta, \theta_t$}{Heaviside step function, $\theta_t(x)=1$ if $x>t$ and $\theta_t(x)=0$ otherwise, $\theta = \theta_{0.5}$}
 \nomenclature[05]{$\lVert\,{\cdot}\,\rVert$}{Entrywise 2-norm (Frobenius norm)}
 \nomenclature[05]{$\mid\cdot\mid$}{Entrywise 1-norm}
 \nomenclature[04]{$\mathcal{N}_\epsilon(j)$}{The set of all points lying in the $\epsilon$-ball around point $j$}
@@ -34,17 +39,21 @@
 \nomenclature[06]{$\circ$}{Hadamard product}
 \nomenclature[06]{$\odot$}{Boolean product}
 
-
+%\thispagestyle{empty}
 \printnomenclature[2 cm]
+\thispagestyle{empty}
+\blankpage
+\pagenumbering{arabic}
+\pagestyle{fancy}
 % chapter
 %\include{chapter/introduction}
 \include{chapter/ZeroShades}
 \include{chapter/algorithms}
-\include{chapter/Spectacl}
-\include{chapter/paltiling}
-\include{chapter/RankSelectionMDL}
-\include{chapter/RankSelectionFDR}
-\include{chapter/csalt}
+%\include{chapter/Spectacl}
+%\include{chapter/paltiling}
+%\include{chapter/RankSelectionMDL}
+%\include{chapter/RankSelectionFDR}
+%\include{chapter/csalt}
 %\include{chapter/conclusion}
 
 % Anhang

@@ -9,7 +9,7 @@ We recall that the SVD of a matrix $D=V\Sigma U^\top$ also provides the optimal 
 \begin{align*}
      (V^{(r)}\Sigma^{(r)},U^{(r)})&\in\argmin_{X,Y}\|D-YX^\top\|^2 &\text{s.t. } X\in\mathbb{R}^{n\times r}, Y\in\mathbb{R}^{m\times r}.
 \end{align*}
-Due to the one-to-one relationship between the singular value decomposition of a matrix and its low-rank approximation, the calculation of the optimal rank $r$-factorization is reducible to calculating the optimal rank one-factorization if the optimal rank $r-1$-factorization is known. This is justified by the following relationship:  
+Due to the one-to-one relationship between the singular value decomposition of a matrix and its low-rank approximation, the calculation of the optimal rank-$r$ factorization is reducible to calculating the optimal rank-one factorization if the optimal rank-$r-1$ factorization is known. This is justified by the following relationship:  
 \begin{align*}
 \|D-V^{(r)}\Sigma^{(r)}{U^{(r)}}^\top\|^2
      &= \min_{X_{\cdot r},Y_{\cdot r}} \|(D-V^{(r-1)}\Sigma^{(r-1)}{U^{(r-1)}}^\top)-Y_{\cdot r}X_{\cdot r}^\top\|^2

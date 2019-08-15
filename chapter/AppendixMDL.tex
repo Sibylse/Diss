@@ -22,7 +22,7 @@ Correspondingly follows that $usage(\{i\})=|N_{\cdot i}|$. The calculation of th
 %Bounding the Description Length of Code Tables
 %=========================
 \begin{lemma}\label{thm:monoticity}
-Let $(a_s)$ be a finite sequence of $r$ non-negative scalars such that $S_r=\sum_{s=1}^ra_s>0$. The function $g:[0,\infty)\rightarrow[0,\infty)$ defined by
+Let $(a_s)$ be a finite sequence of $r$ nonnegative scalars such that $S_r=\sum_{s=1}^ra_s>0$. The function $g:[0,\infty)\rightarrow[0,\infty)$ defined by
 \[g(x;a_1,\ldots,a_r,S_r)=-\sum_{s=1}^r(a_s+x)\log\left(\frac{a_s+x}{S_r+rx}\right)\]
 is monotonically increasing in $x$.
 \end{lemma}
@@ -30,7 +30,7 @@ is monotonically increasing in $x$.
 W.l.o.g., let $a_1,\ldots,a_{r_0}>0$ and $a_{r_0+1},\ldots,a_r=0$ for some $r_0\in \N$. We rewrite the function $g$ as
 \[g(x;a_1,\ldots,a_r,S_r)=g(x;a_1,\ldots,a_{r_0},S_r)+g(x;a_{r_0+1},\ldots,a_r,S_r)\]
 and show that each of  the subfunctions is monotonically increasing.
-The first subfunction is differentiable and its derivative is non-negative
+The first subfunction is differentiable and its derivative is nonnegative
 \begin{align*}
 \frac{d}{dx}g(x;a_1,\ldots,a_{r_0},S_r) &= -\sum_{s=1}^r\left(\log\left(\frac{a_s+x}{S_r+rx}\right)+(a_s+x)\frac{S_r+rx}{a_s+x}\frac{S_r+rx-r(a_s+x)}{(S_r+rx)^2}\right)\\
 &= -\sum_{s=1}^r\log\left(\frac{a_s+x}{S_r+rx}\right)+\sum_{s=1}^r\frac{S_r-ra_s}{S_r+rx}\\

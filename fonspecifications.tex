@@ -15,12 +15,15 @@
 \titleformat*{\subsection}{\Large\brandonGrotesque}
 \titleformat*{\subsubsection}{\large\brandonGrotesque}
 \renewcommand{\bfseries}{\moon}
-\usepackage{fancyhdr}
 
- 
+
+\usepackage{fancyhdr}
 \fancyhf{}
+\setlength{\headheight}{14pt}
+%\renewcommand{\sectionmark}[1]{\markright{\thesection}}
 \renewcommand{\headrulewidth}{0pt}
-\fancyhead[R]{\moonLight\leftmark}
+\fancyhead[RE]{\moonLight\leftmark}
 \fancyhead[LO]{\moonLight\rightmark}
-\fancyhead[L,RO]{\moonLight\thepage}
-\pagestyle{fancy}
+\fancyhead[LE,RO]{\moonLight\thepage}
+%\fancyfoot[C]{\moonLight\thepage}
+%\pagestyle{fancy}
