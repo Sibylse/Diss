@@ -120,14 +120,14 @@ Ratio Cut  & $Z=Y(Y^\top Y)^{-1/2}$  &  $A=W-I_W=-L_d$\\
 % $k$-Means
 %-------------------------------------------------
 \subsection{k-Means}\label{sec:ZS:kmeans}
-If there is one algorithm which comes to mind when thinking about clustering, it is likely the $k$-means algorithm~\citep{lloyd1982least}. The objective of $k$-means is founded in the intuitively easily graspable notions of clusters by the within-cluster point scatter, minimizing the intra-cluster similarity.
-Suppose we are given a partition of $m$ points reflected by the clusters $\mathcal{J}_1,\ldots, \mathcal{J}_r$. A cluster is here the set $\mathcal{J}_s\subseteq \{1,\ldots, m\}$ of its point indices. The average distance of points within a cluster is then given as
+If there is one algorithm which comes to mind when thinking about clustering, it is likely the $k$-means algorithm~\citep{lloyd1982least}. The objective of $k$-means is founded in the intuitive notion of clusters by the within-cluster point scatter, minimizing the intra-cluster similarity.
+Suppose we are given a partition of $m$ points reflected by clusters $\mathcal{J}_1,\ldots, \mathcal{J}_r$. A cluster is here the set $\mathcal{J}_s\subseteq \{1,\ldots, m\}$ of its point indices. The sum of average distances of points within a cluster is then given as
 \begin{align*}
 \frac{1}{2}\sum_{s=1}^r\frac{1}{|\mathcal{J}_s|}\sum_{j,l\in \mathcal{J}_s} \|D_{j\cdot}-D_{l\cdot}\|^2 
 &= \sum_{s=1}^r \frac{1}{|\mathcal{J}_s|}\left(\sum_{j\in \mathcal{J}_s} \|D_{j\cdot}\|^2|\mathcal{J}_s| - \sum_{j,l\in \mathcal{J}_s}\langle D_{j\cdot},D_{l\cdot}\rangle\right).\\
-&= \sum_{s=1}^r \sum_{j\in \mathcal{J}_s} \|D_{j\cdot }\|^2 -\sum_{j\in \mathcal{J}_s}\left\langle D_{j\cdot},\frac{1}{|\mathcal{J}_s|}\sum_{l\in\mathcal{J}_s}D_{l\cdot}\right\rangle
+&= \sum_{s=1}^r \sum_{j\in \mathcal{J}_s} \|D_{j\cdot }\|^2 -\sum_{j\in \mathcal{J}_s}\Big\langle D_{j\cdot},\frac{1}{|\mathcal{J}_s|}\sum_{l\in\mathcal{J}_s}D_{l\cdot}\Big\rangle
 \end{align*}
-We define the matrix $X\in\mathbb{R}^{n\times r}$ by setting the columns $X_{\cdot s}=\frac{1}{|\mathcal{J}_s|}\sum_{l\in\mathcal{J}_s}D_{l\cdot}$ to the centroid of all points in cluster $\mathcal{J}_s$. Therewith, we continue the transformations to
+We define the matrix $X\in\mathbb{R}^{n\times r}$ by setting the columns $X_{\cdot s}=\frac{1}{|\mathcal{J}_s|}\sum_{l\in\mathcal{J}_s}D_{l\cdot}$ to the centroid of all points in cluster $\mathcal{J}_s$. Therewith, we continue the transformation to
 \begin{align}
 \frac{1}{2}\sum_{s=1}^r\frac{1}{|\mathcal{J}_s|}\sum_{j,l\in \mathcal{J}_s} \|D_{j\cdot}-D_{l\cdot}\|^2 
 &= \sum_{s=1}^r \sum_{j\in \mathcal{J}_s} \|D_{j\cdot }\|^2 -2\sum_{j\in \mathcal{J}_s}\langle D_{j\cdot},X_{\cdot s}\rangle +\sum_{j\in \mathcal{J}_s}\|X_{\cdot s}\|^2 \label{eq:withinCluster}\\
@@ -331,7 +331,7 @@ Boolean & $\displaystyle\min_{X,Y}\|D-Y\odot X^\top\|^2$ & s.t. $X\in\{0,1\}^{n\
 }
 \label{tbl:twoSidedClustering}
 \end{table}
-We summarize the discussed factorizations of this section in Table~\ref{tbl:twoSidedClustering}. The discussed models are also known as two-mode clusters~\citep{van2004two,van2009optimization} or biclusters›\citep{busygin2008biclustering}.
+We summarize the discussed factorizations of this section in Table~\ref{tbl:twoSidedClustering}. The discussed models are also known as two-mode clusters~\citep{van2004two,van2009optimization} or biclustersâº\citep{busygin2008biclustering}.
 %-----------------------------------
 % Checkerboard Clustering
 %-----------------------------------
