@@ -3,20 +3,20 @@
 We state here the more lengthy proofs of results presented in Chapter~\ref{chap:RankMDL}.
 \lctbmf*
 \begin{proof}
-Let $D$ be a data matrix, $CT=\{(\mathcal{X}_s,C_s)|1\leq  s\leq r_0\}$ an $r_0$-element code table and $cover$ the cover function. Let $r$ be the number of non-singleton patterns in $CT$ and assume w.l.o.g. that $CT$ is indexed such that these non-singleton patterns have an index $1\leq s \leq r$. We construct the pattern matrix $X\in \{0,1\}^{n\times r}$ and usage matrix $Y\in \{0,1\}^{m\times r}$ such that for $1\leq s\leq r$ it holds that
+Let $D$ be a data matrix, $CT=\{(\mathcal{X}_s,C_s)\mid 1\leq  s\leq r_0\}$ an $r_0$-element code table and $cover$ the cover function. Let $r$ be the number of non-singleton patterns in $CT$ and assume w.l.o.g. that $CT$ is indexed such that these non-singleton patterns have an index $1\leq s \leq r$. We construct the pattern matrix $X\in \{0,1\}^{n\times r}$ and usage matrix $Y\in \{0,1\}^{m\times r}$ such that for $1\leq s\leq r$ it holds that
 \begin{align*}
 X_{is}=1&\Leftrightarrow i\in \mathcal{X}_s\\
 Y_{js}=1&\Leftrightarrow \mathcal{X}_s\in cover(CT,D_{j\cdot}).
 \end{align*}
-The Boolean product $Y\odot X^T$ indicates the entries of $D$ which are covered by non-singleton patterns of $CT$. Ones in the noise matrix $N=D-\theta(YX^T)$ are covered by singletons, 
+The Boolean product $Y\odot X^\top$ indicates the entries of $D$ which are covered by non-singleton patterns of $CT$. Nonzero elements in the noise matrix $N=D-\theta(YX^\top)$ are covered by singletons, 
 \[N_{ji}\neq 0\Leftrightarrow \{i\}\in cover(CT,D_{j\cdot}).\]
 The usage of a non-singleton pattern $\mathcal{X}_s$ is then computed as
 \begin{align*}
-usage(\mathcal{X}_s)&=|\{j\in\{1,\ldots,m\}\mid \mathcal{X}_s\in cover(CT,D_{j\cdot})\}|\\
-&=|\{j\in\{1,\ldots,m\}\mid Y_{js}=1\}|\\
-&=|Y_{\cdot s}|.
+usage(\mathcal{X}_s)&=\lvert \{j\in\{1,\ldots,m\}\mid \mathcal{X}_s\in cover(CT,D_{j\cdot})\}\rvert \\
+&=\lvert \{j\in\{1,\ldots,m\}\mid Y_{js}=1\}\rvert \\
+&=\lvert Y_{\cdot s}\rvert .
 \end{align*}
-Correspondingly follows that $usage(\{i\})=|N_{\cdot i}|$. The calculation of the probabilities $p_s$ for $1\leq s \leq r+n$ is directly obtained by inserting this usage calculation in the definition of code-usage-probabilities of Eq.~\eqref{eq:krimpCodeProb}. Likewise follow the definitions of the matrix functions $L_{\mathsf{CT}}^M(X,Y)$ and $L_{\mathsf{CT}}^D(X,Y)$ from the definitions of the description sizes $L_{\mathsf{CT}}^M(CT)$ and $L_{\mathsf{CT}}^D(CT)$.
+Correspondingly follows that $usage(\{i\})=\lvert N_{\cdot i}\rvert $. The calculation of the probabilities $p_s$ for $1\leq s \leq r+n$ is directly obtained by inserting this usage calculation in the definition of code-usage-probabilities of Eq.~\eqref{eq:krimpCodeProb}. Likewise follow the definitions of the matrix functions $L_{\mathsf{CT}}^M(X,Y)$ and $L_{\mathsf{CT}}^D(X,Y)$ from the definitions of the description sizes $L_{\mathsf{CT}}^M(CT)$ and $L_{\mathsf{CT}}^D(CT)$.
 \end{proof}
 %=========================
 %Bounding the Description Length of Code Tables
@@ -27,7 +27,7 @@ Let $(a_s)$ be a finite sequence of $r$ nonnegative scalars such that $S_r=\sum_
 is monotonically increasing in $x$.
 \end{lemma}
 \begin{proof}
-W.l.o.g., let $a_1,\ldots,a_{r_0}>0$ and $a_{r_0+1},\ldots,a_r=0$ for some $r_0\in \N$. We rewrite the function $g$ as
+W.l.o.g., let $a_1,\ldots,a_{r_0}>0$ and $a_{r_0+1}=\ldots=a_r=0$ for some $r_0\in \N$. We rewrite the function $g$ as
 \[g(x;a_1,\ldots,a_r,S_r)=g(x;a_1,\ldots,a_{r_0},S_r)+g(x;a_{r_0+1},\ldots,a_r,S_r)\]
 and show that each of  the subfunctions is monotonically increasing.
 The first subfunction is differentiable and its derivative is nonnegative
@@ -44,33 +44,33 @@ The second subfunction is monotonically increasing, since for $a_s=0$ and all $x
 \BoundLCT*
 \begin{proof}
 We recall that the description size of the data is computed as
-\[L_{\mathsf{CT}}^D(X,Y)=\underbrace{-\sum_{s=1}^r |Y_{\cdot s}| \cdot \log\left(\frac{|Y_{\cdot s}|}{|Y|+|N|}\right)}_{=L_1(X,Y)}
-       \underbrace{-\sum_{i=1}^n |N_{\cdot i}| \cdot \log\left(\frac{|N_{\cdot i}|}{|N|+|Y|}\right)}_{=L_2(X,Y)}.
+\[L_{\mathsf{CT}}^D(X,Y)=\underbrace{-\sum_{s=1}^r \lvert Y_{\cdot s}\rvert  \cdot \log\left(\frac{\lvert Y_{\cdot s}\rvert }{\lvert Y\rvert +\lvert N\rvert }\right)}_{=L_1(X,Y)}
+       \underbrace{-\sum_{i=1}^n \lvert N_{\cdot i}\rvert  \cdot \log\left(\frac{\lvert N_{\cdot i}\rvert }{\lvert N\rvert +\lvert Y\rvert }\right)}_{=L_2(X,Y)}.
 \]
 Applying the logarithmic properties, we rewrite the first sum 
 \begin{align*}
- L_1(X,Y)&= -\sum_{s=1}^r|Y_{\cdot s}|\log\left(\frac{|Y_{\cdot s}|}{|Y|}\frac{|Y|}{|Y|+|N|}\right)\\
- &= -\sum_{s=1}^r|Y_{\cdot s}|\log\left(\frac{|Y_{\cdot s}|}{|Y|}\right)+\sum_{s=1}^r|Y_{\cdot s}|\log\left(\frac{|Y|+|N|}{|Y|}\right)\\
- &= g(0;|Y_{\cdot 1}|,\ldots,|Y_{\cdot r}|,|Y|) +|Y|\log\left(1+\frac{|N|}{|Y|}\right). %\label{ineq:proofCS+++1} 
+ L_1(X,Y)&= -\sum_{s=1}^r\lvert Y_{\cdot s}\rvert \log\left(\frac{\lvert Y_{\cdot s}\rvert }{\lvert Y\rvert }\frac{\lvert Y\rvert }{\lvert Y\rvert +\lvert N\rvert }\right)\\
+ &= -\sum_{s=1}^r\lvert Y_{\cdot s}\rvert \log\left(\frac{\lvert Y_{\cdot s}\rvert }{\lvert Y\rvert }\right)+\sum_{s=1}^r\lvert Y_{\cdot s}\rvert \log\left(\frac{\lvert Y\rvert +\lvert N\rvert }{\lvert Y\rvert }\right)\\
+ &= g(0;\lvert Y_{\cdot 1}\rvert ,\ldots,\lvert Y_{\cdot r}\rvert ,\lvert Y\rvert ) +\lvert Y\rvert \log\left(1+\frac{\lvert N\rvert }{\lvert Y\rvert }\right). %\label{ineq:proofCS+++1} 
 \end{align*}
 From the monotonicity of $g$ (Lemma~\ref{thm:monoticity}) and the logarithm inequality ($\log(1+x)\leq x, \forall x\geq 0$) follows that $L_1$ is upper bounded by
-\[L_1(X,Y)\leq-\sum_{s=1}^r(|Y_{\cdot s}|+1)\log\left(\frac{|Y_{\cdot s}|+1}{|Y|+r}\right)+|N|.\]
+\[L_1(X,Y)\leq-\sum_{s=1}^r(\lvert Y_{\cdot s}\rvert +1)\log\left(\frac{\lvert Y_{\cdot s}\rvert +1}{\lvert Y\rvert +r}\right)+\lvert N\rvert .\]
 The second term $L_2$ is transformed into
 \begin{align*}
-    L_2(X,Y)&=-\sum_{i=1}^n |N_{\cdot i}| \cdot \log\left(|N_{\cdot i}|\right)+\sum_{i=1}^n |N_{\cdot i}| \cdot \log\left(|N|+|Y|\right)\\
-    &= \sum_{i=1}^n|N_i|\log\frac{1}{|N_i|} +|N|\log(|N|+|Y|).
+    L_2(X,Y)&=-\sum_{i=1}^n \lvert N_{\cdot i}\rvert  \cdot \log\left(\lvert N_{\cdot i}\rvert \right)+\sum_{i=1}^n \lvert N_{\cdot i}\rvert  \cdot \log\left(\lvert N\rvert +\lvert Y\rvert \right)\\
+    &= \sum_{i=1}^n\lvert N_{\cdot i}\rvert \log\frac{1}{\lvert N_{\cdot i}\rvert } +\lvert N\rvert \log(\lvert N\rvert +\lvert Y\rvert ).
 \end{align*}
-Subsequently, we show that $L_2(X,Y)\leq |N|\log(n) +|Y|$. This inequality trivially holds if $|N|=0$. Otherwise, we apply Jensen's inequality to the concave logarithm function
-	\[|N|\sum_{i=1}^n\frac{|N_i|}{|N|}\log\frac{1}{|N_i|}\leq |N|\log\left(\frac{n}{|N|}\right).\]
+Subsequently, we show that $L_2(X,Y)\leq \lvert N\rvert \log(n) +\lvert Y\rvert $. This inequality trivially holds if $\lvert N\rvert =0$. Otherwise, we apply Jensen's inequality to the concave logarithm function
+	\[\lvert N\rvert \sum_{i=1}^n\frac{\lvert N_{\cdot i}\rvert }{\lvert N\rvert }\log\frac{1}{\lvert N_{\cdot i}\rvert }\leq \lvert N\rvert \log\left(\frac{n}{\lvert N\rvert }\right).\]
 Therewith, we obtain 
 \begin{align*}
-    L_2(X,Y)&\leq|N|\log\left(\frac{n}{|N|}\right) +|N|\log(|N|+|Y|)\\ &= |N|\log(n) +|N|\log\left(1+\frac{|Y|}{|N|}\right) \\
-    &\leq |N|\log(n) +|Y|,
+    L_2(X,Y)&\leq\lvert N\rvert \log\left(\frac{n}{\lvert N\rvert }\right) +\lvert N\rvert \log(\lvert N\rvert +\lvert Y\rvert )\\ &= \lvert N\rvert \log(n) +\lvert N\rvert \log\left(1+\frac{\lvert Y\rvert }{\lvert N\rvert }\right) \\
+    &\leq \lvert N\rvert \log(n) +\lvert Y\rvert ,
 \end{align*}
 where the last equality again follows from the logarithm inequality. We derive the final inequality 
 \begin{align*}
 L_{\mathsf{CT}}^D(X,Y) &= L_1(X,Y)+L_2(X,Y)\\
-&\leq (1+\log(n))|N|-\sum_{s=1}^r(|Y_{\cdot s}|+1)\log\left(\frac{|Y_{\cdot s}|+1}{|Y|+r}\right)+|Y|
+&\leq (1+\log(n))\lvert N\rvert -\sum_{s=1}^r(\lvert Y_{\cdot s}\rvert +1)\log\left(\frac{\lvert Y_{\cdot s}\rvert +1}{\lvert Y\rvert +r}\right)+\lvert Y\rvert 
 \end{align*}
 \end{proof}
 %==================================
@@ -79,34 +79,34 @@ L_{\mathsf{CT}}^D(X,Y) &= L_1(X,Y)+L_2(X,Y)\\
 \paragraph{Primp's Lipschitz Moduli}
 We study the partial gradients of the regularization term used in \textsc{Primp} (Section~\ref{sec:MDL:primp})
 \begin{align*}
-\nabla_X G(X,Y)&=\mathbf{c1}^T,&
-\nabla_Y G(X,Y)=-\left(\log\left(\frac{|Y_{\cdot s}|+1}{|Y|+r}\right)\right)_{js}+\mathbf{1}.
+\nabla_X G(X,Y)&=\mathbf{c1}^\top,&
+\nabla_Y G(X,Y)=-\left(\log\left(\frac{\lvert Y_{\cdot s}\rvert +1}{\lvert Y\rvert +r}\right)\right)_{js}+\mathbf{1}.
 \end{align*}
 The partial gradient with respect to $X$ is constant and has a Lipschitz constant of zero. The partial gradient with respect to $Y$ is equal to the sum
 \begin{align*}
-\nabla_YG(X,Y)=-(\underbrace{(\log(|Y_{\cdot s}|+1))_{js}}_{=A(Y)}-\underbrace{(\log(|Y|+r))_{js}}_{=B(Y)})+\mathbf{1}.
+\nabla_YG(X,Y)=-(\underbrace{(\log(\lvert Y_{\cdot s}\rvert +1))_{js}}_{=A(Y)}-\underbrace{(\log(\lvert Y\rvert +r))_{js}}_{=B(Y)})+\mathbf{1}.
 \end{align*}
 From the triangle inequality follows that the gradient with respect to $Y$ is Lipschitz continuous with modulus $M_{\nabla_YG}(X)=M_A+M_B$, if the functions $A$ and $B$ are Lipschitz continuous with moduli $M_A$ and $M_B$:
 \begin{align*}
-\|\nabla_YG(X,Y)-\nabla_VG(X,V)\|&=\|A(Y)-A(V)+B(Y)-B(V)\|\\
-&\leq \|A(Y)-A(V)\|+\|B(Y)-B(V)\|\\
-&\leq (M_A+M_B)\|Y-V\|.
+\lVert \nabla_YG(X,Y)-\nabla_VG(X,V)\rVert &=\lVert A(Y)-A(V)+B(Y)-B(V)\rVert \\
+&\leq \lVert A(Y)-A(V)\rVert +\lVert B(Y)-B(V)\rVert \\
+&\leq (M_A+M_B)\lVert Y-V\rVert .
 \end{align*}
 The one-dimensional function $x\mapsto\log(x+\delta)$, $x\in \R_+$ is for any $\delta>0$ Lipschitz continuous with modulus $\delta^{-1}$. This is easily derived by the mean value theorem and the bound 
 \[\frac{d}{dx}\log(x+\delta)=\frac{1}{x+\delta}\leq \frac{1}{\delta}\]
 for all $x\geq 0$. We show with the following equations, that $M_A=M_B=m$. For improved readability, we use the squared Lipschitz inequality, i.e.,
 \begin{align}
-\|A(Y)-A(V)\|^2 &=\sum_{s,j}(\log(|Y_{\cdot s}|+1)-\log(|V_{\cdot s}|+1))^2\nonumber\\
-&=m\sum_{s=1}^r(\log(|Y_{\cdot s}|+1)-\log(|V_{\cdot s}|+1))^2\nonumber \\
-&\leq m\sum_{s=1}^r(|Y_{\cdot s}|-|V_{\cdot s}|)^2\label{eq:lipLog1}\\
+\lVert A(Y)-A(V)\rVert ^2 &=\sum_{s,j}(\log(\lvert Y_{\cdot s}\rvert +1)-\log(\lvert V_{\cdot s}\rvert +1))^2\nonumber\\
+&=m\sum_{s=1}^r(\log(\lvert Y_{\cdot s}\rvert +1)-\log(\lvert V_{\cdot s}\rvert +1))^2\nonumber \\
+&\leq m\sum_{s=1}^r(\lvert Y_{\cdot s}\rvert -\lvert V_{\cdot s}\rvert )^2\label{eq:lipLog1}\\
 &= m\sum_{s=1}^r\left(\sum_{j=1}^m(Y_{j s}-V_{j s})\right)^2\nonumber\\
-&\leq m^2\sum_{s,j}(Y_{j s}-V_{j s})^2= m^2\|Y-V\|^2,\label{eq:cauchySchw1}
+&\leq m^2\sum_{s,j}(Y_{j s}-V_{j s})^2= m^2\lVert Y-V\rVert ^2,\label{eq:cauchySchw1}
 \end{align}
 where Eq.~\eqref{eq:lipLog1} follows from the Lipschitz continuity of the logarithmic function as discussed above for $\delta=1$ and Eq.~\eqref{eq:cauchySchw1} follows from the Cauchy-Schwarz inequality. Similar steps yield the Lipschitz modulus of $B$,
 \begin{align}
-\|B(Y)-B(V)\|^2 &=\sum_{s,j}(\log(|Y|+r)-\log(|V|+r))^2\nonumber\\
-&=mr(\log(|Y|+r)-\log(|V|+r))^2\nonumber\\
-&\leq \frac{mr}{r^2}(|Y|-|V|)^2\nonumber\\
+\lVert B(Y)-B(V)\rVert ^2 &=\sum_{s,j}(\log(\lvert Y\rvert +r)-\log(\lvert V\rvert +r))^2\nonumber\\
+&=mr(\log(\lvert Y\rvert +r)-\log(\lvert V\rvert +r))^2\nonumber\\
+&\leq \frac{mr}{r^2}(\lvert Y\rvert -\lvert V\rvert )^2\nonumber\\
 &= \frac{m}{r}\left(\sum_{s,j}(Y_{j s}-V_{j s})\right)^2\nonumber\\
 &\leq m^2\sum_{s,j}(Y_{j s}-V_{j s})^2.\nonumber
 \end{align}

@@ -26,13 +26,6 @@ nbDBSCStyle/.style={cRSC,dashed,mark options ={cRSC},mark repeat={5}, thick, err
             \addlegendentry{circles};
             \addplot+[nbStyle]  table[x=x,y=y,y error=std] {nb_epsSpectACl_eps.dat};
             \addlegendentry{blobs};
-            %\addplot+[nmDBSCStyle]  table[x=x,y=y,y error=std] {nm_epsDBSCAN.dat};
-            %\addlegendentry{moons};
-        	%\addplot+[ncDBSCStyle]  table[x=x,y=y,y error=std] {nc_epsDBSCAN.dat};
-            %\addlegendentry{circles};
-            %\addplot+[nbDBSCStyle]  table[x=x,y=y,y error=std] {nb_epsDBSCAN.dat};
-            %\addlegendentry{blobs};
-            %
        \nextgroupplot[
         	title={(Normalized)}, xlabel={$k$},
         	xmin=0.08,xmax=100, ymin=0.0, ymax=1.2]
@@ -46,11 +39,11 @@ nbDBSCStyle/.style={cRSC,dashed,mark options ={cRSC},mark repeat={5}, thick, err
         	%legend to name=labelSAEpsKnnPlots
         	]
         	\addplot+[nmStyle]  table[x=x,y=y,y error=std] {nm_dSpectACl_eps.dat};
-            \addlegendentry{moons};
+            %\addlegendentry{moons};
         	\addplot+[ncStyle]  table[x=x,y=y,y error=std] {nc_dSpectACl_eps.dat};
-            \addlegendentry{circles};
+            %\addlegendentry{circles};
             \addplot+[nbStyle]  table[x=x,y=y,y error=std] {nb_dSpectACl_eps.dat};
-            \addlegendentry{blobs};
+            %\addlegendentry{blobs};
             %
     \nextgroupplot[
         	%title={(Normalized)}, 

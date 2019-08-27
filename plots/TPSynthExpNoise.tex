@@ -137,14 +137,14 @@ x y std
         	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COH_n1600m500F.dat};
             \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_n1600m500F.dat};
             %
-        \nextgroupplot[xlabel={$p_{\pm}\ [\%]$},
+        \nextgroupplot[xlabel={$p_{\pm}^*\ [\%]$},
 			ylabel={$r$},
 			xmax=25.5, xmin=0, ymin=0, ymax=34.2]
                 \addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENS_n1000m800R.dat};
         	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COH_n1000m800R.dat};
             \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_n1000m800R.dat};
                 %
-       \nextgroupplot[xlabel={$p_\pm\ [\%]$},xmin=0,xmax=25.5, ymin=0, ymax=34.2]
+       \nextgroupplot[xlabel={$p_\pm^*\ [\%]$},xmin=0,xmax=25.5, ymin=0, ymax=34.2]
                 \addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENS_n1600m500R.dat};
         	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COH_n1600m500R.dat};
             \addplot+[primpStyle]  table[x=x,y=y,y error=std] {Primp_n1600m500R.dat};

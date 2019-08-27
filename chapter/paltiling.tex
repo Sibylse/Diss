@@ -1,6 +1,6 @@
 \chapter{Proximal Optimization for Boolean Matrix Factorization}
 \label{chap:PALMB}
-In a large range of exploratory data mining tasks such as Market Basket Analysis, Text Mining, Collaborative Filtering or DNA Expression Analysis, the data is represented by a binary matrix. As  discussed, a binary representation of the cluster centers is desirable to reflect the binary nature of features. Methods which provide interpretable models in that sense are discussed from the viewpoint of binary matrix factorization, pattern mining, tiling and Boolean matrix factorization~\citep{tatti2012comparing,zimek2015blind}. Of those fields, Boolean matrix factorization is the most flexible one. Boolean factorizations are not required to model partitioning cluster assignments, such as binary matrix factorization and it does not restrict the cluster assignment to the support of a pattern, as is the case in tiling and pattern mining. 
+In a large range of exploratory data mining tasks such as Market Basket Analysis, Text Mining, Collaborative Filtering or DNA Expression Analysis, the data is represented by a binary matrix. In this case, a binary representation of the cluster centers is desirable to reflect the binary nature of features. Methods which provide interpretable models in that sense are discussed from the viewpoint of binary matrix factorization, pattern mining, tiling and Boolean matrix factorization~\citep{tatti2012comparing,zimek2015blind}. Of those fields, Boolean matrix factorization is the most flexible one. Boolean factorizations are not required to model partitioning cluster assignments, such as binary matrix factorization and it does not restrict the cluster assignment to the support of a pattern, as is the case in tiling and pattern mining. 
  
 Therefore, providing a generic optimization method, solving the problem of~\ref{eq:BoolMF}, has a possible impact on the optimization of all the regarded cluster objectives in Chapter~\ref{chap:ZeroShades}. We have seen that the optimization of non-partitioning clusters is by and large an unsolved problem. Approaches tackling this issue require detailed specifications of parameters which are unknown in advance, such as the amount of overlap and outliers~\citep{whang2017nonCo}. In contrast, we aim at formalizing an optimization scheme which is able to derive the \emph{true} model, regardless of the characteristics of that model; may it be overlapping or not, may it have a large amount of overlap or not. 
 
@@ -20,9 +20,9 @@ Therefore, providing a generic optimization method, solving the problem of~\ref{
     \oplus \vcenter{\hbox{\includegraphics[scale =0.2]{pics/SpaceInv/PrimpSpaceInv2}}}
     \oplus \vcenter{\hbox{\includegraphics[scale =0.2]{pics/SpaceInv/PrimpSpaceInv3}}}
   \end{align*}
-  \caption{Results of a Boolean decomposition of rank three on a picture dataset, depicted on the left. On the top row, the picture is approximated by a greedy approach, on the bottom we display the result of the proposed Proximal optimization scheme for BMF. Best viewed in color.\label{fig:PT:introSpaceInv}}
+  \caption{Results of a Boolean decomposition of rank three on a picture dataset, depicted on the left. On the top row, the picture is approximated by a greedy approach, on the bottom we display the result of the proposed proximal optimization scheme for BMF. Best viewed in color.\label{fig:PT:introSpaceInv}}
 \end{figure}
-Unfortunately, present \ref{eq:BoolMF} employ a greedy heuristic, which can not provide guarantees as known from numerical optimization methods, such as convergence to a local optimum. We make use of an example to show the innate disadvantage, emerging from a strong preference bias of the greedy approach in Figure~\ref{fig:PT:introSpaceInv}. Here, a picture is transformed into a binary data matrix via its binary representation in RGB888 pixel format. On the top row, you see the decomposition obtained by the greedy approach \textsc{Panda+}~\citep{lucchese2014unifying} and on the bottom the approximation derived by the new method which we introduce in this chapter. Each of the three rightmost pictures visualizes an outer product, also called tile in the context of binary factorization. The difference between both results is striking, in particular because the color information gets completely lost in the greedy approximation. We observe that the greedy representation in black and white is attributed to the first outer product being overloaded with the information about shape. Since the color white has a binary representation as a constant one vector, any white pixel in one outer product picture also appears white in the resulting approximation. Accordingly, the greedy approach is very sensitive to making mistakes in the first derived tiles and is therewith also susceptible to noise. In contrast, we propose a simultaneous optimization of the clusters based on a nonnegative relaxation with binary penalization. This approach is similar to the binary factorization by~\cite{zhang2007binary}, employing the mexican hat function for the penalization of nonbinary values (cf.\@ Section~\ref{sec:ZS:Penalty}). However, our method follows latest results in nonconvex optimization theory and provides a general framework for the efficient optimization of matrix factorization under binary constraints. The main contribution of this chapter is the derivation of the proximal mapping, which implements the nonbinary penalization. This proximal mapping is usable as a building block to incorporate binary restrictions on one of the matrices in factorization objectives. Known proximal mappings involving other constraints such as nonnegativity, sparseness or the restriction to the probability simplex can then be integrated within the larger optimization framework.  
+Unfortunately, present \ref{eq:BoolMF} optimizations employ a greedy heuristic, which can not provide guarantees as known from numerical optimization methods, such as convergence to a local optimum. We make use of an example to show the innate disadvantage, emerging from a strong preference bias of the greedy approach in Figure~\ref{fig:PT:introSpaceInv}. Here, a picture is transformed into a binary data matrix via its binary representation in RGB888 pixel format. On the top row, you see the decomposition obtained by the greedy approach \textsc{Panda+}~\citep{lucchese2014unifying} and on the bottom the approximation derived by the new method which we introduce in this chapter. Each of the three rightmost pictures visualizes an outer product, also called tile in the context of binary factorization. The difference between both results is striking, in particular because the color information gets completely lost in the greedy approximation. We observe that the greedy representation in black and white is attributed to the first outer product being overloaded with the information about shape. Since the color white has a binary representation as a constant one vector, any white pixel in one outer product picture also appears white in the resulting approximation. Accordingly, the greedy approach is very sensitive to making mistakes in the first derived tiles and is therewith also susceptible to noise. In contrast, we propose a simultaneous optimization of the clusters based on a nonnegative relaxation with binary penalization. This approach is similar to the binary factorization by~\cite{zhang2007binary}, employing the mexican hat function for the penalization of nonbinary values (cf.\@ Section~\ref{sec:ZS:Penalty}). However, our method follows latest results in nonconvex optimization theory and provides a general framework for the efficient optimization of matrix factorization under binary constraints. The main contribution of this chapter is the derivation of the proximal mapping, which implements the nonbinary penalization. This proximal mapping is usable as a building block to incorporate binary restrictions on one of the matrices in factorization objectives. Known proximal mappings involving other constraints such as nonnegativity, sparseness or the restriction to the probability simplex can then be integrated within the larger optimization framework.  
 
 %=================================================
 % Approximating the Boolean Product in Elementary Algebra
@@ -50,7 +50,7 @@ Standard gradient descent-based optimization schemes for~\ref{eq:NMF} problems a
 \begin{align}\label{eq:PalmObj}
  \min_{X,Y}&\	F(X,Y)+ \phi_1(X) +\phi_2(Y) &\text{s.t. }X\in\mathbb{R}^{n\times r}, Y\in\mathbb{R}^{m\times r}.
 \end{align}
-The function $F$ reflects the objective function with respect to the nonnegative relaxation. We assume for now that $F(X,Y)=\|D-YX^\top\|^2$ returns the approximation error in the Frobenius norm. 
+The function $F$ reflects here the objective function or its smooth relaxation. We assume for now that $F(X,Y)=\bigl\lVert D-YX^\top\bigr\rVert ^2$ returns the approximation error in the Frobenius norm. 
 The nonsmooth part $\phi$ may return $\infty$, which can be used to model restrictions of the search space, e.g., the nonnegativity constraint of NMF. 
 PALM performes an alternating minimization on the linearized objective, substituting $F$ with its first order Taylor approximation. This is achieved by alternating \emph{proximal mappings} from the gradient descent update with respect to $F$, i.e., the following steps are repeated for $1\leq k \leq K$:
 \begin{align}\label{eq:PalmIterX}
@@ -59,7 +59,7 @@ Y_{k+1} &= \prox_{\beta_k\phi_2}(Y_k-\beta_k\nabla_YF(X_{k+1},Y_k)).\label{eq:Pa
 \end{align}
 The proximal mapping of a function $\phi$, is a function which returns a matrix satisfying the following minimization criterion: 
 \begin{align}\label{eq:prox}
-    \prox_\phi(X) \in \argmin_{X^\star}\left\{\frac{1}{2}\|X-X^\star\|^2+\phi(X^\star)\right\}.
+    \prox_\phi(X) \in \argmin_{X^*}\left\{\frac{1}{2}\lVert X-X^*\rVert ^2+\phi(X^*)\right\}.
 \end{align}
 Loosely speaking, the proximal mapping gives its argument a little push into a direction which minimizes $\phi$. For a detailed discussion, see, e.g., \citep{parikh2014proximal}. As we can see in Eqs.~(\ref{eq:PalmIterX}) and (\ref{eq:PalmIterY}), the evaluation of this operator is a base operation. Similarly to the alternating minimization in Eq.~(\ref{eq:als}), finding the minimum of the proximal mapping in every iteration by numerical methods is infeasible in practice. Thus, the trick is to use only simple functions $\phi$ for which the proximal mapping can be calculated in a closed form. 
 
@@ -79,7 +79,7 @@ We state here the main convergence result for PALM in a specified version, requi
 \label{fig:PT:lowerSemiCont}
 \end{figure}
 The convergence analysis of PALM requires that the nonsmooth part $\phi$ is a proper, lower semi-continuous function. In practice, this is not a demanding requirement.
-We display an example of a lower semi-continuous function in Figure~\ref{fig:PT:lowerSemiCont}. Let us exercise what is stated in the definition by this example. The function $f$ has a point of discontinuity at $x=1$. Any limit point of function values $f(x_k)$ for a sequence converging to the point of discontinuity ($x_k\rightarrow 1$) is either equal to one or to three. Thus, we have $\{1,3\}\ni\liminf_{x\rightarrow 1}f(x)\geq f(1)=1$. In other words, lower semi-continuous functions always attain the lowest limit point of function values at a point of discontinuity. The restriction to lower semi-continuous functions $\phi$ ensures inter alia that the prox-operator is well-defined (cf.\@ Eq.~\eqref{eq:prox}).
+We display an example of a lower semi-continuous function in Figure~\ref{fig:PT:lowerSemiCont}. Let us exercise what is stated in the definition by this example. The function $f$ has a point of discontinuity at $x=1$. Any limit point of function values $f(x_k)$ for a sequence converging to the point of discontinuity ($x_k\rightarrow 1$) is either equal to one or to three. Thus, we have $\{1,3\}\ni\liminf_{x\rightarrow 1}f(x)\geq f(1)=1$. In other words, lower semi-continuous functions always attain the lowest limit point of function values. The restriction to lower semi-continuous functions $\phi$ ensures inter alia that the prox-operator is well-defined (cf.\@ Eq.~\eqref{eq:prox}).
 %-----------
 \begin{definition}[Kurdyka-Lojasiewicz functions]
 Let $f:\mathbb{R}^{n}\rightarrow \mathbb{R}\cup\{\infty\}$ be a proper lower semi-continuous function and $x_0\in\mathbb{R}^n$, such that\footnote{$\partial $ denotes here the Fr\'{e}chet subdifferential} $\partial f(x_0)\neq\emptyset$. Define a subset of real-valued, continuous functions as
@@ -87,22 +87,22 @@ Let $f:\mathbb{R}^{n}\rightarrow \mathbb{R}\cup\{\infty\}$ be a proper lower sem
 The function $f$ is said to have the \emph{Kurdyka-{\L}ojasiewicz property} at point $x_0$ if there exists a concave and strictly increasing function $\kappa\in\mathcal{K}$ and an $\epsilon>0$ such that for all 
 $x\in \mathcal{N}_\epsilon(x_0)$ satisfying $f(x_0)<f(x)<f(x_0)+t$
 the Kurdyka-{\L}ojasiewicz inequality holds for all vectors $g\in\partial f(x)$, that is
-\[\kappa^\prime\left(f(x)-f(x_0)\right)\|g\|\geq 1.\]
+\[\kappa^\prime\left(f(x)-f(x_0)\right)\lVert g\rVert \geq 1.\]
 A function $f$ is called Kurdyka-{\L}ojasiewicz function if it has the Kurdyka-{\L}ojasiewicz property at any point $x_0$ where $\emptyset \neq \partial f$. 
 \end{definition}
-The impact that a requirement of the Kurdyka-{\L}ojasiewicz property has is not easy to understand. Here, it is only important to know which class of functions satisfy this property and how we can derive for specified functions if they satisfy the Kurdyka-{\L}ojasiewicz property. For this reason, we state some of the general rules from which we can conclude the \KL property for a given function in the following section. The follwoing theorem states the main convergence result for PALM.
+The impact that a requirement of the Kurdyka-{\L}ojasiewicz property has is not easy to understand. Here, it is only important to know which class of functions satisfy this property and how we can derive for specified functions if they satisfy the Kurdyka-{\L}ojasiewicz property. For this reason, we state some of the general rules from which we can conclude the \KL property for a given function in the following section. The following theorem states the main convergence result for PALM.
 
 \begin{theorem}{{\citep{bolte2014proximal}}}\label{thm:palmConv}
 Let $F:\mathbbm{R}^{n\times r}\times \mathbbm{R}^{m\times r}\rightarrow \mathbbm{R}_+$ be a smooth function and let $\phi_1:\mathbbm{R}^{n\times r}\rightarrow [0,\infty]$ and $\phi_2:\mathbbm{R}^{m\times r}\rightarrow [0,\infty]$ be proper and lower semi-continuous functions. Denote with $(\mathcal{X},\mathcal{Y})\subseteq\mathbb{R}^{n\times r}\times \mathbbm{R}^{m\times r}$ the feasible set, defined as
 \begin{align*}
-    \mathcal{X} = \{X\in \mathbb{R}^{n\times r}\mid \phi_1(X)<\infty\}\quad \text{and} \quad \mathcal{Y} = \{Y\in \mathbb{R}^{n\times r}\mid \phi_2(Y)<\infty\},
+    \mathcal{X} = \{X\in \mathbb{R}^{n\times r}\mid \phi_1(X)<\infty\}\quad \text{and} \quad \mathcal{Y} = \{Y\in \mathbb{R}^{m\times r}\mid \phi_2(Y)<\infty\},
 \end{align*}
 Assume that the following conditions hold:
 \begin{enumerate}
-\item the partial gradients of $F$ are Lipschitz-continuous, satisfying the following inequality for real-valued functions $M_{\nabla_XF}(Y)$ and $M_{\nabla_XF}(Y)$
+\item the partial gradients of $F$ are Lipschitz-continuous, satisfying the following inequality for real-valued functions $M_{\nabla_XF}(Y)$ and $M_{\nabla_YF}(X)$
 \begin{align*}
-\|\nabla_XF(X,Y)-\nabla_UF(U,Y)\|&< M_{\nabla_XF}(Y)\|X-U\| &\forall \{X,U\} \subseteq \mathcal{X},\ Y\in\mathcal{Y}\\
-\|\nabla_YF(X,Y)-\nabla_VF(X,V)\|&< M_{\nabla_YF}(X)\|Y-V\| &\forall \{Y,V\} \subseteq \mathcal{Y},\ X\in\mathcal{X}
+\lVert \nabla_XF(X,Y)-\nabla_UF(U,Y)\rVert &< M_{\nabla_XF}(Y)\lVert X-U\rVert  &\forall \{X,U\} \subseteq \mathcal{X},\ Y\in\mathcal{Y}\\
+\lVert \nabla_YF(X,Y)-\nabla_VF(X,V)\rVert &< M_{\nabla_YF}(X)\lVert Y-V\rVert  &\forall \{Y,V\} \subseteq \mathcal{Y},\ X\in\mathcal{X}
 \end{align*}
 \item the Lipschitz-moduli are bounded on the feasible set; there exists a constant $M>0$ such that $M_{\nabla_XF}(Y)<M$ and $M_{\nabla_YF}(X)<M$ for all $X\in\mathcal{X}$ and $Y\in\mathcal{Y}$,
 \item the function $\Psi(X,Y)=F(X,Y)+\phi_1(X)+\phi_2(Y)$ satisfies the Kurdyka-{\L}ojasiewicz property,
@@ -127,8 +127,8 @@ Determining whether a function is semi-algebraic or not does in most cases not r
 The following functions are semi-algebraic:
 \begin{enumerate}
     \item polynomial functions $p(x)=\sum_{\mathbf{n}\in\mathbb{N}^n}a_\mathbf{n}x^{n_1}\cdot\ldots\cdot x^{n_n}$ where $a_\mathbf{n}\neq 0$ for only finitely many $\mathbf{n}\in\mathbb{N}^n$, 
-    \item the sum $\alpha f(x)+\beta g(x)$, product $f(x)g(x)$, division $f(x)/g(x)$ for $g(x)\neq 0$ and composition $f(g(x)$ of semi-algebraic functions $f$ and $g$,
-    \item the function $f(x)=\|x\|_p$ for $x\in\mathbb{R}^n$ and $p\geq 0$,
+    \item the sum $\alpha f(x)+\beta g(x)$, product $f(x)g(x)$, division $f(x)/g(x)$ for $g(x)\neq 0$ and composition $f(g(x))$ of semi-algebraic functions $f$ and $g$,
+    \item the function $f(x)=\lVert x\rVert _p$ for $x\in\mathbb{R}^n$ and $p\geq 0$,
     \item indicator functions of semi-algebraic sets.
 \end{enumerate}
 \end{example}
@@ -136,10 +136,10 @@ Although the class of semi-algebraic functions is large, there are still some ve
 \begin{definition}[Definable sets and functions]
 The family $\mathcal{O}=\{\mathcal{O}_i\}_{i\in\mathbb{N}}$ of collections of subsets $\mathcal{O}_n\subseteq\mathcal{P}(\mathbb{R}^n)$ is called an o-minimal structure over $\mathbb{R}$ if it satisfies the following axioms:
 \begin{enumerate}
-    \item $(\mathcal{O}_n,\cup, \cap,\cdot^\complement)$ is a Boolean algebra (cf.\@ Definition~\ref{def:BoolAlgebra})
-    \item $A\times\mathbb{R},\mathbb{R}\times A\in\mathcal{O}_{n+1}$ and $\{(x_1,\ldots, x_{n-1})\mid (x_1,\ldots,x_n)\in A\}\in \mathcal{O}_{n}$ for $A\in\mathcal{O}_{n}$ 
-    \item $\mathcal{O}_1=\mathcal{I}_1\cup\ldots\cup \mathcal{I}_m$ where $\mathcal{I}_j\in\{(a,b),[a,b],(a,b],[a,b)\},\ a,b\in[-\infty,\infty], m\in\mathbb{N}$ and $\{(x_1,x_2)\in\mathbb{R}^2\mid x_1<x_2\}\in\mathcal{O}_2$
-    \item $\{(x_1,\ldots,x_{n-1},x_1)\in\mathbb{R}^n\}\in\mathcal{O}_n$
+    \item $(\mathcal{O}_n,\cup, \cap,\cdot^\complement)$ is a Boolean algebra (cf.\@ Definition~\ref{def:BoolAlgebra}),
+    \item $A\times\mathbb{R},\mathbb{R}\times A\in\mathcal{O}_{n+1}$ and $\{(x_1,\ldots, x_{n-1})\mid (x_1,\ldots,x_n)\in A\}\in \mathcal{O}_{n}$ for $A\in\mathcal{O}_{n}$, 
+    \item $\mathcal{O}_1=\mathcal{I}_1\cup\ldots\cup \mathcal{I}_m$ where $\mathcal{I}_j\in\{(a,b),[a,b],(a,b],[a,b)\},\ a,b\in[-\infty,\infty], m\in\mathbb{N}$ and $\{(x_1,x_2)\in\mathbb{R}^2\mid x_1<x_2\}\in\mathcal{O}_2$,
+    \item $\{(x_1,\ldots,x_{n-1},x_1)\in\mathbb{R}^n\}\in\mathcal{O}_n$.
 \end{enumerate}
 Given an o-minimal structure $\mathcal{O}$, we call a set $A\subseteq\mathbb{R}^n$ definable if $A\in\mathcal{O}_n$. A function $f:\mathbb{R}^{n}\rightarrow (-\infty,\infty]$ is called definable if its graph is a definable set $\{(x,f(x))\mid x\in\mathbb{R}^n\}\in\mathcal{O}_{n+1}$.
 \end{definition}
@@ -147,9 +147,9 @@ Similarly like semi-algebraic function, the set of definable functions is closed
 %--------------
 \begin{example}[Definable sets and functions]The following functions are definable~\citep{dries1998tame}:
 \begin{enumerate}
-    \item semi-algebraic functions
-    \item the sum $\alpha f(x)+\beta g(x)$, product $f(x)g(x)$, division $f(x)/g(x)$ for $g(x)\neq0$ and composition $f(g(x))$ of definable functions $f$ and $g$
-    \item $\exp$ and $\log$
+    \item semi-algebraic functions,
+    \item the sum $\alpha f(x)+\beta g(x)$, product $f(x)g(x)$, division $f(x)/g(x)$ for $g(x)\neq0$ and composition $f(g(x))$ of definable functions $f$ and $g$,
+    \item $\exp$ and $\log$.
 \end{enumerate}
 \end{example}
 Most importantly, semi-algebraic functions are a subset of definable functions, which are again a subset of the \KL functions.
@@ -165,15 +165,7 @@ PALM states no convexity requirements for convergence in Theorem~\ref{thm:palmCo
 % A Binary Proximal Mapping
 %-----------------------------------
 \subsection{A Binary Proximal Mapping}\label{sec:PT:binprox}
-While the Mexican hat function can be seen as an $\ell2$ regularization equivalent penalizer for binary values, here, we choose an $\ell1$-equivalent form.
-Specifically, we choose $\phi_B(X)=\sum_{i,j}\Lambda(X_{ij})$, which employs the one-dimensional function 
-\[
-	\Lambda(x) = 
-    \begin{cases}
-        -|1-2x|+1 &x\in[0,1]\\
-        \infty &\text{otherwise}
-    \end{cases}
-\]
+While the Mexican hat function (cf.\@ Figure~\ref{fig:mexicanHat}) can be seen as an $\ell2$ regularization equivalent penalizer for binary values, here, we choose an $\ell1$-equivalent form.
 %---------FIGURE LAMBDA------------
 \begin{figure}
 \centering
@@ -182,6 +174,14 @@ Specifically, we choose $\phi_B(X)=\sum_{i,j}\Lambda(X_{ij})$, which employs the
 \label{fig:lambda}
 \end{figure}
 %-----------------------------------
+Specifically, we choose $\phi_B(X)=\sum_{i,j}\Lambda(X_{ij})$, which employs the one-dimensional function 
+\[
+	\Lambda(x) = 
+    \begin{cases}
+        -\lvert 1-2x\rvert +1 &x\in[0,1]\\
+        \infty &\text{otherwise}
+    \end{cases}
+\]
 to restrict matrix entries to the interval $[0,1]$ and to penalize nonbinary values. As discussed by \cite{zhang2010binary}, restricting the entries of factor matrices between zero and one prevents an imbalance between the factor matrices in which one matrix is very sparse and the other very dense. The curve of $\Lambda$ is depicted  in Figure~\ref{fig:lambda}. 
 %it is semi-algebraic pursuant to the examples of semi-algebraic functions in~\cite{teb14} and through this again a KL function. 
 We derive with the following proposition a closed form for the computation of the exact minimum as assigned by the proximal mapping with respect to $\phi_B$. 
@@ -191,41 +191,41 @@ Let $\alpha>0$ and $\phi_B(X)=\sum_{i,j}\Lambda(X_{ij})$ for $X\in\R^{m\times n}
 	\prox_{\alpha \Lambda}(x)=
     \begin{cases}
         \max\{0,x-2\alpha\} &x\leq0.5\\
-        \min\{1,x+2\alpha\} &x>0.5.
-    \end{cases}
+        \min\{1,x+2\alpha\} &x>0.5
+    \end{cases}.
     \end{equation}
 \end{theorem}
 \begin{proof}
 Let $\alpha>0$, $X\in\R^{m\times n}$ for some $m,n\in\N$ and $A=\prox_{\alpha\phi_B}(X)$. The function $\phi_B$ is fully separable across all matrix entries. In this case, the proximal operator can be applied entrywise to the composing scalar functions \citep{parikh2014proximal}, i.e., $A_{ji}=\prox_{\alpha\Lambda}(X_{ji})$. It remains to derive the proximal mapping of $\Lambda$ (Eq.~\eqref{eq:binprox}).
 
 The proximal operator reduces to Euclidean projection if the argument lies outside of the function's domain \citep{parikh2014proximal} and it follows that
-\[\prox_{\alpha\Lambda}(x)=\theta(x) \text{ if } x\notin[0,1].\]
-For $x\in[0,1]$ holds $\Lambda(x)=-|1-2x|+1$ and
+\[\prox_{\alpha\Lambda}(x)=1 \text{ if } x>1 \text{ and }\prox_{\alpha\Lambda}(x)=0 \text{ if } x<0.\]
+For $x\in[0,1]$ we have $\Lambda(x)=-\lvert 1-2x\rvert +1$ and per definition of the proximal operator follows
 \begin{align*}
-  \prox_{\alpha\Lambda}(x) &= \argmin_{x^\star\in\R} \left\{\frac{1}{2}(x-x^\star)^2-\alpha|1-2x^\star| +1\alpha\right\}\\
-  &= \argmin_{x^\star\in\R} \left\{\underbrace{(x-x^\star)^2-2\alpha|1-2x^\star| +(2\alpha)^2}_{=g(x^\star;x,\alpha)}\right\},
+  \prox_{\alpha\Lambda}(x) &= \argmin_{x^*\in\R} \left\{\frac{1}{2}(x-x^*)^2-\alpha\lvert 1-2x^*\rvert  +1\alpha\right\}\\
+  &= \argmin_{x^*\in\R} \left\{\underbrace{(x-x^*)^2-2\alpha\lvert 1-2x^*\rvert  +(2\alpha)^2}_{=g(x^*;x,\alpha)}\right\},
 \end{align*}
-where $g$ is derived by a multiplication and addition of constants, such that the minimum can easily be derived by completing the square.
+where the last step follows from a multiplication and addition of constants. The minimum of the function $g$ is easily derived by completing the square
 \begin{align*}
-  g(x^\star;x,\alpha) &=\begin{cases}
-    (x-x^\star)^2  -2\alpha(1-2 x^\star) +(2\alpha)^2 & x^\star \leq 0.5\\
-    (x-x^\star)^2 +2\alpha(1-2 x^\star) +(2\alpha)^2 & x^\star> 0.5
+  g(x^*;x,\alpha) &=\begin{cases}
+    (x-x^*)^2  -2\alpha(1-2 x^*) +(2\alpha)^2 & x^* \leq 0.5\\
+    (x-x^*)^2 +2\alpha(1-2 x^*) +(2\alpha)^2 & x^*> 0.5
   \end{cases}\\
   &=
   \begin{cases}
-    (x^\star-(x-2\alpha))^2 -2\alpha( 1-2x)& x^\star \leq 0.5\\
-    (x^\star-(x+2\alpha))^2 +2\alpha( 1-2x) & x^\star> 0.5
+    (x^*-(x-2\alpha))^2 -2\alpha( 1-2x)& x^* \leq 0.5\\
+    (x^*-(x+2\alpha))^2 +2\alpha( 1-2x) & x^*> 0.5
   \end{cases}.
 \end{align*}
 The function $g$ is a continuous piecewise quadratic function which attains its global minimum at the minimum of one of the two quadratic functions, i.e.,
 \[
-  \argmin_{x^\star\in\R}g(x^\star;x,\alpha) \in \{x-2\alpha\mid x\leq 0.5+2\alpha\}\cup \{x+2\alpha\mid x> 0.5-2\alpha\}.
+  \argmin_{x^*\in\R}g(x^*;x,\alpha) \in \{x-2\alpha\mid x\leq 0.5+2\alpha\}\cup \{x+2\alpha\mid x> 0.5-2\alpha\}.
 \] 
 A function value comparison in the intersecting domain $x\in(0.5-2\alpha,0.5+2\alpha]$ yields that
 \begin{align*}
 g(x-2\alpha;x,\alpha)=-2\alpha(1-2x)\leq g(x+2\alpha;x,\alpha) =2\alpha(1-2x) \Leftrightarrow x\leq 0.5
 \end{align*}
-%The non-differentiable point $x=0.5$ is not a local minimum as $g(0.5)$ is decreasing along the direction to $x^\star$.
+%The non-differentiable point $x=0.5$ is not a local minimum as $g(0.5)$ is decreasing along the direction to $x^*$.
 %\qed
 \end{proof}
 The regularization with $\phi_B$ meets the requirements of the nonsmooth part in an optimization by PALM. 
@@ -233,9 +233,9 @@ The regularization with $\phi_B$ meets the requirements of the nonsmooth part in
 The function $\phi_B(X)=\sum_{i,s}\Lambda(X_{is})$ is proper, lower semi-continuous and semi-algebraic function.
 \end{lemma}
 \begin{proof}
-the function $f$ is lower semi-continuous, because the function $\Lambda$ is lower semi-continuous. It holds that 
-\[\liminf_{x\rightarrow 0}=\liminf_{s\rightarrow 1}=0=f(0)=f(1).\]
-Similarly, the semi-algebraic property of $\phi_B$, being a finite sum of function values of $\Lambda$, follows from the semi-algebraic property of $\Lambda(x)$. We write $\Lambda(x)=\delta_{[0,1]}(x)|1-(1-2x)|$, where $\delta_{[0,1]}(x)$ is the indicator function, returning infinity if $x$ is outside of the interval $[0,1]$ and one otherwise. The function $|1-(1-2x)|$ is semi-algebraic as a composition of a polynomial function and the one-norm. The indicator function $\delta_{[0,1]}(x)$ is semi-algebraic if the interval $[0,1]$ is a semi-algebraic set. This is indeed the case according to the definition of semi- algebraic sets, since the interval $[0,1]=\{x\mid p(x)<0\}\cup\{x\mid p(x=0)\}$ for the polynomial function $p(x)=(x-0.5)-0.25$.
+The function $\phi_B$ is lower semi-continuous, because the function $\Lambda$ is lower semi-continuous. At points of discontinuity of $\Lambda$ we have
+\[\liminf_{x\rightarrow 0}\Lambda(x)=\liminf_{x\rightarrow 1}\Lambda(x)=0=\Lambda(0)=\Lambda(1).\]
+Similarly, the semi-algebraic property of $\phi_B$, being a finite sum of function values of $\Lambda$, follows from the semi-algebraic property of $\Lambda(x)$. We write $\Lambda(x)=\delta_{[0,1]}(x)\lvert 1-(1-2x)\rvert $, where $\delta_{[0,1]}(x)$ is the indicator function, returning infinity if $x$ is outside of the interval $[0,1]$ and one otherwise. The function $\lvert 1-(1-2x)\rvert $ is semi-algebraic as a composition of a polynomial function and the one-norm. The indicator function $\delta_{[0,1]}(x)$ is semi-algebraic if the interval $[0,1]$ is a semi-algebraic set. This is indeed the case according to the definition of semi-algebraic sets, since the interval $[0,1]=\{x\mid p(x)<0\}\cup\{x\mid p(x=0)\}$ for the polynomial function $p(x)=(x-0.5)^2-0.25$.
 \end{proof}
 %--------------------------------------
 % The General Boolean Matrix Factorization Framework PAL-Tiling 
@@ -243,7 +243,7 @@ Similarly, the semi-algebraic property of $\phi_B$, being a finite sum of functi
 \subsection{General Boolean Matrix Factorization Framework:  PAL-Tiling }\label{sec:PT:vanillaAlg}
 %------ ALG PALTILING -----
 \begin{algorithm}[t]
-\caption{The proposed general optimization scheme \textsc{PAL-Tiling} for Boolean matrix factorization. The implementation of the function \textsc{Toss}, used in the function \textsc{Round}, specifies which tiles are kept and therefore also when the rank increasing is terminated.}
+\caption{The proposed general optimization scheme \textsc{PAL-Tiling} for Boolean matrix factorizations. The implementation of the function \textsc{Toss}, used in the function \textsc{Round}, specifies which tiles are kept. the specification of this method determines the rank selection strategy.}
 \begin{algorithmic}[1]
   \Function{PAL-Tiling}{$D;\Delta_r=10$}
     \State $(X_K,Y_K)\gets (\emptyset, \emptyset)$
@@ -265,7 +265,7 @@ Similarly, the semi-algebraic property of $\phi_B$, being a finite sum of functi
   \Function{Round}{$L,X_k,Y_k,D$} 
   \State $(X^*,Y^*,L^*)\gets (0,0,\infty)$
   \For {$t_x,t_y\in\{0,0.05,0.1,\ldots 1\}$}
-    \State $(X,Y)\gets (\theta_{t_x}(X_k),\theta_{t_y}(Y_k))$
+    \State $(X,Y)\gets \left(\theta_{t_x}(X_k),\theta_{t_y}(Y_k)\right)$
     \For{$s\in\{1,\ldots, r\}$}
         \IIf{\Call{Toss}{$X_{\cdot s},Y_{\cdot s},D$}}  
          $(X_{\cdot s},Y_{\cdot s})\gets (\mathbf{0},\mathbf{0})$ \label{alg:paltiling:toss}
@@ -280,43 +280,43 @@ Similarly, the semi-algebraic property of $\phi_B$, being a finite sum of functi
 \end{algorithmic}
 \label{alg:paltiling}
 \end{algorithm}
-We sketch our method, the general optimization scheme for Boolean matrix factorizations, called Proximal Alternating Linearized Tiling (\textsc{PAL-Tiling}) in Algorithm~\ref{alg:paltiling}. Given an objective function $L(X,Y)$ having a suitable nonbinary relaxation $F(X,Y)$, satisfying the convergence requirements of PALM concerning the smooth part of the objective, \textsc{PAL-Tiling} computes a Boolean matrix factorization via the nonbinary penalty approach. Our method is suitable to automatically determine the rank of the factorization. We will discuss this feature thoroughly in the following two sections. Here, we state the general scheme, having only the data matrix $D$ and the rank increment $\Delta_r$ as input parameters. The rank determination proceeds as follows: increase the rank until the returned factorization uses fewer tiles than allowed under the provided rank. Decisive for the success or failure of this method is the specification which tiles are used. This depends on the objective function $L(X,Y)$ and the implementation of the function \textsc{Toss} which is invoked in line~\ref{alg:paltiling:toss}.
+We sketch our method, the general optimization scheme for Boolean matrix factorizations, called Proximal Alternating Linearized Tiling (\textsc{PAL-Tiling}) in Algorithm~\ref{alg:paltiling}. Given an objective function $L(X,Y)$ having a suitable nonbinary relaxation $F(X,Y)$, which satisfies the convergence requirements of PALM concerning the smooth part of the objective, \textsc{PAL-Tiling} computes a Boolean matrix factorization via the nonbinary penalty approach. Our method is suitable to automatically determine the rank of the factorization. We will discuss this feature thoroughly in the following two sections. Here, we state the general scheme, having only the data matrix $D$ and the rank increment $\Delta_r$ as input parameters. The rank determination proceeds as follows: increase the rank until the returned factorization uses fewer tiles than allowed under the provided rank. Decisive for the success or failure of this method is the specification which tiles are used. This depends on the objective function $L(X,Y)$ and the implementation of the function \textsc{Toss} which is invoked in line~\ref{alg:paltiling:toss}.
 
 Let us now go through the algorithm step by step. 
 The factor matrices are initialized as empty matrices (having rank zero). At every rank increase, $\Delta_r$ columns of random values between zero and one are appended to the current matrices $(X_K,Y_K)$ in line~\ref{alg:paltiling:increaseRank}. In lines~\ref{alg:paltiling:opt} and \ref{alg:paltiling:round}, the Boolean factorization of rank $r$ is calculated. The function $\phi_B$ is the nonbinary penalization function, which has been defined in the previous Section. After the numerical minimization of the relaxed objective $F(X,Y)$, the matrices $X_K$ and $Y_K$, having entries between zero and one, are rounded to binary matrices $X$ and $Y$ with respect to the Boolean factorization objective $L(X,Y)$. If the rounding procedure returns binary matrices having a rank smaller than $r$, then the current factorization is returned (line~\ref{alg:paltiling:rankGap}). Otherwise, we increase the rank and add $\Delta_r$ random columns to the relaxed solution of the former iteration $(X_K,Y_K)$. Note that our method is not greedy as only the initialization of the factor matrices is based on the result of the former iteration. During the optimization of the relaxed objective, the results of former iterations, employing a smaller rank, might very well be changed.
 
-As a stopping criterion we propose to check whether the average function decrease of the last hundred iterations is smaller than a small threshold. That is, at iteration $k$ we check whether $\nicefrac{1}{500}\sum_{t=k-500}^k(F(X_{t-1},Y_{t-1})-F(X_t,Y_t))<q_K$. How to set the parameter $q_K$ is typically easily inferred from observing the function decrease during the first $10,000$ iterations. For most datasets, a maximum number of ten thousand iterations is appropriate. However, tracing the average function decrease helps to decide when to abort the optimization earlier due to convergence. Throughout this work, we employ a stopping criterion of maximal 50,000 optimization iterations or a minimum average function decrease of $q_K=10^{-4}$.
+Regarding the optimization, we propose as stopping criterion to check whether the average function decrease of the last 500 iterations is small enough. That is, at iteration $k$ we check whether $\frac{1}{500}\sum_{t=k-500}^k(F(X_{t-1},Y_{t-1})-F(X_t,Y_t))<\epsilon$. How to set the parameter $\epsilon$ is typically easily inferred from observing the function decrease during the first $10,000$ iterations. For most datasets, a maximum number of ten thousand iterations is appropriate. However, tracing the average function decrease helps to decide when to abort the optimization reasonably early. Throughout this work, we employ a stopping criterion of maximal 50,000 optimization iterations or a minimum average function decrease of $\epsilon=10^{-4}$.
 
-We also outline the rounding function in Algorithm~\ref{alg:paltiling}. This function basically computes the thresholding parameters $t_x$ and $t_y$ with which the relaxed factor matrices are rounded to binary matrices, such that the objective function $L$ is minimized. However, some some tiles of the binary factorization are tossed according to a specified criterion. Therefore, particular instances of the \textsc{PAL-Tiling} algorithm require the specification of the objective function $L(X,Y)$, its smooth relaxation $F(X,Y)$ together with the corresponding gradient and its Lipschitz moduli $M_{\nabla_XF}(Y)$ and $X_{\nabla_YF}(x)$ and the function $\textsc{Toss}$.
+We also outline the rounding function in Algorithm~\ref{alg:paltiling}. This function basically computes the thresholding parameters $t_x$ and $t_y$ with which the relaxed factor matrices are rounded to binary matrices, such that the objective function $L$ is minimized. Some tiles of the binary factorization are tossed according to a specified criterion. Therefore, particular instances of the \textsc{PAL-Tiling} algorithm specify the objective function $L(X,Y)$, its smooth relaxation $F(X,Y)$ together with the corresponding gradients and the Lipschitz moduli $M_{\nabla_XF}(Y)$ and $M_{\nabla_YF}(x)$ as well as the function $\textsc{Toss}$.
 
-The default objective in Boolean matrix factorization is the minimization of the residual sum of squares as stated in problem~\eqref{eq:BoolMF}. We state the function, gradients and Lipschitz constants, required for the minimization via \textsc{PAL-Tiling} if the rank of the factorization is provided.
+The default objective in Boolean matrix factorization is the minimization of the residual sum of squares as stated in problem~\eqref{eq:BoolMF}. We state the function, gradients and Lipschitz constants, required for the minimization via \textsc{PAL-Tiling} if the rank of the factorization is provided in the following algorithm specification.
 %\begin{mybox}
 \begin{algSpec}[Vanilla \textsc{PAL-Tiling}]\label{algSpec:BMF}
 Apply \textsc{PAL-Tiling} with the following specification of functions:
 \begin{align*}
-    L(X,Y) &= |D-\theta(YX^\top)| & \textit{(objective)}\\
-    F(X,Y)&=\|D-YX^\top\|^2 &\textit{(smooth relaxed part)}\\
-    \nabla_XF(X,Y) &= (YX^\top-D)^\top Y &\textit{(partial gradient $X$)}\\
-    \nabla_YF(X,Y) &= (YX^\top-D) X &\textit{(partial gradient $Y$)}\\
-    M_{\nabla_XF}(Y)&>\|YY^T\|, \quad M_{\nabla_YF}(X)>\|XX^T\| &\textit{(L-moduli)} 
+    L(X,Y) &= \bigl\lvert D-\theta\bigl(YX^\top\bigr)\bigr\rvert  & \textit{(objective)}\\
+    F(X,Y)&=\bigl\lVert D-YX^\top\bigr\rVert^2 &\textit{(smooth relaxed part)}\\
+    \nabla_XF(X,Y) &= \bigl(YX^\top-D\bigr)^\top Y &\textit{(partial gradient $X$)}\\
+    \nabla_YF(X,Y) &= \bigl(YX^\top-D\bigr) X &\textit{(partial gradient $Y$)}\\
+    M_{\nabla_XF}(Y)&>\bigl\lVert YY^\top\bigr\rVert , \quad M_{\nabla_YF}(X)>\bigl\lVert XX^\top\bigr\rVert  &\textit{(L-moduli)} 
 \end{align*}
 \end{algSpec}
 %\end{mybox}
 The stated Lipschitz-moduli are easily derived via the inequality
 \begin{align*}
-    \|\nabla_XF(X,Y) - \nabla_UF(U,Y)\| &= \|(YX^\top-D)^\top Y - (YU^\top-D)^\top Y\|\\
-    &= \|XY^\top Y - UY^\top Y\| \leq \|X-U\|\|Y^\top Y\|.
+    \bigl\lVert \nabla_XF(X,Y) - \nabla_UF(U,Y)\bigr\rVert  &= \bigl\lVert (YX^\top-D)^\top Y - (YU^\top-D)^\top Y\bigr\rVert \\
+    &= \bigl\lVert XY^\top Y - UY^\top Y\bigr\rVert  \leq \bigl\lVert X-U\bigr\rVert \bigl\lVert Y^\top Y\bigr\rVert .
 \end{align*}
 The function $F(X,Y)=\sum_{j,i}(D_{ji}-Y_{ j\cdot}X_{\cdot i})^2$ is obviously smooth, because it is a polynomial function. For that reason, $F$ is also a semi-algebraic function.
 %-------------------------
 \begin{corollary}
-The function $F(X,Y)=\|D-YX^\top\|^2$ is smooth and a semi-algebraic function.
+The function $F(X,Y)=\lVert D-YX^\top\rVert ^2$ is smooth and a semi-algebraic function.
 \end{corollary}
-The implementation of the vanilla \textsc{PAL-Tiling} could be used to optimize a Boolean factorization of a fixed rank. However, here we are particularly interested in an automatic determination of the rank of the factorization. Therefore, we discuss approaches to do so in the following sections, where we evaluate our method in comparison to state-of-the-art Boolean matrix factorization algorithms. 
+The implementation of the vanilla \textsc{PAL-Tiling} could be used to optimize a Boolean factorization of a fixed rank. However, we are particularly interested in an automatic determination of the rank of the factorization. Therefore, we discuss approaches to do so in the following sections, where we evaluate our method in comparison to state-of-the-art Boolean matrix factorization algorithms. 
 %======================
 % Discussion
 %======================
 \section{Discussion}
 We propose an optimization scheme for the problem of Boolean matrix factorization, based on latest numerical optimization results for nonconvex, objective functions. To this end, we derive a closed form of the proximal mapping with respect to a function which penalizes nonbinary values. A thresholding to binary values according to the actual objective function, involving the Boolean product, enables the derivation of factorizations which reflect overlapping clusterings, as desired by Boolean matrix factorization.
 
-The proposed approach has applications to the general problem of matrix factorizations under binary constraints. This class of optimization problems comprises the learning of binary has codes as well. In this scope, \cite{shen2016fast} similarly propose to find optimal hashing codes via PALM. However, in this approach the binary factor matrix denoting the hash codes is strictly constrained to binary values during the optimization by PALM. This is achieved by employing the regularizing function $\phi_\mathbb{B}(X)$ returning zero if the matrix $X$ is binary and returning infinity otherwise. The proximal mapping of the function $\phi_\mathbb{B}$ maps therefore a matrix to the closest binary matrix. Although the resulting optimization with respect to unrelaxed, binary matrices seems desirable at first, we argue that such a procedure is likely to get stuck in local optima which reflect less suitable solutions.  
+The proposed approach has applications to the general problem of matrix factorizations under binary constraints. This class of optimization problems comprises the learning of binary hash codes as well. In this scope, \cite{shen2016fast} similarly propose to find optimal hashing codes via PALM. However, in this approach the binary factor matrix denoting the hash codes is strictly constrained to binary values during PALM's optimization. This is achieved by employing the regularizing function $\phi_\mathbb{B}(X)$, returning zero if the matrix $X$ is binary and returning infinity otherwise. The proximal mapping of the function $\phi_\mathbb{B}$ maps therefore a matrix to its closest binary matrix. Although the resulting optimization with respect to unrelaxed, binary matrices seems desirable at first, we argue that such a procedure is likely to get stuck in local optima which reflect less suitable solutions.  

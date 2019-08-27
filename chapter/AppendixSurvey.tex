@@ -2,28 +2,29 @@
 We state here the more lengthy proofs of results presented in Chapter 2.
 \kmeansobj*
 \begin{proof}
-We have already shown in Section~\ref{sec:ZS:kmeans} that problem~\eqref{eq:KM} is equivalent to Eq.~\eqref{eq:kmeansYXmean}. The equivalence of Eq.~\eqref{eq:kmeansYXmean} and Eq.~\eqref{eq:kmeansYYdaggerD} follows by substitution.
-The equivalence of problem~\eqref{eq:KM} and Eq.~\eqref{eq:kmeansYX} follows from the convexity of the matrix factorization problem when the matrix $Y$ is fixed. We show that for a given matrix $Y\in\mathbbm{1}^{m\times r}$, the matrix $X=D^\top Y(Y^\top Y)^{-1}$
+We have already shown in Section~\ref{sec:ZS:kmeans} that problem~\eqref{eq:KM} is equivalent to Eq.~\eqref{eq:kmeansYXmean}. The equivalence of Eq.~\eqref{eq:kmeansYXmean} and Eq.~\eqref{eq:kmeansYYdaggerD} follows by definition of the matrix $X$ in Eq.~\eqref{eq:kmeansYXmean}.
+The equivalence of problem~\eqref{eq:KM} and Eq.~\eqref{eq:kmeansYX} follows from the convexity of the matrix factorization problem when the matrix $Y$ is fixed. We show that for a given matrix $Y\in\mathbbm{1}^{m\times r}$, the matrix $X=D^\top Y\bigl(Y^\top Y\bigr)^{-1}$
 minimizes the residual sum of squares.
 \begin{align}
-\argmin_X \|D-YX^\top\|^2 &= \argmin_X -2\tr(X^\top D^\top Y) + \tr(XY^\top Y X^\top)\nonumber\\
-&= \argmin_X\sum_s -2X_{\cdot s}^\top D^\top Y_{\cdot s} +\|X_{\cdot s}\|^2|Y_{\cdot s}|\nonumber\\
-	&= \argmin_X\sum_s |Y_{\cdot s}|\left\|D^\top \frac{Y_{\cdot s}}{|Y_{\cdot s}|}-X_{\cdot s}\right\|^2. \label{eq:proofKMeansX}
+\argmin_X \bigl\lVert D-YX^\top\bigr\rVert ^2 
+&= \argmin_X -2\tr\left(X^\top D^\top Y\right) + \tr\left(XY^\top Y X^\top\right)\nonumber\\
+&= \argmin_X\sum_s -2X_{\cdot s}^\top D^\top Y_{\cdot s} +\lVert X_{\cdot s}\rVert ^2\lvert Y_{\cdot s}\rvert \nonumber\\
+	&= \argmin_X\sum_s \lvert Y_{\cdot s}\rvert \left\lVert D^\top \frac{Y_{\cdot s}}{\lvert Y_{\cdot s}\rvert }-X_{\cdot s}\right\rVert ^2. \label{eq:proofKMeansX}
 \end{align}
-The last equation shows that the minimum is attained when $X_{\cdot s}=D^\top \frac{Y_{\cdot s}}{|Y_{\cdot s}|}$. 
+The last equation shows that the minimum is attained when $X_{\cdot s}=D^\top \frac{Y_{\cdot s}}{\lvert Y_{\cdot s}\rvert }$. 
 
 The equivalence of Eq.~\eqref{eq:kmeansYXmean} and Eq.~\eqref{eq:kmeansTr} follows from the expansion 
 \begin{align*}
-\|D-YY^\dagger D\|^2 =  \|D\|^2 -2\tr(D^\top Y(Y^\top Y)^{-1}Y^\top D) +\|Y (Y^\top Y)^{-1}Y^\top D\|^2,
+\bigl\lVert D-YY^\dagger D\bigr\rVert ^2 =  \lVert D\rVert ^2 -2\tr\left(D^\top Y\bigl(Y^\top Y\bigr)^{-1}Y^\top D\right) +\bigl\lVert Y \bigl(Y^\top Y\bigr)^{-1}Y^\top D\bigr\rVert ^2,
 \end{align*}
 and the following equation:
 \begin{align*}
-\|Y (Y^\top Y)^{-1}Y^\top D\|^2&= \tr(D^\top Y(Y^\top Y)^{-1}Y^\top Y (Y^\top Y)^{-1}Y^\top D)\\
-&=\tr(D^\top Y(Y^\top Y)^{-1}Y^\top D).
+\bigl\lVert Y \bigl(Y^\top Y\bigr)^{-1}Y^\top D\bigr\rVert ^2&= \tr\left(D^\top Y\bigl(Y^\top Y\bigr)^{-1}Y^\top Y \bigl(Y^\top Y\bigr)^{-1}Y^\top D\right)\\
+&=\tr\left(D^\top Y\bigl(Y^\top Y\bigr)^{-1}Y^\top D\right).
 \end{align*}
 Likewise, we can add the term 
 \begin{align*}
-\|Y(Y^\top Y)^{-1}Y^\top\|^2 = \tr(Y(Y^\top Y)^{-1}Y^\top Y(Y^\top Y)^{-1}Y^\top) = \tr(I_r)=r 
+\bigl\lVert Y\bigl(Y^\top Y\bigr)^{-1}Y^\top\bigr\rVert ^2 = \tr\left(Y\bigl(Y^\top Y\bigr)^{-1}Y^\top Y\bigl(Y^\top Y\bigr)^{-1}Y^\top\right) = \tr(I_r)=r 
 \end{align*}
 to the optimization problem in Eq.~\eqref{eq:kmeansTr} and complete the square such that we obtain Eq.~\eqref{eq:kmeansDD}.
 \end{proof}
@@ -31,10 +32,13 @@ to the optimization problem in Eq.~\eqref{eq:kmeansTr} and complete the square s
 \BMFpartition*
 \begin{proof}
 Let $(X,Y)$ be the solution to the problem of Eq.~\eqref{eq:BinMF_YPartition}. From the convexity of the objective function when fixing $Y$, we derive from Eq.~\eqref{eq:proofKMeansX} that $X$ is given as the binary matrix minimizing
-\[\argmin_{X\in \{0,1\}^{n\times r}}\sum_{s,i}|Y_{\cdot s}|\left(D_{\cdot i}^\top \frac{Y_{\cdot s}}{|Y_{\cdot s}|}-X_{is}\right)^2 = \left\{X\mid X_{is} 
+\begin{align*}
+&\argmin_{X\in \{0,1\}^{n\times r}}\sum_{s,i}\lvert Y_{\cdot s}\rvert \left(D_{\cdot i}^\top \frac{Y_{\cdot s}}{\lvert Y_{\cdot s}\rvert }-X_{is}\right)^2\\ 
+&= \left\{X\middle\vert X_{is} 
 \begin{cases}
-= \theta(D_{i\cdot}^\top Y_{\cdot s}|Y_{\cdot s}|^{-1}) &\text{ if } D_{i\cdot}^\top Y_{\cdot s}|Y_{\cdot s}|^{-1}\neq \nicefrac{1}{2},\\ 
+= \theta(D_{i\cdot}^\top Y_{\cdot s}\lvert Y_{\cdot s}\rvert ^{-1}) &\text{ if } D_{i\cdot}^\top Y_{\cdot s}\lvert Y_{\cdot s}\rvert ^{-1}\neq \nicefrac{1}{2},\\ 
 \in\{0,1\} &\text{ otherwise} 
-\end{cases}\right\}.\]
-The equivalence of Eq.~\eqref{eq:BinMF_YPartitionThetaX} and Eq.~\eqref{eq:BinMF_YPartititionTr} follows from the expansion of the Frobenius inner product to a sum.
+\end{cases}\right\}.
+\end{align*}
+The equivalence of Eq.~\eqref{eq:BinMF_YPartitionThetaX} and Eq.~\eqref{eq:BinMF_YPartititionTr} follows from the definition of the Frobenius inner product via the trace.
 \end{proof}

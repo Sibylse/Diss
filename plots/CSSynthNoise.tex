@@ -107,7 +107,7 @@
         	axis lines = left,
             height=.25\linewidth,
             width=.33\linewidth,
-			xlabel={$p\ [\%]$},
+			xlabel={$p^*\ [\%]$},
 			ylabel={$r$},
 			xmax=25.5, xmin=0, ymin=0, ymax=26.2
 			]
@@ -142,10 +142,10 @@
         	axis lines = left,
             height=.25\linewidth,
             width=.33\linewidth,
-			xlabel={$r^\star$},
+			xlabel={$r^*$},
 			xmax=45, xmin=0, ymin=0,
             legend columns =-1,
-            legend entries={\textsc{C-Salt},\textsc{Primp},\textsc{Dbssl[$r_c,2r_c,2r_c$]},\textsc{Dbssl[$0,2r_c,2r_c$]},\textsc{MdlDbssl}},
+            legend entries={\textsc{C-Salt},\textsc{Primp},\textsc{Dbssl[$\nicefrac{r^*}{3},2\nicefrac{r^*}{3},2\nicefrac{r^*}{3}$]},\textsc{Dbssl[$0,2\nicefrac{r^*}{3},2\nicefrac{r^*}{3}$]},\textsc{MdlDbssl}},
             legend to name=labelCSSynthNoise
 			]
             \addplot+[punkStyle]  table[x=x,y=y,y error=std] {Punk_rR.dat};

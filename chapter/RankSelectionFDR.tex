@@ -6,9 +6,9 @@ Whenever data is collected from an imperfect (noisy) channel---arising from tain
 
 In the scope of Boolean matrix factorization, if some of the modeled tiles emerge from noise, false discoveries happen and the algorithm overfits.
 We prove two bounds on the probability that a found tile is constituted of random Bernoulli-distributed noise. Both allow us to exploit specific properties of a tile, resulting in different strengths for different types of input data.
-The bounds require an additional input from the user: an estimate to the positive noise level $p_+$. While this might seem to be a prohibitive burden, our experimental results show that a rough estimate suffices---the user should merely know if her data is pretty noisy or not so much.
+The bounds require an additional input from the user: an estimate to the positive noise level $p_+^*$. While this might seem to be a prohibitive burden, our experimental results show that a rough estimate suffices---the user should merely know if her data is pretty noisy or not so much.
 
-The state-of-the-art BMF techniques filter the structure from the noise and estimate the rank by employing rather complicated regularization terms originating from the description lengths when encoding the data. The belief in the correctness of these algorithms is based on empirical evaluations, inter alia, experiments with synthetically added Bernoulli-distributed noise. 
+We have seen in the last chapter how state-of-the-art BMF techniques filter the structure from the noise and estimate the rank by employing rather complicated regularization terms originating from the description lengths when encoding the data. The belief in the correctness of these algorithms is based on empirical evaluations, inter alia, experiments with synthetically added Bernoulli-distributed noise. 
 Under this noise assumption, we employ our bounds to devise a new, theoretically well-founded, rank estimation strategy. Since our technique may be used as a plug-in replacement for existing heuristics, our findings improve a whole class of BMF algorithms.
 %-------------------------------
 % Main Contributions
@@ -23,78 +23,78 @@ Our main contributions are:
 % Bounding False Discoveries
 %=====================================
 \section{False Discoveries in Boolean Matrix Factorization}\label{sec:TP:boundingFDR}
-We now explicitly distinguish between the noise flipping a zero to a one (positive noise) and the one flipping a one to a zero (negative noise). The Boolean decomposition distinguishing between these noise effects is given as follows:
+The generation of noise depends on two parameters; the probability to flip a zero to a one $p_+^*$ and the probability to flip a one to a zero $p_-^*$. We refer to the first kind of noise as positive noise and to the latter as negative noise. The Boolean decomposition, where we keep positive and negative noise apart looks as follows:
 \begin{align}\label{eq:BMF0}
-D=(Y^*\odot {X^*}^\top \oplus N_+) \circ (\thickbar{Y^*\odot {X^*}^\top} \oplus \thickbar{N_-}).
+D=\left(Y^*\odot {X^*}^\top \oplus N_+\right) \circ \left(\thickbar{Y^*\odot {X^*}^\top} \oplus \thickbar{N_-}\right).
 \end{align}
 The factor matrices $X^*\in\{0,1\}^{n\times r}$ and $Y^*\in\{0,1\}^{m\times r}$ denote the \emph{true} model and $N_+,N_-\in\{0,1\}^{m\times n}$ are the binary positive and negative noise matrices. 
 
 The first step towards trustworthy pattern mining is a measure of trustworthiness. 
-The False Discovery Rate (FDR)~\citep{benjamini1995controlling} is a simple yet powerful way to express the probability that something goes wrong.
+The False Discovery Rate (FDR)~\citep{benjamini1995controlling} is a simple yet powerful way to measure the relative amount of hypothesis rejections which have gone awry.
 %-------- Def FDR ---------
 \begin{definition}[FDR]
-Let $\mathcal{H}$ be a finite set of null hypotheses from which $r$ are rejected. Let $v$ denote the number of erroneously rejected null hypotheses. We say that \emph{the FDR is controlled at level $q$} if
+Let $\mathcal{H}$ be a finite set of null hypotheses. We define the random variable $\mathbf{Q}$ to denote the ratio between false discoveries and discoveries in total, that is the number of erroneously rejected null hypotheses divided by the number of rejected null hypotheses. We say that \emph{the FDR is controlled at level $q$} if
 \begin{align*}
-\mathbb{E}\left(\frac{v}{r}\right)\leq q.
+\mathbb{E}\left(\mathbf{Q}\right)\leq q.
 \end{align*}
 \end{definition}
-In our setting, a null hypothesis states that the intersections of columns and rows indicated by a tile $yx^\top$ do not reflect underlying relations. In other words, the hypothesis $H_s^0$ is true when there is no overlap between the underlying model $Y^*{X^*}^\top$ and the outer product of the $s$-th tile $Y_{\cdot s}X_{\cdot s}^\top$. This definition of a null hypothesis might seem too restrictive for some applications. Therefore, we discuss possible relaxations of this requirement in Section~\ref{sec:TP:rejectNullHyp}. 
+In our setting, a null hypothesis states that the intersections of columns and rows indicated by a tile $yx^\top$ do not reflect underlying relations. In other words, we say that the hypothesis $H_s^0$ is true when there is no overlap between the underlying model $Y^*{X^*}^\top$ and the $s$-th tile $Y_{\cdot s}X_{\cdot s}^\top$. This definition of a null hypothesis might seem too restrictive for some applications. Therefore, we discuss possible relaxations of this requirement in Section~\ref{sec:TP:rejectNullHyp}. 
 Bearing this in mind, we see that a BMF of rank $r$ corresponds to a joint rejection of $r$ null hypotheses $\{H_1^0,H_2^0,\dots,H_r^0\}$. 
 Thus, if the correct rank is $r^*$, any rank $r>r^*$ factorization is likely to state some erroneous rejections of null hypotheses, a.k.a. false discoveries. 
 
-Now, given factor matrices $X\in \{0,1\}^{n\times r}$ and $Y\in\{0,1\}^{m\times r}$, we define a random variable $Z_s$ with domain $\{0,1\}$, which takes the value $1$ if and only if the null hypothesis $H_s^0$ is not to be rejected, i.e., the outer product $Y_{\cdot s}X_{\cdot s}^\top $ covers only (or mostly -- depending on the definition) noise. The FDR of a BMF is therefore computed via
+Now, given factor matrices $X\in \{0,1\}^{n\times r}$ and $Y\in\{0,1\}^{m\times r}$, we define a random variable $\mathbf{Z}_s$ with domain $\{0,1\}$, which takes the value $1$ if and only if the null hypothesis $H_s^0$ is not to be rejected, i.e., the outer product $Y_{\cdot s}X_{\cdot s}^\top $ covers only (or mostly -- depending on the definition) noise. The FDR of a BMF is therefore computed via
 \begin{align}
-\mathbb{E}\left(\frac{v}{r}\right) = \frac{1}{r}\sum_{s=1}^rP(Z_s=1)\;.\label{eq:FDRZ}
+\mathbb{E}\left(\mathbf{Q}\right) =  \frac{1}{r}\sum_{s=1}^rP(\mathbf{Z}_s=1)\;\leq q \text{ if } P(\mathbf{Z}_s=1)\leq q.\label{eq:FDRZ}
 \end{align}
 %--------------------------------------
 % Tiles in Bernoulli Matrices
 %--------------------------------------
 \subsection{Tiles in Bernoulli Matrices}
-We aim at assessing the probability $P(Z_s=1)$. Therefore, we need to employ an independence assumption on the noise. 
+We aim at assessing the probability $P(\mathbf{Z}_s=1)$. Therefore, we need to employ an independence assumption on the noise. 
 %-------- Def Bernoulli Matrix --------
 \begin{definition}[Bernoulli matrix]
-Let $B$ be an $m\times n$ binary matrix. If the entries of $B$ are independent Bernoulli variables, which take the value $1$ with probability $p$ and zero otherwise, i.e., 
-\[P(B_{ji}=1)=p,\ P(B_{ji}=0)=1-p\;,\]
-then $B$ is a \emph{Bernoulli $(p)$ matrix}.
+Let $\mathbf{B}$ be an $m\times n$ random matrix whose entries are i.i.d copies of a Bernoulli$\,(p)$ random variable, that is
+\[P(\mathbf{B}_{ji}=1)=p,\ P(\mathbf{B}_{ji}=0)=1-p\;,\]
+then we say $\mathbf{B}$ is a \emph{Bernoulli$\,(p)$ matrix}.
 \end{definition}
-In what follows, we assume that the positive noise matrix $N_+$ is a Bernoulli matrix. If a tile $Y_{\cdot s}X_{\cdot s}^\top$ does not approximate the model $Y^*{X^*}^\top$ then it has to have some overlap with the positive noise matrix, otherwise the tile wouldn't contribute to minimizing the approximation error to the data. The \emph{overlap} is computed as the sum of common $1$ entries
-\[|Y_{\cdot s}X_{\cdot s}^\top\circ N_+|=\langle Y_{\cdot s}X_{\cdot s}^\top,N_+\rangle=\tr(X_{\cdot s}Y_{\cdot s}^\top N_+)=Y_{\cdot s}^\top N_+X_{\cdot s}\;.\]
+In what follows, we assume that the positive noise matrix $N_+$ is a realization of a Bernoulli$\,(p_+^*)$ matrix. If a tile $Y_{\cdot s}X_{\cdot s}^\top$ does not approximate the model $Y^*{X^*}^\top$ then it has to have some overlap with the positive noise matrix, otherwise the tile wouldn't contribute to minimizing the data approximation error. The \emph{overlap} is computed as the sum of common $1$ entries
+\[\bigl\lvert Y_{\cdot s}X_{\cdot s}^\top\circ N_+\bigr\rvert=\bigl\langle Y_{\cdot s}X_{\cdot s}^\top,N_+\bigr\rangle=\tr\left(X_{\cdot s}Y_{\cdot s}^\top N_+\right)=Y_{\cdot s}^\top N_+X_{\cdot s}\;.\]
 This quantity is used to determine the density of a tile in the positive noise matrix.
 %----- Def dense on -------
 \begin{definition}[$\delta$-dense]
 Let $A$ be an $m\times n$ binary matrix and $\delta\in[0,1]$. We say a tile or binary outer product $yx^\top$ is \emph{$\delta$-dense in $A$}  if
-\[y^\top A x \geq \delta |x||y|\;.\]
+\[y^\top A x \geq \delta \lvert x\rvert\lvert y\rvert \;.\]
 \end{definition}
-Since a Boolean matrix product, approximating the data matrix well, covers a high proportion of ones in $D$, the tiles returned by a Boolean factorization are expected to be dense in $D$. We will discuss in the following section how dense a tile has to be in a matrix in order to approximate it well. The following theorem explores the probability with which a $\delta$-dense tile of given minimal size exists in a Bernoulli matrix. This gives us an upper bound on the probability $P(Z_s=1)$ from Eq.~\eqref{eq:FDRZ}, which in turn allows us to bound the FDR.
+Since a Boolean matrix product, approximating the data matrix well, covers a high proportion of ones in $D$, the tiles returned by a Boolean factorization are expected to be dense in $D$. We will discuss in the following section how dense a tile has to be in the data matrix in order to approximate it well. The following theorem explores the probability with which a $\delta$-dense tile of given minimal size exists in a Bernoulli matrix. This gives us an upper bound on the probability $P(\mathbf{Z}_s=1)$ from Eq.~\eqref{eq:FDRZ}, which in turn allows us to bound the FDR.
 %------ THEOREM Density Bound ------
 \begin{theorem}\label{thm:densProb}
-Suppose $B$ is an $m\times n$ Bernoulli $(p)$ matrix, $\delta\in[0,1]$, $1\leq a\leq n$, and $1\leq b\leq m$. 
-The probability that a $\delta$-dense tile of size $|x|\geq a$ and $|y|\geq b$ exists is no larger than
+Suppose $\mathbf{B}$ is an $m\times n$ Bernoulli$\,(p)$ matrix, $\delta\in[0,1]$, $1\leq a\leq n$, and $1\leq b\leq m$. 
+The probability that $\mathbf{B}$ has a $\delta$-dense tile of size $\lvert x\rvert \geq a$ and $\lvert y\rvert \geq b$ is no larger than
 \begin{align}\label{eq:densBound}
-\binom{n}{a}\binom{m}{b}\exp(-2ab(\delta-p)^2)\;.
+\binom{n}{a}\binom{m}{b}\exp\left(-2ab(\delta-p)^2\right)\;.
 \end{align}
 \end{theorem}
 \begin{proof}
-If a $\delta$-dense tile $(x,y)$ exists in $B$, having the size  $(|x|,|y|)\geq (a,b)$, then we can construct a $\delta$-dense sub-tile of exact size $(a,b)$. This follows by induction from the observation that removing the sparsest column/row in $B\circ yx^\top$ from the tile does not decrease the density. Thus, the probability that a $\delta$-dense tile of size at least $(a,b)$ exists is no larger than the probability that a tile of size $(a,b)$ exists.  
+If a $\delta$-dense tile $yx^\top$ exists in $\mathbf{B}$, having the size  $(\lvert x\rvert ,\lvert y\rvert )\geq (a,b)$, then we can construct a $\delta$-dense sub-tile of exact size $(a,b)$. This follows by induction from the observation that removing the sparsest column/row in $\mathbf{B}\circ yx^\top$ from the tile does not decrease the density. Thus, the probability that a $\delta$-dense tile of size at least $(a,b)$ exists is no larger than the probability that a tile of size $(a,b)$ exists.  
 
-Now, let $(x,y)$ be such a tile with $|x|= a$ and $|y|= b$. The probability that $(x,y)$ is $\delta$-dense in $B$ is equal to
+Now, let $yx^\top$ be such a tile with $\lvert x\rvert = a$ and $\lvert y\rvert = b$. The probability that $yx^\top$ is $\delta$-dense in $\mathbf{B}$ is equal to
 \begin{align*}
-P\left(\frac{y^\top Bx}{|x||y|}\geq \delta\right)
-&=P\left(\left(\frac{1}{ab}\sum_{i,j}x_iy_jB_{ji}\right)-p\geq \delta-p\right)\\
-&\leq \exp(-2ab(\delta-p)^2),
+P\left(\frac{y^\top \mathbf{B}x}{\lvert x\rvert \lvert y\rvert }\geq \delta\right)
+&=P\left(\left(\frac{1}{ab}\sum_{i,j}x_iy_j\mathbf{B}_{ji}\right)-p\geq \delta-p\right)\\
+&\leq \exp\left(-2ab(\delta-p)^2\right),
 \end{align*}
 where the inequality follows from Hoeffding's inequality.
 An application of the union bound over all possible combinations to place $a$ ones in $x$ and $b$ ones in $y$ yields the statement of the theorem.
 \end{proof}
-The proof of Theorem~\ref{thm:densProb} indicates that the tightness of the bound in Eq.~\eqref{eq:densBound} might suffer from the extensive use of the union bound. This originates from the numerous possibilities to select a set of columns and rows of given cardinality. If we expect that rows and columns which are selected by a tile have proportionately many ones in common, we bypass the requirement to take all possible column and row selections into account. To this end, given an $m\times n$ matrix $B$, we assess the value of the function 
+The proof of Theorem~\ref{thm:densProb} indicates that the tightness of the bound in Eq.~\eqref{eq:densBound} might suffer from the extensive use of the union bound. This originates from the numerous possibilities to select a set of columns and rows of given cardinality. If we expect that rows and columns which are selected by a tile have proportionately many ones in common, we bypass the requirement to take all possible column and row selections into account. To this end, given an $m\times n$ matrix $A$, we assess the value of the function 
 \[
-\eta(B)= \max_{1\leq i\neq k\leq n} \langle B_{\cdot i},B_{\cdot k}\rangle\;.
+\eta(A)= \max_{1\leq i\neq k\leq n} \langle A_{\cdot i},A_{\cdot k}\rangle\;.
 \] 
 %----- THEOREM coherence bound ---
 \begin{theorem}\label{thm:cohBound}
-Let $B$ be an $m\times n$ Bernoulli $(p)$ matrix and let $\tau>p^2$. The function value of $\eta$ satisfies
+Let $\mathbf{B}$ be an $m\times n$ Bernoulli$\,(p)$ matrix and let $\tau>p^2$. The function value of $\eta$ satisfies
 $
-\eta\left(({1}/\sqrt{m})B\right) \geq \tau
+\eta\left(({1}/\sqrt{m})\mathbf{B}\right) \geq \tau
 $
 with probability no larger than
 \begin{align}\label{eq:cohBound}  
@@ -103,66 +103,74 @@ with probability no larger than
 \end{theorem}
 %
 \begin{proof}
-Let $B$ be as described above and $1\leq i\neq k\leq n$. The variance of the random variable $B_{ji}B_{jk}$ is
-\[\mathbb{E}\left[\left(B_{ji}B_{jk}-p^2\right)^2\right]=p^2(1-p^2)\;.\]
-Since the variables $B_{ji}B_{jk}$ are independent for $j\in\{1,\ldots,m\}$, the Bernstein inequality yields 
+Let $\mathbf{B}$ be as described above and $1\leq i\neq k\leq n$. The variance of the random variable $\mathbf{B}_{ji}\mathbf{B}_{jk}$ is
+\[\mathbb{E}\left[\left(\mathbf{B}_{ji}\mathbf{B}_{jk}-p^2\right)^2\right]=p^2(1-p^2)\;.\]
+Since the variables $\mathbf{B}_{ji}\mathbf{B}_{jk}$ are independent for $j\in\{1,\ldots,m\}$, the Bernstein inequality yields 
 \begin{align*}
-&P(\langle B_{\cdot i},B_{\cdot k}\rangle\geq m\tau) 
-=P\left(\sum_j (B_{j i}B_{j k}-p^2)\geq m\tau-mp^2\right)\\
+&P(\langle \mathbf{B}_{\cdot i},\mathbf{B}_{\cdot k}\rangle\geq m\tau) 
+=P\left(\sum_j \left(\mathbf{B}_{j i}\mathbf{B}_{j k}-p^2\right)\geq m\tau-mp^2\right)\\
 &\leq \exp\left(-1/2 \frac{(m\tau-mp^2)^2}{mp^2(1-p^2)+1/3(m\tau-mp^2)}\right)
 \leq \exp\left(-1/2 \frac{m(\tau-p^2)^2}{2/3p^2+1/3\tau}\right)
 \end{align*}
 %\begin{align*}
 %P(\langle B_{\cdot i},B_{\cdot k}\rangle\geq m\mu) & \leq \exp\left( -\frac{3}{2}m\frac{(\mu-p^2)^2}{2p^2+\mu}\right)\;,
 %\end{align*}
-where we made use of the relations $\mathbb{E}[B_{ji}B_{jk}]=p^2$ and $1-p^2\leq 1$.
+where we made use of the relations $\mathbb{E}[\mathbf{B}_{ji}\mathbf{B}_{jk}]=p^2$ and $1-p^2\leq 1$.
 The union bound over all possible pairs of distinct rows ($i\neq k$) yields the final result.
 \end{proof}
 
-If the columns of matrix $B$ are normalized, then the function $\eta(B)$ returns the \emph{coherence} of $B$. The coherence measures how close the column vectors are to an orthogonal system, an extensively studied property in the field of compressed sensing~\citep{foucart2013mathematical}. If all columns of a matrix are orthogonal to each other, then the coherence is zero. The bound in Eq.~\eqref{eq:cohBound} also implies a bound on the coherence of the matrix $B$. Thus, we refer to Bound~\eqref{eq:cohBound} as the \emph{coherence bound} and to Bound~\eqref{eq:densBound} as the \emph{density bound}. For any given tile, we can now derive two upper bounds on the quantity $P(Z_s=1)$ from Eq.~\eqref{eq:FDRZ}, and thus control the FDR.
+If the columns of a matrix $A$ are normalized, then the function $\eta(A)$ returns the \emph{coherence} of $A$. The coherence measures how close the column vectors are to an orthogonal system, an extensively studied property in the field of compressed sensing~\citep{foucart2013mathematical}. If all columns of a matrix are orthogonal to each other, then the coherence is zero. The bound in Eq.~\eqref{eq:cohBound} also implies a bound on the coherence of the matrix $A$. Thus, we refer to Bound~\eqref{eq:cohBound} as the \emph{coherence bound} and to Bound~\eqref{eq:densBound} as the \emph{density bound}. For any given tile, we can now derive two upper bounds on the quantity $P(\mathbf{Z}_s=1)$ from Eq.~\eqref{eq:FDRZ}, and thus control the FDR.
 %-----------------------------------------------------
 % Rejecting the Rejection of Null Hypotheses
 %-----------------------------------------------------
 \subsection{Rejecting the Rejection of Null Hypotheses}\label{sec:TP:rejectNullHyp}
-How does the density and the coherence bound now help assessing the  probability $P(Z_s=1)$ from Eq.~\eqref{eq:FDRZ}? Let us reconsider the universal formulation of a null hypothesis, which poses that a tile does not reflect actual relations given by the \emph{true} model $Y^*{X^*}^\top$. First, we relax this definition by counting those tiles which cover only a fraction of the \emph{true} model among the false discoveries as well. Given factor matrices $X$ and $Y$ and and a fraction parameter $t\in[0,1]$, we define the null hypothesis $H_s^0(\alpha)$ to be true if the overlap between the $s$-th tile and the model is smaller than 
+How does the density and the coherence bound now help assessing the  probability $P(\mathbf{Z}_s=1)$ from Eq.~\eqref{eq:FDRZ}? Let us reconsider the universal formulation of a null hypothesis, which poses that a tile does not reflect actual relations given by the \emph{true} model $Y^*{X^*}^\top$. First, we relax this definition by counting those tiles which cover only a fraction of the \emph{true} model among the false discoveries as well. Given factor matrices $X$ and $Y$ and and a fraction parameter $\alpha\in[0,1]$, we define the null hypothesis $H_s^0(\alpha)$ to be true if the overlap between the $s$-th tile and the model is smaller than $\alpha$
 \begin{align}\label{eq:nullHyp}
-P(Z_s=1)\Leftrightarrow \frac{|Y_{\cdot s}X_{\cdot s}^\top\circ Y^*{X^*}^\top|}{|Y_{\cdot s}X_{\cdot s}^\top|}\leq \alpha.
+\frac{\bigl\lvert Y_{\cdot s}X_{\cdot s}^\top\circ Y^*\odot{X^*}^\top\bigr\rvert }{\bigl\lvert Y_{\cdot s}X_{\cdot s}^\top\bigr\rvert }\leq \alpha.
 \end{align}
+Assuming that the positive noise is generated by a Bernoulli$\,(p_+^*)$ matrix $\mathbf{B}$, we define the random matrix corresponding to the decomposition of the data matrix given in Eq.~\eqref{eq:BMF0} by
+\begin{align}\label{eq:BMFrandD}
+    \mathbf{D}=\left(Y^*\odot {X^*}^\top \oplus \mathbf{B}\right) \circ \left(\thickbar{Y^*\odot {X^*}^\top} \oplus \thickbar{N_-}\right).
+\end{align}
+The generalization of the data to a random matrix enables us to asses the probability of a false discovery.  
 %----- COROLLARY dens bound ----------
 \begin{corollary}\label{thm:densZ}
-Let $D$ be composed as denoted in Eq.~\eqref{eq:BMF0} and let $N_+$ be a Bernoulli $(p_+)$. Given $X\in\{0,1\}^{n\times r}$ and $Y\in\{0,1\}^{m\times r}$ with 
-\[Y_{\cdot s}^\top DX_{\cdot s}\geq \delta_s|Y_{\cdot s}||X_{\cdot s}|,\] 
-then for $\rho = \max\{\delta_s-\alpha-p,0\}$, the probability that  the null hypothesis $H_s^0(\alpha)$ is true and thus not to be rejected is bounded by
+Let $\mathbf{B}$ be an $m\times n$ Bernoulli$\,(p_+^*)$ matrix and define the random matrix $\mathbf{D}$ as in Eq.~\eqref{eq:BMFrandD}.
+Given matrices $X\in\{0,1\}^{n\times r}$ and $Y\in\{0,1\}^{m\times r}$ with an observed density of
+\[Y_{\cdot s}^\top DX_{\cdot s}= \delta_s\lvert Y_{\cdot s}\rvert \lvert X_{\cdot s}\rvert ,\] 
+then for $\rho = \max\{\delta_s-\alpha-p_+^*,0\}$, the probability that  the null hypothesis $H_s^0(\alpha)$ is true and thus not to be rejected is bounded by
 \begin{align*}
-P(Z_s=1)= P\left(\frac{|Y_{\cdot s}X_{\cdot s}^\top\circ Y^*{X^*}^\top|}{|Y_{\cdot s}X_{\cdot s}^\top|}\leq \alpha\right)\leq \binom{n}{|X_{\cdot s}|}\binom{m}{|Y_{\cdot s}|}\exp(-2|X_{\cdot s}||Y_{\cdot s}|\rho^2)
+P(\mathbf{Z}_s=1)&= P\left(\frac{\bigl\lvert Y_{\cdot s}X_{\cdot s}^\top\circ Y^*\odot{X^*}^\top\bigr\rvert }{\bigl\lvert Y_{\cdot s}X_{\cdot s}^\top\bigr\rvert }\leq \alpha \wedge \frac{Y_{\cdot s}^\top \mathbf{D}X_{\cdot s}}{\lvert Y_{\cdot s}\rvert \lvert X_{\cdot s}\rvert}\geq \delta_s \right)\\
+&\leq \binom{n}{\lvert X_{\cdot s}\rvert }\binom{m}{\lvert Y_{\cdot s}\rvert }\exp\left(-2\lvert X_{\cdot s}\rvert \lvert Y_{\cdot s}\rvert \rho^2\right)
 \end{align*}
 \end{corollary}
 \begin{proof}
-We apply the triangle inequality to the decomposition of $D$ given by Eq.~\eqref{eq:BMF0}, yielding
-\[|Y_{\cdot s}^\top DX_{\cdot s}|\leq |Y_{\cdot s}X_{\cdot s}^\top\circ Y^*{X^*}^\top|+|Y_{\cdot s}X_{\cdot s}^\top \circ N_+|.\]
-Dividing by $|Y_{\cdot s}||X_{\cdot s}|$ and applying Eq.~\eqref{eq:nullHyp} yields that $(X_{\cdot s},Y_{\cdot s})$ is $\delta_s-t$-dense in $N_+$.
-%\[\frac{|Y_{\cdot s}X_{\cdot s}^\top \circ N_+|}{|Y_{\cdot s}||X_{\cdot s}|}\geq \delta_s-t.\]
+We apply the triangle inequality to the density of tile $s$, substituting $\mathbf{D}$ with its decomposition:
+\[\bigl\lvert Y_{\cdot s}^\top \mathbf{D}X_{\cdot s}\bigr\rvert \leq \bigl\lvert Y_{\cdot s}X_{\cdot s}^\top\circ Y^*\odot{X^*}^\top\bigr\rvert +\bigl\lvert Y_{\cdot s}X_{\cdot s}^\top \circ \mathbf{B}\bigr\rvert .\]
+Dividing by $\lvert Y_{\cdot s}\rvert \lvert X_{\cdot s}\rvert $ and applying Eq.~\eqref{eq:nullHyp} yields that $Y_{\cdot s}X_{\cdot s}^\top$ is $(\delta_s-\alpha)$-dense in $\mathbf{B}$.
+%\[\frac{\lvert Y_{\cdot s}X_{\cdot s}^\top \circ N_+\rvert }{\lvert Y_{\cdot s}\rvert \lvert X_{\cdot s}\rvert }\geq \delta_s-t.\]
 The probability for this event is bounded by Theorem~\ref{thm:densProb}.
 \end{proof}
 Similar considerations lead to a false discovery bound based on coherence. In this setting, we define the null hypothesis $H_s^0(\beta)$ for $\beta\in\mathbb{N}$ to hold if 
 \begin{align}\label{eq:nullHypCoh}
-Z_s=1 \Leftrightarrow \eta(Y_{\cdot s}X_{\cdot s}\circ Y^*{X^*}^\top)\leq \beta.
+ \eta\left(Y_{\cdot s}X_{\cdot s}\circ Y^*\odot{X^*}^\top\right)\leq \beta.
 \end{align}
-This restriction affects the tilewise overlap between the underlying and the computed model more than the definition based on density does. As such, Eq.~\eqref{eq:nullHypCoh} implies that each column of the outer product $Y_{\cdot s}{X_{\cdot s}}^\top$ covers at most $\beta$ rows of each tile $Y^*_{\cdot t}{X^*_{\cdot t}}^\top$ of the underlying model. The probability of a false discovery according to this definition of a null hypothesis is bounded by the following corollary. 
+This restriction affects the tile-wise overlap between the underlying and the computed model more than the definition based on density does. As such, Eq.~\eqref{eq:nullHypCoh} implies that each column of the outer product $Y_{\cdot s}{X_{\cdot s}}^\top$ covers at most $\beta$ rows of each tile $Y^*_{\cdot t}{X^*_{\cdot t}}^\top$ of the underlying model. The probability of a false discovery according to this definition of a null hypothesis is bounded by the following corollary. 
 %----------- COROLLARY coherence bound -----
 \begin{corollary}\label{thm:cohZ}
-Let $D$ be composed as denoted in Eq.~\eqref{eq:BMF0} and let $N_+$ be a Bernoulli $(p_+)$ matrix. Given $X\in\{0,1\}^{n\times r}$ and $Y\in\{0,1\}^{m\times r}$ such that 
-\[\eta(Y_{\cdot s}X_{\cdot s}^\top \circ D)\geq \tau_s m,\] 
+Let $\mathbf{B}$ be an $m\times n$ Bernoulli$\,(p_+^*)$ matrix and define the random matrix $\mathbf{D}$ as in Eq.~\eqref{eq:BMFrandD}. Given $X\in\{0,1\}^{n\times r}$ and $Y\in\{0,1\}^{m\times r}$ having
+\[\eta\left(Y_{\cdot s}X_{\cdot s}^\top \circ D\right)= \tau_s m,\] 
 then for $\rho = \max\{\tau_s-\nicefrac{\beta}{m},p^2\}$, the probability that the null hypothesis $H_s^0(\beta)$ holds as defined in Eq.~\eqref{eq:nullHypCoh} is bounded by
 \begin{align*}
-P(Z_s=1)=P\left(\eta(Y_{\cdot s}X_{\cdot s}\circ Y^*{X^*}^\top)\leq \beta\right)\leq \frac{n(n-1)}{2}\exp\left(-\frac{3}{2}m\frac{(\rho-p^2)^2}{2p^2+\rho}\right)
+P(\mathbf{Z}_s=1)&=P\left(\eta\left(Y_{\cdot s}X_{\cdot s}\circ Y^*\odot{X^*}^\top\right)\leq \beta \wedge \eta\left(Y_{\cdot s}X_{\cdot s}^\top \circ \mathbf{D}\right)= \tau_s m\right)\\
+&\leq \frac{n(n-1)}{2}\exp\left(-\frac{3}{2}m\frac{\left(\rho-p^2\right)^2}{2p^2+\rho}\right)
 \end{align*}
 \end{corollary}
 \begin{proof} 
 From the composition of $D$ as denoted in Eq.~\eqref{eq:BMF0} and the definition of $\eta$, computing a maximum, follows that 
-\[\eta(Y_{\cdot s}X_{\cdot s}^\top \circ D)\leq \eta(Y_{\cdot s}X_{\cdot s}^\top \circ Y^*_{\cdot s}{X^*_{\cdot s}}^\top)+\eta(Y_{\cdot s}X_{\cdot s}^\top \circ N_+).\]
-Applying Eq.~\eqref{eq:nullHypCoh} and $\eta(Y_{\cdot s}X_{\cdot s}^\top \circ D)\geq \mu m$ yields
-$\eta(N_+)\geq \mu m-t$.
+\[\eta\left(Y_{\cdot s}X_{\cdot s}^\top \circ \mathbf{D}\right)\leq \eta\left(Y_{\cdot s}X_{\cdot s}^\top \circ Y^*_{\cdot s}{X^*_{\cdot s}}^\top\right)+\eta\left(Y_{\cdot s}X_{\cdot s}^\top \circ \mathbf{B}\right).\]
+Applying Eq.~\eqref{eq:nullHypCoh} and $\eta\left(Y_{\cdot s}X_{\cdot s}^\top \circ \mathbf{D}\right)\geq \tau_s m$ yields
+$\eta(\mathbf{B})\geq \tau_s m-\beta$.
 The probability that this inequality holds is bounded by Theorem~\ref{thm:cohBound}.
 \end{proof}
 We assume from now on that $\alpha=\beta=0$, by what both definitions of the null hypothesis concur. The following results are though easily adapted to a parametrized definition of the null hypothesis.  
@@ -174,15 +182,15 @@ The bounds from the previous section supposedly enable a theoretically well-foun
 However, the tightness of the bounds is the linchpin of the applicability of this scheme. 
 %In return, we do not need to worry about a suitable regularization term which penalizes the formation of superfluous tiles. 
 Since we do not require a penalization term of the model complexity to determine the correct rank in the FDR controlled scenario, we can choose the most simple objective function: the residual sum of squares as defined in problem~\eqref{eq:BoolMF}.
-The minimization of the residual sum of absolute values $F_{RSS}(X,Y)$ is not only simple to implement, but this function is also simple enough to let us derive characteristics of its optima with regard to coherence and minimum density of tiles. This enables a theoretic characterization of those tiles which would be tossed by the bounds. Moreover, this contributes to a fundamental understanding of the nature of tiles in a minimizing factorization. Assuming the data is composed as stated in Eq.~\eqref{eq:BMF0}, we explore the circumstances which have to be met such that a tile in the noise matrix contributes to minimizing $F_{RSS}(X,Y)$.
+The minimization of the residual sum of squares is not only simple to implement, but this function is also simple enough to let us derive characteristics of its optima with regard to coherence and minimum density of tiles. This enables a theoretic characterization of those tiles which would be tossed by the bounds. Moreover, this contributes to a fundamental understanding of the nature of tiles in a minimizing factorization. Assuming the data is composed as stated in Eq.~\eqref{eq:BMF0}, we explore the circumstances which have to be met such that a tile in the noise matrix contributes to minimizing the approximation error.
 %------- lemma density overlap -----------
 \begin{lemma}\label{thm:minDensOverlap}
-Let $X$ and $Y$ be $n\times r$ and $m\times r$ binary matrices and let $s\in\{1,\ldots,r\}$. If $(X,Y)$ is a solution of \eqref{eq:BoolMF}, then the density of tile $(x,y)=(X_{\cdot s},Y_{\cdot s})$ is lower-bounded on the area which is  not covered by any other tile, i.e.,
+Let $X$ and $Y$ be $n\times r$ and $m\times r$ binary matrices and let $s\in\{1,\ldots,r\}$. We collect in $\mathcal{T}=\{1,\ldots,r\}\setminus\{s\}$ all indices except $s$ and denote with the matrix $M=Y_{\cdot \mathcal{T}}\odot X_{\cdot \mathcal{T}}^\top$ the Boolean matrix factorization excluding the s-th tile. If $(X,Y)$ is a solution of \eqref{eq:BoolMF}, then the density of tile $(x,y)=(X_{\cdot s},Y_{\cdot s})$ is lower-bounded on the area which is  not covered by any other tile, i.e.,
 \begin{align}\label{eq:densOverlap}
-\frac{y^\top (D\circ \thickbar{M})x}{y^\top \thickbar{M}x}
-\geq \frac{1}{2},
+\frac{y^\top \left(D\circ \thickbar{M}\right)x}{y^\top \thickbar{M}x}
+\geq \frac{1}{2}.
 \end{align}
-where $M =\bigoplus_{t\neq s}Y_{\cdot t}X_{\cdot t}^\top$ denotes the Boolean product of the factor matrices, excluding the $s$-th tile.
+%where $M =\bigoplus_{t\neq s}Y_{\cdot t}X_{\cdot t}^\top$ denotes the Boolean product of the factor matrices, excluding the $s$-th tile.
 \end{lemma}
 %
 \begin{proof}
@@ -192,14 +200,14 @@ Y\odot X^\top= Y_{\cdot 1}X_{\cdot 1}^\top\oplus\ldots\oplus Y_{\cdot r}X_{\cdot
 \end{equation*}
 The approximation error of a Boolean product is the sum of uncovered ones and covered zeros in the data: 
 \begin{align*}
-|D-Y\odot X^\top | 
-&=\langle D-\mathbf{1}+\mathbf{1}-Y\odot X^\top,D-Y\odot X^\top\rangle\\
-&=\ \langle D,\thickbar{Y\odot X^\top }\rangle +\langle\thickbar{D},Y\odot X^\top \rangle\\
-&=\ \langle D,\thickbar{M+ yx^\top \circ \thickbar{M}}\rangle +\langle\thickbar{D},M+ yx^\top \circ \thickbar{M}\rangle\\
-&=\ \langle D,\thickbar{M}\rangle - y^\top (D\circ \thickbar{M})x +\langle\thickbar{D},M\rangle + y^\top (\thickbar{D}\circ \thickbar{M})x\\
-&=\ |D-M| - y^\top (D\circ \thickbar{M})x + y^\top (\thickbar{D}\circ \thickbar{M})x.
+\bigl\lvert D-Y\odot X^\top \bigr\rvert  
+&=\bigl\langle D-\mathbf{1}+\mathbf{1}-Y\odot X^\top,D-Y\odot X^\top\bigr\rangle\\
+&=\ \bigl\langle D,\thickbar{Y\odot X^\top }\bigr\rangle +\bigl\langle\thickbar{D},Y\odot X^\top \bigr\rangle\\
+&=\ \bigl\langle D,\thickbar{M+ yx^\top \circ \thickbar{M}}\bigr\rangle +\bigl\langle\thickbar{D},M+ yx^\top \circ \thickbar{M}\bigr\rangle\\
+&=\ \bigl\langle D,\thickbar{M}\bigr\rangle - y^\top (D\circ \thickbar{M})x +\bigl\langle\thickbar{D},M\bigr\rangle + y^\top \left(\thickbar{D}\circ \thickbar{M}\right)x\\
+&=\ \lvert D-M\rvert  - y^\top \left(D\circ \thickbar{M}\right)x + y^\top \left(\thickbar{D}\circ \thickbar{M}\right)x.
 \end{align*}
-Since $(X,Y)$ minimizes $F_{RSS}$, the gap between the function values $|D-M|-F_{RSS}(X,Y)$ is nonnegative. Hence
+Since $(X,Y)$ minimizes the RSS, we have $\lvert D-M\rvert\geq \bigl\lvert D-Y\odot X^\top\bigr\rvert $. Hence
 \begin{equation*}
  y^\top (D\circ \thickbar{M})x - y^\top (\thickbar{D}\circ\thickbar{M})x= 2y^\top (D\circ \thickbar{M})x - y^\top \thickbar{M}x \geq 0.
 \end{equation*}
@@ -217,43 +225,44 @@ A similar procedure leads to a bound on the coherence.
 \begin{lemma} \label{thm:minCohTile}
 Let the matrices $X$ and $Y$ solve \eqref{eq:BoolMF} and let $s\in\{1,\ldots,r\}$. If the outer product $Y_{\cdot s}{X_{\cdot s}}^\top$ is $\delta$-dense in $D$, then
 \begin{align}
-\eta(D) > \delta|Y_{\cdot s}|\frac{\delta|X_{\cdot s}|-1}{|X_{\cdot s}|-1}\label{eq:minCohTile}
+\eta(D) > \delta\lvert Y_{\cdot s}\rvert \frac{\delta\lvert X_{\cdot s}\rvert -1}{\lvert X_{\cdot s}\rvert -1}\label{eq:minCohTile}
 \end{align}
 \end{lemma}
 %
 \begin{proof}
-Let $X,Y$ and $s$ be described as above. Denote by $\mathcal{K}=\{i\in\{1,\ldots, n\}\mid X_{is}=1\}$ the set of all items indicated by $X_{\cdot s}$. Since the $\ell1$-norm is bounded for a vector $x$ with $a$ nonzero entries by $|x|\leq\sqrt{a}\|x\|$ and since $Y_{\cdot s}X_{\cdot s}^\top$ is $\delta$-dense, it holds that
+Let $X,Y$ and $s$ be described as above. Denote by $\mathcal{I}_s=\{i\in\{1,\ldots, n\}\mid X_{is}=1\}$ the set of all items indicated by $X_{\cdot s}$. Since the $\ell1$-norm is bounded for a vector $x$ with $a$ nonzero entries by $\lvert x\rvert \leq\sqrt{a}\lVert x\rVert $ and since $Y_{\cdot s}X_{\cdot s}^\top$ is $\delta$-dense, it holds that
 \begin{align*}
-\|\diag(Y_{\cdot s})DX_{\cdot s}\|^2&\geq \frac{|Y_{\cdot s}^\top DX_{\cdot s}|^2}{|Y_{\cdot s}|}\geq \delta^2|Y_{\cdot s}||X_{\cdot s}|^2.
+\lVert \diag(Y_{\cdot s})DX_{\cdot s}\rVert ^2
+&\geq \frac{\bigl\lvert Y_{\cdot s}^\top DX_{\cdot s}\bigr\rvert ^2}{\lvert Y_{\cdot s}\rvert }\geq \delta^2\lvert Y_{\cdot s}\rvert \lvert X_{\cdot s}\rvert ^2.
 \end{align*} 
 The norm above is equal to
 \begin{align*}
-\|\diag(Y_{\cdot s})DX_{\cdot s}\|^2& = X_{\cdot s}^\top D^\top\diag(Y_{\cdot s})DX_{\cdot s}\\
-&=\sum_{i,k\in\mathcal{K}} D_{\cdot i}^\top \diag(Y_{\cdot s})D_{\cdot k}\\
-&= Y_{\cdot s}^\top DX_{\cdot s}+\sum_{i\neq k\in\mathcal{K}}D_{\cdot i}^\top \diag(Y_{\cdot s})D_{\cdot k}.
+\lVert \diag(Y_{\cdot s})DX_{\cdot s}\rVert ^2& = X_{\cdot s}^\top D^\top\diag(Y_{\cdot s})DX_{\cdot s}\\
+&=\sum_{i,k\in\mathcal{I}_s} D_{\cdot i}^\top \diag(Y_{\cdot s})D_{\cdot k}\\
+&= Y_{\cdot s}^\top DX_{\cdot s}+\sum_{i\neq k\in\mathcal{I}_s}D_{\cdot i}^\top \diag(Y_{\cdot s})D_{\cdot k}.
 \end{align*}
 Combining both (in)equalities above yields
 \begin{align*}
-\sum_{i\neq k\in\mathcal{K}}D_{\cdot i}^\top \diag(Y_{\cdot s})D_{\cdot k}& \geq Y_{\cdot s}^\top DX_{\cdot s}\left(\frac{Y_{\cdot s}^\top DX_{\cdot s}}{|Y_{\cdot s}|}-1\right)\\
-&\geq \delta|Y_{\cdot s}||X_{\cdot s}|\left(\delta|X_{\cdot s}|-1\right).
+\sum_{i\neq k\in\mathcal{I}_s}D_{\cdot i}^\top \diag(Y_{\cdot s})D_{\cdot k}& \geq Y_{\cdot s}^\top DX_{\cdot s}\left(\frac{Y_{\cdot s}^\top DX_{\cdot s}}{\lvert Y_{\cdot s}\rvert }-1\right)\\
+&\geq \delta\lvert Y_{\cdot s}\rvert \lvert X_{\cdot s}\rvert \left(\delta\lvert X_{\cdot s}\rvert -1\right).
 \end{align*}
-According to the pigeonhole principle, indices $i\neq k$ exist, $i,k\in\mathcal{K}$ such that
+According to the pigeonhole principle, indices $i\neq k$ exist, $i,k\in\mathcal{I}_s$ such that
 \begin{displaymath}
 ~\qquad\qquad\quad\langle D_{\cdot i}, D_{\cdot k}\rangle
-> \delta|Y_{\cdot s}|\frac{\delta|X_{\cdot s}|-1}{|X_{\cdot s}|-1}.
+> \delta\lvert Y_{\cdot s}\rvert \frac{\delta\lvert X_{\cdot s}\rvert -1}{\lvert X_{\cdot s}\rvert -1}.
 \end{displaymath}
 \end{proof}
 %
-If we assume that a tile $(X_{\cdot s},Y_{\cdot s})$ is a false discovery from an optimal solution $(X,Y)$ of \eqref{eq:BoolMF}, then Bound~\eqref{eq:minCohTile} applies to $N_+$.
+If we assume that a tile $Y_{\cdot s}X_{\cdot s}^\top$ is a false discovery from a solution $(X,Y)$ to the optimization problem \eqref{eq:BoolMF}, then Eq.~\eqref{eq:minCohTile} applies to $N_+$.
 %--- picture minimal size of tile ----
 \begin{figure}
 \centering
 \input{plots/TPMinLForK}
-\caption{Minimum relative size $\nicefrac{|Y_{\cdot s}|}{m}$, depending on $\nicefrac{|X_{\cdot s}|}{n}$, for which the $P(Z_s=1)\leq 0.01$, based on density (blue) and coherence (green).}
+\caption{Minimum relative size $\nicefrac{\lvert Y_{\cdot s}\rvert }{m}$, depending on $\nicefrac{\lvert X_{\cdot s}\rvert }{n}$, for which $P(\mathbf{Z}_s=1)\leq 0.01$, based on density (blue) and coherence (green).}
 \label{fig:theory}
 \end{figure}
 
-These results enable a theoretic comparison of the bounds based on coherence and density. Figure~\ref{fig:theory} contrasts the two bounds for two settings of dimensions. The plot on the left refers to almost square dimensions $(n,m)=(1000,800)$ and the one on the right to more imbalanced dimensions $(n,m)=(1600,500)$. Let $(X,Y)$ be a solution of $\eqref{eq:BoolMF}$ and assume that the positive noise matrix is a Bernoulli $(p)$ matrix with probability $p=0.1$. We plot the minimum relative size $\nicefrac{|Y_{\cdot s}|}{m}$ against the relative size $\nicefrac{|X_{\cdot s}|}{n}$ such that the probability $P(Z_s=1)\leq 0.01$. The blue curve displays the minimum tile size, assessing the false discovery probability by Corollary~\ref{thm:densZ}, while green refers to Corollary~\ref{thm:cohZ}. Thereby, we assume that the tile is $\nicefrac{1}{2}$-dense in $N_+$ and the value $\eta(N_+)$ is bounded by Inequality~\eqref{eq:minCohTile}. Figure~\ref{fig:theory} indicates that under the given circumstances the coherence provides a more loose bound than the density. The difference between the required sizes is larger, if the dimensions are disproportionate, which suggests that more tiles are rejected as potential false discoveries by the coherence bound, in particular for wide or tall data matrices. Most importantly, the density bound is tight enough to let some of the larger tiles of outer products pass, which are generated according to Algorithm~\ref{alg:MDL:generateBMF}. Applying the default parameters, the relative sizes are in the interval from $0.01$ to $0.1$. We can see that the density bound would accept $0.03\times 0.5$ highly noisy tiles (measured in relative size). The theoretical results of the density bound align with the common sense regarding the minimum size of identifiable tiles.   
+These results enable a theoretic comparison of the bounds based on coherence and density. Figure~\ref{fig:theory} contrasts the two bounds for two settings of dimensions. The plot on the left refers to almost square dimensions $(n,m)=(1000,800)$ and the one on the right to more imbalanced dimensions $(n,m)=(1600,500)$. Let $(X,Y)$ be a solution of $\eqref{eq:BoolMF}$ and assume that the positive noise matrix is a Bernoulli$\,(p_+^*)$ matrix with probability $p_+^*=0.1$. We plot the minimum relative size $\nicefrac{\lvert Y_{\cdot s}\rvert }{m}$ against the relative size $\nicefrac{\lvert X_{\cdot s}\rvert }{n}$ such that the probability of a false discovery is $P(\mathbf{Z}_s=1)\leq 0.01$. The blue curve displays the minimum tile size, assessing the false discovery probability by Corollary~\ref{thm:densZ}, while green refers to Corollary~\ref{thm:cohZ}. Thereby, we assume that the tile is $\nicefrac{1}{2}$-dense in $N_+$ and the value $\eta(N_+)$ is bounded by Eq.~\eqref{eq:minCohTile}. Figure~\ref{fig:theory} indicates that under the given circumstances the coherence provides a more loose bound than the density. The difference between the required sizes is larger if the dimensions are disproportionate. This suggests that more tiles are rejected as potential false discoveries by the coherence bound, in particular for wide or tall data matrices. Most importantly, the density bound is tight enough to let most of the tiles pass, which would be generated according to the synthetic data generation in Algorithm~\ref{alg:MDL:generateBMF}. The default setting of the data generating algorithm specifies the relative sizes to lie in the interval $[0.01,\xi_{max}=0.1]$. The plot shows, e.g., that the density bound would accept tiles having a size of $0.03n\times 0.5m$, even if the negative noise flips half of the ones to zeros. This demonstrates that the density bound is tight enough to align with the common sense regarding the minimum size of identifiable tiles.   
 %=====================================
 % Algorithmic Integration of FDR Control
 %=====================================
@@ -261,7 +270,7 @@ These results enable a theoretic comparison of the bounds based on coherence and
 The false discovery bounds might be applied as a postprocessing step to any Boolean factorization result. Here, we also establish the use of these bounds to directly estimate the rank.
 In the rounding procedure at the end of the relaxed optimization in \textsc{PAL-Tiling} (Algorithm~\ref{alg:paltiling}), we can integrate a check of the false discovery bounds via a specification of the function \textsc{Toss}.
  
-Since we intend to solve problem~\eqref{eq:BoolMF}, a suitable smooth relaxed objective is the residual sum of squares. Therefore, in this version of the \textsc{PAL-Tiling} algorithm, we employ the vanilla Algorithm Specification~\ref{algSpec:BMF} and the function \textsc{Toss} as provided in Algorithm~\ref{alg:FDR:toss}.
+Since we intend to solve problem~\eqref{eq:BoolMF}, a suitable smooth relaxed objective is the residual sum of squares. Therefore, we employ the vanilla \textsc{PAL-Tiling} (Algorithm Specification~\ref{algSpec:BMF}) and the function \textsc{Toss} as stated in Algorithm~\ref{alg:FDR:toss}.
 %----- algorithm pseudocode ----
 \begin{algorithm}[t]
 \caption{The tossing functions for the application of \textsc{PAL-Tiling} implementing the determination of the rank via FDR control.}
@@ -283,29 +292,29 @@ Since we intend to solve problem~\eqref{eq:BoolMF}, a suitable smooth relaxed ob
    % \EndFor
  % \EndFunction
 \Function{TossDens}{x,y,D}
-    \State $\rho\gets\max\left\{\frac{yDx}{|y||x|} -\alpha -p_+,0\right\}$
-    \State \textbf{Return} $\displaystyle\binom{n}{|x|}\binom{m}{|y|}\exp(-2|x||y|\rho^2)>q$
+    \State $\displaystyle\rho\gets\max\left\{\frac{yDx}{\lvert y\rvert \lvert x\rvert } -\alpha -p_+,0\right\}$
+    \State \textbf{Return} $\displaystyle\binom{n}{\lvert x\rvert }\binom{m}{\lvert y\rvert }\exp\left(-2\lvert x\rvert \lvert y\rvert \rho^2\right)>q$
 \EndFunction
 \State
 \Function{TossCoh}{x,y,D}
-    \State $\displaystyle\rho\gets\max\left\{\frac{\eta(Y_{\cdot s}X_{\cdot s}^\top\circ D)-\beta}{m}, p_+^2\right\}$
+    \State $\displaystyle\rho\gets\max\left\{\frac{\eta\left(Y_{\cdot s}X_{\cdot s}^\top\circ D\right)-\beta}{m}, p_+^2\right\}$
     \State \textbf{Return}$\displaystyle\frac{n(n-1)}{2}\exp\left(-\frac{3}{2}m\frac{(\rho-p^2)^2}{2p^2+\rho}\right)>q$ 
 \EndFunction
 \end{algorithmic}
 \label{alg:FDR:toss}
 \end{algorithm}
 We call the resulting algorithm \textsc{TrustPal}, which requires additional to the parameters of \textsc{PAL-Tiling} the estimated noise probability $p_+$, the null hypothesis defining parameters $\alpha$, $\beta$ (default value $0$) and the FDR control level $q$ (default value $0.01$). 
-The functions in Algorithm~\ref{alg:FDR:toss} define that a tile is supposed to be tossed if the probability of a false discovery is not bounded above by $q$. That is, if Corollary~\ref{thm:densZ} or \ref{thm:cohZ} does not yield $P(Z_s=1)\leq q$, then the tile $s$ is removed from the factorization. Here multiple combinations of the density and coherence bound are possible. Here, we distinguish between \textsc{TrustPal} employing the density bound, that is function \textsc{TossDens} and \textsc{TrustPal} employing the coherence bound, where we toss tile $s$ when \textsc{TossCoh}$(X_{\cdot s},Y_{\cdot s},D)$ and \textsc{TossCoh}$(Y_{\cdot s},X_{\cdot s},D^\top)$ both return true.
+The functions in Algorithm~\ref{alg:FDR:toss} define that a tile is supposed to be tossed if the risk that it is a false discovery is not  bounded above by $q$. That is, if Corollary~\ref{thm:densZ} or \ref{thm:cohZ} does not yield $P(\meathbf{Z}_s=1)\leq q$, then the tile $s$ is removed from the factorization. Multiple combinations of the density and coherence bound are possible. Here, we distinguish between \textsc{TrustPal} employing the density bound, that is function \textsc{TossDens} and \textsc{TrustPal} employing the coherence bound, where we toss tile $s$ when \textsc{TossCoh}$(X_{\cdot s},Y_{\cdot s},D)$ and \textsc{TossCoh}$(Y_{\cdot s},X_{\cdot s},D^\top)$ both return true.
 The application to the transposed factorization serves a symmetric test of the coherence bound. 
 %This is achieved by checking either the density or the coherence bound for every tile. In the first case, the density $\delta_s$ of every tile in $D$ is computed. If tile $(X_{\cdot s},Y_{\cdot s})$ is a false discovery, then it is $\delta_s$-dense in $N_+$. If Bound~\eqref{eq:densBound} yields that $P(Z_s=1)> q$, then we exclude the tile from the returned binary factorization. In the second case, the function value $\eta(D\circ Y_{\cdot s}X_{\cdot s})$ is computed and the probability $P(Z_s=1)$ is bounded by Eq.~\eqref{eq:cohBound}.
 %=============================
 % Experiments
 %============================
 \section{Experiments}\label{sec:TP:experiments}
-Our experimental evaluation serves the assessment of provided bounds in practical applications. Although the theoretical properties of minimizing factorizations yield satisfactory bounds on the size of a tile (cf.\@ Figure~\ref{fig:theory}), in practice no feasible existing algorithm can guarantee to return optimal solutions of Problem~\eqref{eq:BoolMF}. 
-In addition, we show that the estimation of the actual noise probability is not critical in practice.
+Our experimental evaluation serves the assessment of provided bounds in practical applications. Although the theoretical properties of minimizing factorizations yield satisfactory bounds on the size of a tile (cf.\@ Figure~\ref{fig:theory}), in practice no feasible existing algorithm can guarantee to return optimal solutions of problem~\eqref{eq:BoolMF}. 
+In addition, we evaluate the sensitivity to the estimated noise probability.
 
-The implementation of \textsc{TrustPal} follows the highly parallel implementation on graphics processing units (GPU) from the framework \textsc{PAL-Tiling}. All experiments are executed on a GPU with 2688 arithmetic cores and 6GiB GDDR5 memory. The source code of \textsc{TrustPal}, together with Julia scripts to generate data and to compare proposed bounds, is provided\footnote{\url{http://sfb876.tu-dortmund.de/trustpal}}.
+The implementation of \textsc{TrustPal} follows the highly parallel  GPU implementation from the framework \textsc{PAL-Tiling}. The source code of \textsc{TrustPal}, together with Julia scripts to generate data and to compare proposed bounds, is provided\footnote{\url{http://sfb876.tu-dortmund.de/trustpal}}.
 
 We compare the two variants of \textsc{TrustPal}, employing the  bounds based on  density or coherence to determine the rank, and the performance of the algorithm \textsc{Primp}. For both bounds, we assume that the null hypothesis with regard to a tile holds if the tile covers only noise. That is, the parameters of the rounding procedure in Algorithm~\ref{alg:FDR:toss} are set to   $\alpha=\beta=0$. We have seen in the experimental evaluation of Section~\ref{sec:MDL:SynthData} that \textsc{PanPal} displays a strong tendency to underestimate the rank, but is able to yield more accurate results than \textsc{Primp} in some particular settings. Whenever that is the case, we display the results for \textsc{PanPal} in the following plots. 
 %--------------------------------------------------------
@@ -335,7 +344,7 @@ Vary & Algorithm & $\mathsf{F}$-measure & $r-r^*$  \\ \midrule
  & \textsc{TrustPal} Coh & $0.98\pm0.023$ & $-1.77\pm1.57$\\
  & \textsc{Primp} & 0.99 $\pm$ 0.004 & $1.21 \pm 2.89$\\
  \midrule
-\multirow{3}{*}{\rotatebox{90}{ $r^\star$ }  }  
+\multirow{3}{*}{\rotatebox{90}{ $r^*$ }  }  
 &\textsc{TrustPal} Dens & 0.98 $\pm$ 0.050 & $-0.475 \pm 2.54$ \\
  & \textsc{TrustPal} Coh & $0.96\pm0.069$ & $-2.875\pm3.17$\\
  & \textsc{Primp} & 0.98 $\pm$ 0.074 & $0.975 \pm 2.14$\\
@@ -351,22 +360,22 @@ We state the average measures over all variations of the positive noise paramete
 \begin{figure}[t]
 \centering
 \input{plots/TPSynthExpDens}
-\caption{Variation of density and overlap influencing parameter $d\in[0.1,\ldots,0.3]$. Comparison of $\mathsf{F}$-measures (the higher the better) and the estimated rank (the closer to 25 the better) for uniform noise of $p_\pm^*=10\%$.}
+\caption{Variation of density and overlap influencing parameter $\xi_{max}\in[0.1,\ldots,0.3]$. Comparison of $\mathsf{F}$-measures (the higher the better) and the estimated rank (the closer to 25 the better) for uniform noise of $p_\pm^*=10\%$.}
 \label{fig:TP:synthDensity}
 \end{figure}
 
-In Figure~\ref{fig:TP:synthDensity} we plot the $\mathsf{F}$-measure and the computed rank against the parameter $d$, which bounds the maximum size of a tile. Here, we add a comparison to the algorithm \textsc{PanPal}, whose tendency to underestimate the rank comes in handy for more dense matrices, when $d$ is larger than $0.2$.  We see that \textsc{TrustPal} is able to find the right balance and obtains the highest $\mathsf{F}$-measure over all variations of $d$.  
+In Figure~\ref{fig:TP:synthDensity} we plot the $\mathsf{F}$-measure and the computed rank against the parameter $\xi_{max}$, which bounds the maximum size of a tile. Here, we add a comparison to the algorithm \textsc{Panpal}, whose tendency to underestimate the rank comes in handy for more dense matrices, when $\xi_{max}$ is larger than $0.2$.  We see that \textsc{TrustPal} is able to find the right balance and obtains the highest $\mathsf{F}$-measure over all variations of $\xi_{max}$.  
 In total, the experimental evaluation suggests that the estimation of the noise probability is not critical in practice and that both bounds are suitable to yield accurate rank estimations under false discovery control.
 %---------------------------------
 % MovieLens Experiments
 %--------------------------------
 \subsection{MovieLens Experiments}
-Comparing the performance of algorithms in terms of the false discovery rate proves difficult for real-world datasets. Yet, recommendation data at least provides information about negative reviews. Here, we explore the performance of algorithms on the binarized MovieLens500K dataset, as discussed in Section~\ref{sec:MDL:RealWorld}. We compare the output of \textsc{TrustPal} for various noise probability estimations $p_+$ to the results from \textsc{Primp} and \textsc{PanPal}.
+Comparing the performance of algorithms in terms of the false discovery rate proves difficult for real-world datasets, since, obviously, the actual noise distribution is unknown. Recommendation data at least provides some information about its positive noise in form of negative reviews. We explore the performance of algorithms on the binarized MovieLens500K dataset, as discussed in Section~\ref{sec:MDL:RealWorld}. We compare the output of \textsc{TrustPal} for various noise probability estimations $p_+$ to the results from \textsc{Primp} and \textsc{Panpal}.
 \begin{table}
 \centering
 %\resizebox{\columnwidth}{!}{%
 	\begin{tabular}{cclrrr}\toprule
-     Algorithm & Bound& $p_+$& $r$ & $\%F_{\mathsf{RSS}}$ & Wrong rec.\\ \midrule
+     Algorithm & Bound& $p_+$& $r$ & $\%RSS$ & Wrong rec.\\ \midrule
 \textsc{TrustPal} & coh & 0.1	&23	&80.68	&2.43\\
  & & 0.05	&25	&80.52	&2.38\\
  & & 0.01	&25	&80.26	&2.44\\
@@ -374,23 +383,24 @@ Comparing the performance of algorithms in terms of the false discovery rate pro
  & & 0.05	&35	&79.54	&2.43\\
  & & 0.01	&25	&78.22	&2.72\\
 \textsc{Primp} &-&& 78 & 88.59 & 2.38\\
-\textsc{PanPal} &-&& 15 & 94.05 & 2.23\\
+\textsc{Panpal} &-&& 15 & 94.05 & 2.23\\
 \bottomrule
 \end{tabular}
 %}
-\caption{Comparison of \textsc{TrustPal} for estimated noise probabilities $p_+$, \textsc{Primp} and \textsc{PanPal} on the MovieLens dataset. Denoted are the rank $r$, approximation error $\%F_{\mathsf{RSS}}$ and the percentage of traceable wrong recommendations, i.e., user-movie recommendations corresponding to bad reviews ($<2.5$ of five stars).}
+\caption{Comparison of \textsc{TrustPal} for estimated noise probabilities $p_+$ with \textsc{Primp} and \textsc{Panpal} on the MovieLens dataset. Denoted are the rank $r$, approximation error $\%RSS$ and the percentage of traceable wrong recommendations, i.e., user-movie recommendations corresponding to bad reviews ($<2.5$ of five stars).}
 \label{tbl:TP:movielens}
 \end{table}
 
-Table~\ref{tbl:TP:movielens} summarizes the results. We estimate the positive noise to be small $p_+\in\{0.01,0.05,0.1\}$ as we not often expect that users give a positive rating of a movie they do not actually like. We observe again that a variation of the estimated noise probability does not make much of a difference. The residual sum of squares decreases with decreasing noise estimations, but not more than $4\%$ in total. The calculated rank and the percentage of wrong recommendations do not display such a monotone behaviour. Using the coherence bound, the rank only slightly increases from 23 to 25 when less noise is assumed. The rank determined by the density bound does not display a monotone behaviour. It jumps from 26 to 35 to 25 with decreasing expected noise. The estimated ranks of \textsc{TrustPal} are close to $25$, which differs notably from the rank of $78$ from \textsc{Primp}. Still, all runs of \textsc{TrustPal} achieve a lower approximation error than \textsc{Primp} an \textsc{Panpal}. Looking at the amount of traceable wrong recommendations, we see that \textsc{Panpal} with its very conservative selection of tiles achieves a generally low amount of wrong recommendations, which is only topped by one run of \textsc{TrustPal}. \textsc{Primp} exhibits a comparably low amount of traceable wrong recommendations as well. Only two of the six runs of \textsc{TrustPal} achieve an equal or lower amount of wrong recommendations. The results give more a hint at characteristics of solutions obtained by minimizing various description lengths, than displaying general differences between the guessed noise parameter. %As such, minimizing the residual sums of squares appears to return larger tiles, such that a small rank is sufficient to achieve a low approximation error. However, the amount of covered negative noise is also slightly higher when the tiles are large. In contrast to that does \textsc{Primp}    
+Table~\ref{tbl:TP:movielens} summarizes the results. We estimate the positive noise to be small $p_+\in\{0.01,0.05,0.1\}$ as we not often expect that users give a positive rating of a movie they do not actually like. We observe again that a variation of the estimated noise probability does not make much of a difference. The residual sum of squares decreases with decreasing noise estimations, but not more than $4\%$ in total. The calculated rank and the percentage of wrong recommendations do not display such a monotone behaviour. Using the coherence bound, the rank only slightly increases from 23 to 25 when less noise is assumed. The rank determined by the density bound does not display a monotone behaviour. It jumps from 26 to 35 to 25 with decreasing expected noise. The estimated ranks of \textsc{TrustPal} are close to $25$, which differs notably from the rank of $78$ from \textsc{Primp}. Impressive is that all runs of \textsc{TrustPal} achieve a lower approximation error than \textsc{Primp} an \textsc{Panpal}. Looking at the amount of traceable wrong recommendations, we see that \textsc{Panpal} with its very conservative selection of tiles achieves a generally low amount of wrong recommendations, which is only topped by one run of \textsc{TrustPal}. \textsc{Primp} exhibits a comparably low amount of traceable wrong recommendations as well. Only two of the six runs of \textsc{TrustPal} achieve an equal or lower amount of wrong recommendations than \textsc{Primp}. By and large, the results show that the effect of random initialization is stronger than the the effect of the estimated noise $p_+$.
+%The results give more a hint at characteristics of solutions obtained by minimizing various description lengths, than displaying general differences between the guessed noise parameter. %As such, minimizing the residual sums of squares appears to return larger tiles, such that a small rank is sufficient to achieve a low approximation error. However, the amount of covered negative noise is also slightly higher when the tiles are large. In contrast to that does \textsc{Primp}    
 %==================================
 % Related Work
 %==================================
 \section{FDR Control in Clustering and Pattern Mining}\label{sec:TP:relatedWork}
-FDR control in unsupervised settings is basically unexplored. One notable approach is scan clustering~\citep{pacifico2007scan}, focusing on one- or two-dimensional spatial density clustering. The authors control the area of discovered clusters by the FDR, addressing Gaussian processes in continuous data. Thus, this approach cannot be applied to binary or discrete data in general.  
+False discovery control in unsupervised settings is basically unexplored. One notable approach is scan clustering~\citep{pacifico2007scan}, focusing on one- or two-dimensional spatial density clustering. The authors control the area of discovered clusters by the FDR, addressing Gaussian processes in continuous data. Thus, this approach cannot be applied to binary or discrete data in general.  
 
-In the pattern mining literature, a standard framework for handling false discoveries is the Significant Pattern Mining proposed by \cite{webb2007discovering}.  It assesses individual patterns, handling the pattern explosion problem by Bonferroni-like corrections on the significance level. The Significant Pattern Mining framework can work with any null hypothesis to be tested on patterns.  
-One considerable approach that works in this setting is statistical significant pattern mining via permutation testing (see \citep{llinares2015fast} and references therein). The major difference to our scenario is the supervision of the mining procedure. More precisely, patterns are annotated by class labels, and the task is to identify those patterns which appear significantly more often in one class than in the other class(es). State-of-the-art approaches rely on (variants of) Westfall-Young permutation based hypothesis testing. 
+In the pattern mining literature, a standard framework for handling false discoveries is the Significant Pattern Mining proposed by \cite{webb2007discovering}.  It assesses individual patterns, handling the pattern explosion problem by Bonferroni-like corrections on the significance level. The significant pattern mining framework can work with any null hypothesis to be tested on patterns.  
+One considerable approach that works in this setting is statistical significant pattern mining via permutation testing (see \citep{llinares2015fast} and references therein). The major difference to our scenario is the supervision of the mining procedure. In the significant pattern mining scenario, patterns are annotated by class labels, and the task is to identify those patterns which appear significantly more often in one class than in the other class(es). State-of-the-art approaches rely on (variants of) Westfall-Young permutation based hypothesis testing. 
 In a similar line of research, namely statistical emerging pattern mining \citep{komiyama2017statistical}, patterns from different sources (e.g., databases) are considered. The goal is to find patterns which appear significantly more often in one database than in another. Multiple hypothesis testing is applied to control the FDR, and to provide other statistical guarantees. 
 
 A method designed to test one specific null hypothesis on supervised pattern mining results (such as Subgroup Discovery and Exceptional Model Mining) is DFD Validation by \cite{duivesteijn2011exploiting}.  In what essentially boils down to a permutation test, a Distribution of artificial False Discoveries (DFD) is generated.  Subgroups resulting from the actual supervised local pattern mining run are then accepted only if they refute the null hypothesis that they are generated by the DFD.  This provides evidence that the subgroups are deemed interesting by more than solely random effects, but the method is specific to the supervised local pattern mining setting.
@@ -399,11 +409,11 @@ All approaches make heavy use of the fact that data comes from multiple classes 
 % Discussion
 %============================
 \section{Discussion}\label{sec:TP:discussion}
-We introduce  a method to control the false discovery rate in Boolean matrix factorization and prove two bounds to estimate the probability that a tile minimizes the objective by covering (mostly) noise.
+We introduce  a method to control the false discovery rate in Boolean matrix factorization and prove two bounds to estimate the probability that a tile minimizes the objective while covering (mostly) noise.
 %improve our understanding of the nature of falsely discovered patterns. 
 A theoretical comparison of our bounds characterizes the tiles which are regarded as false discoveries (cf.\@ Figure~\ref{fig:theory}). 
 %explains their connections between themselves and to solutions of a broad class of objective functions. 
-We explain how FDR control can be integrated into existing algorithms---this improves the theoretical properties of algorithms and takes away the need to regularize the model complexity. An empirical study on synthetic and real-world data demonstrates its practical utility.
+We explain how FDR control can be integrated into existing BMF algorithms---this improves the theoretical properties of algorithms and takes away the need to regularize the model complexity. An empirical study on synthetic and real-world data demonstrates its practical utility.
 %\todo{Fehlt hier nich was?}
 
 In conclusion, FDR control takes the concern about too noisy results off the researcher's hand. The remaining question is how to derive tiles which approach the underlying model best, e.g., which do not split \emph{true} tiles? In this respect, the suitable application of regularizers is still important.

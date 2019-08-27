@@ -70,7 +70,7 @@ x y std
         legend columns =2,
         axis lines = left]
         %
-        \nextgroupplot[ylabel={$\mathsf{F}$}, xlabel={$d$},
+        \nextgroupplot[ylabel={$\mathsf{F}$}, xlabel={$\xi_{max}$},
         	xmax=0.34, ymin=0.4, ymax=1.1,
         	legend to name=legendTPSynthExpDens]
         	\addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENSF.dat};
@@ -82,7 +82,7 @@ x y std
             \addplot+[panStyle]  table[x=x,y=y,y error=std] {PanPalF.dat};
             \addlegendentry{\textsc{PanPal}};
             %
-        \nextgroupplot[xlabel={$d$}, ylabel={$r$},
+        \nextgroupplot[xlabel={$\xi_{max}$}, ylabel={$r$},
 			xmax=0.34, ymin=0, ymax=40.2]
                 \addplot+[densStyle]  table[x=x,y=y,y error=std] {BMFDR_DENSR.dat};
         	\addplot+[cohStyle]  table[x=x,y=y,y error=std] {BMFDR_COHR.dat};
